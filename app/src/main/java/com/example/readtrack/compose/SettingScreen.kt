@@ -5,5 +5,4 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun SettingScreen() {
-    Text(text = "Setting Screen")
 }
