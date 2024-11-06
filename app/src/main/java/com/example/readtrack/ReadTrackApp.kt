@@ -31,6 +31,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.readtrack.compose.HomeScreen
 import com.example.readtrack.compose.LibraryScreen
+import com.example.readtrack.compose.RegisterProcessScreen
 import com.example.readtrack.compose.SettingScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,7 +71,7 @@ fun ReadTrackApp() {
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /*TODO*/ },
+                onClick = { navController.navigate(ReadTrackScreen.RegistProcess.name) },
                 contentColor = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier.padding(16.dp)
             ) {
@@ -94,6 +95,9 @@ fun ReadTrackApp() {
             }
             composable(ReadTrackScreen.Setting.name) {
                 SettingScreen()
+            }
+            composable(ReadTrackScreen.RegistProcess.name) {
+                RegisterProcessScreen()
             }
         }
     }

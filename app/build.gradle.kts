@@ -51,8 +51,21 @@ dependencies {
     implementation(libs.androidx.material3)
     //For navigation compose
     val nav_version = "2.8.0"
-
     implementation("androidx.navigation:navigation-compose:$nav_version")
+
+    // ViewModel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+
+    //Gson Converter
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    // Gson
+    implementation("com.google.code.gson:gson:2.10.1")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
