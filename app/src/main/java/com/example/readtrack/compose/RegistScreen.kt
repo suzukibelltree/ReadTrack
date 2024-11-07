@@ -13,9 +13,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.readtrack.ReadTrackScreen
 
 @Composable
-fun RegisterProcessScreen(){
+fun RegisterProcessScreen(
+    navController: NavController
+){
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
@@ -28,7 +32,7 @@ fun RegisterProcessScreen(){
             modifier = Modifier.padding(16.dp)
         )
         Button(
-            onClick = { },
+            onClick = { navController.navigate(ReadTrackScreen.Search.name)},
             modifier = Modifier.padding(16.dp)
         ) {
             Text("タイトルを検索して登録")
@@ -40,10 +44,4 @@ fun RegisterProcessScreen(){
             Text("ISBNで登録")
         }
     }
-}
-
-@Preview
-@Composable
-fun PreviewRegistProcessScreen(){
-    RegisterProcessScreen()
 }

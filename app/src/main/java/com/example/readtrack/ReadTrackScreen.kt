@@ -7,4 +7,5 @@ enum class ReadTrackScreen() {
     RegistProcess,
     RegisterByTitle,
     RegisterbyISBN,
+    Search
 }

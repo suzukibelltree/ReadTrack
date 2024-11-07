@@ -32,11 +32,15 @@ import androidx.navigation.compose.rememberNavController
 import com.example.readtrack.compose.HomeScreen
 import com.example.readtrack.compose.LibraryScreen
 import com.example.readtrack.compose.RegisterProcessScreen
+import com.example.readtrack.compose.SearchScreen
 import com.example.readtrack.compose.SettingScreen
+import com.example.readtrack.network.BooksViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReadTrackApp() {
+fun ReadTrackApp(
+    viewModel: BooksViewModel
+) {
     val navController = rememberNavController()
     Scaffold(
         topBar = {
@@ -88,16 +92,19 @@ fun ReadTrackApp() {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(ReadTrackScreen.Home.name) {
-                HomeScreen()
+                HomeScreen(navController)
             }
             composable(ReadTrackScreen.Library.name) {
-                LibraryScreen()
+                LibraryScreen(navController)
             }
             composable(ReadTrackScreen.Setting.name) {
-                SettingScreen()
+                SettingScreen(navController)
             }
             composable(ReadTrackScreen.RegistProcess.name) {
-                RegisterProcessScreen()
+                RegisterProcessScreen(navController)
+            }
+            composable(ReadTrackScreen.Search.name) {
+                SearchScreen(viewModel)
             }
         }
     }
