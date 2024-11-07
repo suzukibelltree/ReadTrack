@@ -22,7 +22,7 @@ import com.example.readtrack.network.BooksViewModel
 @Composable
 fun SearchScreen(viewModel: BooksViewModel) {
     var query by remember { mutableStateOf("Kotlin") }
-    val apiKey="AIzaSyDQFvHINYsbSaR_PsbRYohz7ClqwuKIJ-w"
+    val apiKey=""
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
