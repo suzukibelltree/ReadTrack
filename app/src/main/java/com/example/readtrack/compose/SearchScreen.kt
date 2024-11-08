@@ -16,13 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.readtrack.BuildConfig
 import com.example.readtrack.network.BookItem
 import com.example.readtrack.network.BooksViewModel
 
 @Composable
 fun SearchScreen(viewModel: BooksViewModel) {
     var query by remember { mutableStateOf("Kotlin") }
-    val apiKey=""
+    val apiKey= BuildConfig.API_KEY
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -58,6 +59,7 @@ fun BooksList(books: List<BookItem>) {
     }
 }
 
+//この関数を後で修正する
 @Composable
 fun BookItemView(book: BookItem) {
     Column(modifier = Modifier.padding(8.dp)) {
