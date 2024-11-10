@@ -1,5 +1,6 @@
 package com.example.readtrack
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,21 +26,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.readtrack.compose.BookDetail
 import com.example.readtrack.compose.HomeScreen
 import com.example.readtrack.compose.LibraryScreen
 import com.example.readtrack.compose.RegisterProcessScreen
 import com.example.readtrack.compose.SearchScreen
 import com.example.readtrack.compose.SettingScreen
-import com.example.readtrack.network.BooksViewModel
+import com.example.readtrack.network.BookListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReadTrackApp(
-    viewModel: BooksViewModel
+    viewModel: BookListViewModel
 ) {
     val navController = rememberNavController()
     Scaffold(
@@ -104,7 +108,10 @@ fun ReadTrackApp(
                 RegisterProcessScreen(navController)
             }
             composable(ReadTrackScreen.Search.name) {
-                SearchScreen(viewModel)
+                SearchScreen(viewModel,navController)
+            }
+            composable(ReadTrackScreen.BookDetail.name) {
+                BookDetail(navController)
             }
         }
     }

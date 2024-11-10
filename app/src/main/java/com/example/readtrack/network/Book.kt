@@ -5,6 +5,8 @@ data class BookLists(
 )
 
 data class BookItem(
+    val id: String,
+    val selfLink: String,
     val volumeInfo: VolumeInfo
 )
 
@@ -14,5 +16,10 @@ data class VolumeInfo(
     val publisher: String?,
     val publishedDate: String?,
     val description: String?,
-    val thumbnail: String?
+    val imageLinks: ImageLinks = ImageLinks("", "")
+)
+
+data class ImageLinks(
+    val smallThumbnail: String,
+    val thumbnail: String
 )

@@ -14,11 +14,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.readtrack.network.BooksViewModel
+import com.example.readtrack.network.BookListViewModel
 import com.example.readtrack.ui.theme.ReadTrackTheme
 
 class MainActivity : ComponentActivity() {
-    val viewModel: BooksViewModel by viewModels()
+    val viewModel: BookListViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

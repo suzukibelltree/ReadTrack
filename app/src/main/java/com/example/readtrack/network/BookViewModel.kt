@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
-class BooksViewModel : ViewModel() {
+class BookListViewModel : ViewModel() {
     private val _books = mutableStateListOf<BookItem>()
     val books: List<BookItem> get() = _books
 
@@ -31,3 +31,10 @@ class BooksViewModel : ViewModel() {
         }
     }
 }
+
+class BookViewModel :ViewModel(){
+    val book= mutableStateOf<BookItem?>(null)
+    val comment = mutableStateOf<String?>(null)
+    val progress = mutableStateOf<Int?>(null)
+}
+

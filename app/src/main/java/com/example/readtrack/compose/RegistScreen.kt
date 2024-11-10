@@ -37,11 +37,5 @@ fun RegisterProcessScreen(
         ) {
             Text("タイトルを検索して登録")
         }
-        Button(
-            onClick = { },
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text("ISBNで登録")
-        }
     }
 }
