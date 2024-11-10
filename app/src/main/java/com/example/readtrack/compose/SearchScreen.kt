@@ -1,6 +1,7 @@
 package com.example.readtrack.compose
 
 import android.graphics.drawable.BitmapDrawable
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -36,6 +37,8 @@ import com.example.readtrack.R
 import com.example.readtrack.ReadTrackScreen
 import com.example.readtrack.network.BookItem
 import com.example.readtrack.network.BookListViewModel
+import com.example.readtrack.network.BookViewModel
+import com.example.readtrack.network.BookViewModelFactory
 
 @Composable
 fun SearchScreen(
@@ -53,12 +56,12 @@ fun SearchScreen(
         OutlinedTextField(
             value = query,
             onValueChange = { query = it },
-            label = { Text("Search Books") },
+            label = { Text("タイトルを入力") },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
         Button(onClick = { viewModel.searchBooks(query, apiKey) }) {
-            Text("Search")
+            Text("検索")
         }
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -94,13 +97,17 @@ fun BookCard(
     navController: NavController,
     index:Int
 ){
+    val bookViewModel = viewModel<BookViewModel>(
+        key = book.id,
+        factory = BookViewModelFactory(book)
+    )
+    Log.d("BookCard", "BookViewModel created with key: ${book.id}")
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
             .clickable {
-
-                navController.navigate(ReadTrackScreen.BookDetail.name)
+                navController.navigate("${ReadTrackScreen.BookDetail.name}/${book.id}")
             }
     ) {
         Column {

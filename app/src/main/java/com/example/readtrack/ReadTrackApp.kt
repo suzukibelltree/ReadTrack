@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -39,6 +40,8 @@ import com.example.readtrack.compose.RegisterProcessScreen
 import com.example.readtrack.compose.SearchScreen
 import com.example.readtrack.compose.SettingScreen
 import com.example.readtrack.network.BookListViewModel
+import com.example.readtrack.network.BookViewModel
+import com.example.readtrack.network.BookViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -110,8 +113,17 @@ fun ReadTrackApp(
             composable(ReadTrackScreen.Search.name) {
                 SearchScreen(viewModel,navController)
             }
-            composable(ReadTrackScreen.BookDetail.name) {
-                BookDetail(navController)
+            composable(
+                route = "${ReadTrackScreen.BookDetail.name}/{bookId}",
+                arguments = listOf(navArgument("bookId") { type = NavType.StringType })
+            ){ backStackEntry ->
+                val bookId = backStackEntry.arguments?.getString("bookId") ?: ""
+                val bookItem = viewModel.books.find { it.id == bookId }
+                val bookViewModel: BookViewModel = viewModel(
+                    factory = bookItem?.let { BookViewModelFactory(it) }
+                )
+                Log.d("ReadTrackApp", "BookViewModel retrieved with key: $bookId")
+                BookDetail(navController, bookViewModel)
             }
         }
     }

@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
@@ -14,6 +15,10 @@ class BookListViewModel : ViewModel() {
 
     var isLoading by mutableStateOf(false)
     var errorMessage by mutableStateOf<String?>(null)
+
+    fun getBookItemById(bookId: String): BookItem? {
+        return books.find { it.id == bookId }
+    }
 
     fun searchBooks(query: String, apiKey: String) {
         viewModelScope.launch {
@@ -32,8 +37,20 @@ class BookListViewModel : ViewModel() {
     }
 }
 
-class BookViewModel :ViewModel(){
-    val book= mutableStateOf<BookItem?>(null)
+class BookViewModelFactory(private val bookItem: BookItem) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(BookViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return BookViewModel(bookItem) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
+
+class BookViewModel(
+    bookItem: BookItem
+) :ViewModel(){
+    val book= mutableStateOf(bookItem)
     val comment = mutableStateOf<String?>(null)
     val progress = mutableStateOf<Int?>(null)
 }
