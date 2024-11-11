@@ -9,18 +9,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Book
+import androidx.compose.material.icons.filled.Business
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.materialIcon
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -28,11 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
-import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import com.example.readtrack.network.BookViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun BookDetail(
@@ -89,7 +83,9 @@ fun BookDetail(
                 Icon(
                     imageVector = Icons.Default.Face,
                     contentDescription = null,
+                    modifier = Modifier.padding(8.dp)
                 )
+                Text(text = bookItem.volumeInfo.categories.toString())
             }
             Spacer(modifier = Modifier.weight(1f))
             Column(
@@ -97,9 +93,11 @@ fun BookDetail(
             ) {
                 Text(text = "ページ数")
                 Icon(
-                    imageVector = Icons.Default.Call,
+                    imageVector = Icons.Filled.Book,
                     contentDescription = null,
+                    modifier = Modifier.padding(8.dp)
                 )
+                Text(text = bookItem.volumeInfo.pageCount.toString()+"ページ")
             }
             Spacer(modifier = Modifier.weight(1f))
             Column(
@@ -107,16 +105,18 @@ fun BookDetail(
             ) {
                 Text(text = "出版社")
                 Icon(
-                    imageVector = Icons.Default.Call,
+                    imageVector = Icons.Filled.Business,
                     contentDescription = null,
+                    modifier = Modifier.padding(8.dp)
                 )
+                Text(text = bookItem.volumeInfo.publisher.toString())
             }
             Spacer(modifier = Modifier.weight(1f))
         }
         Button(
             onClick = {/*TODO*/ },
         ) {
-            Text("登録")
+            Text("ライブラリに追加")
         }
     }
 }
