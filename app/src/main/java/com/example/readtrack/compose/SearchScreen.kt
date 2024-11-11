@@ -110,24 +110,26 @@ fun BookCard(
                 navController.navigate("${ReadTrackScreen.BookDetail.name}/${book.id}")
             }
     ) {
-        Column {
+        Row {
             AsyncImage(
                 model = book.volumeInfo.imageLinks.thumbnail,
                 contentDescription = null,
             )
-            Spacer(modifier = Modifier.width(8.dp))
             Column {
-                Text(
-                    text = book.volumeInfo.title,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Text(
-                    text = book.volumeInfo.authors?.joinToString(", ") ?: "Unknown",
-                )
-                Text(
-                    text = book.volumeInfo.publisher ?: "No publisher",
-                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Column {
+                    Text(
+                        text = book.volumeInfo.title,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        text = book.volumeInfo.authors?.joinToString(", ") ?: "Unknown",
+                    )
+                    Text(
+                        text = book.volumeInfo.publisher ?: "No publisher",
+                    )
+                }
             }
         }
     }

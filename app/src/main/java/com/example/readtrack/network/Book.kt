@@ -16,7 +16,11 @@ data class VolumeInfo(
     val publisher: String?,
     val publishedDate: String?,
     val description: String?,
-    val imageLinks: ImageLinks = ImageLinks("", "")
+    val imageLinks: ImageLinks = ImageLinks("", ""),
+    val pageCount: Int?,
+    val language: String?,
+    val averageRating: Double?,
+    val ratingsCount: Int?,
 )
 
 data class ImageLinks(
