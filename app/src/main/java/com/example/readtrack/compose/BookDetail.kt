@@ -19,14 +19,20 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.readtrack.ReadTrackApplication
+import com.example.readtrack.network.BookData
 import com.example.readtrack.network.BookViewModel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun BookDetail(
@@ -34,6 +40,10 @@ fun BookDetail(
     bookViewModel: BookViewModel,
 ) {
     val bookItem by bookViewModel.book
+    val coroutineScope= rememberCoroutineScope()
+    val context = LocalContext.current
+    val app = context.applicationContext as ReadTrackApplication
+    val db = app.appContainer.booksRepository
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -114,7 +124,21 @@ fun BookDetail(
             Spacer(modifier = Modifier.weight(1f))
         }
         Button(
-            onClick = {/*TODO*/ },
+            onClick = {
+                val book = BookData(
+                    id = bookItem.id,
+                    title = bookItem.volumeInfo.title,
+                    author = bookItem.volumeInfo.authors?.get(0) ?: "",
+                    publisher = bookItem.volumeInfo.publisher,
+                    publishedDate = bookItem.volumeInfo.publishedDate,
+                    description = bookItem.volumeInfo.description,
+                    thumbnail = bookItem.volumeInfo.imageLinks.thumbnail,
+                    pageCount = bookItem.volumeInfo.pageCount,
+                )
+                coroutineScope.launch {
+                    db.insert(book)
+                }
+            },
         ) {
             Text("ライブラリに追加")
         }
