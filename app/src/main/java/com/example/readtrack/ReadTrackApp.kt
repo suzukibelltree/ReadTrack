@@ -1,5 +1,6 @@
 package com.example.readtrack
 
+import MyBookScreen
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -43,12 +46,17 @@ import com.example.readtrack.network.BookListViewModel
 import com.example.readtrack.network.BookViewModel
 import com.example.readtrack.network.BookViewModelFactory
 import com.example.readtrack.room.SavedBooksViewModel
+import com.example.readtrack.room.SavedBooksViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReadTrackApp(
     viewModel: BookListViewModel,
 ) {
+    val app = LocalContext.current.applicationContext as ReadTrackApplication
+    val savedBooksViewModel: SavedBooksViewModel = viewModel(
+        factory = SavedBooksViewModelFactory(app.appContainer.booksRepository)
+    )
     val navController = rememberNavController()
     Scaffold(
         topBar = {
@@ -103,7 +111,7 @@ fun ReadTrackApp(
                 HomeScreen(navController)
             }
             composable(ReadTrackScreen.Library.name) {
-                LibraryScreen(navController)
+                LibraryScreen(navController,savedBooksViewModel)
             }
             composable(ReadTrackScreen.Setting.name) {
                 SettingScreen(navController)
@@ -125,6 +133,13 @@ fun ReadTrackApp(
                 )
                 Log.d("ReadTrackApp", "BookViewModel retrieved with key: $bookId")
                 BookDetail(navController, bookViewModel)
+            }
+            composable(
+                route = "${ReadTrackScreen.MyBook.name}/{savedbookId}",
+                arguments = listOf(navArgument("savedbookId") { type = NavType.StringType })
+            ){ backStackEntry ->
+                val savedbookId = backStackEntry.arguments?.getString("savedbookId") ?: ""
+                MyBookScreen(savedbookId, savedBooksViewModel)
             }
         }
     }

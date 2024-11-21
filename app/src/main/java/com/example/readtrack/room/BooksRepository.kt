@@ -9,4 +9,5 @@ interface BooksRepository{
     suspend fun update(book: BookData)
     suspend fun delete(book: BookData)
     fun getAllBooksFlow(): Flow<List<BookData>>
+    suspend fun getBookById(bookId: String): BookData?
 }

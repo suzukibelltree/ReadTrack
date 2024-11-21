@@ -1,5 +1,6 @@
 package com.example.readtrack.compose
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,6 +27,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.readtrack.ReadTrackApplication
+import com.example.readtrack.ReadTrackScreen
 import com.example.readtrack.network.BookData
 import com.example.readtrack.room.SavedBooksViewModel
 import com.example.readtrack.room.SavedBooksViewModelFactory
@@ -33,13 +35,10 @@ import com.example.readtrack.room.SavedBooksViewModelFactory
 @Composable
 fun LibraryScreen(
     navController: NavController,
+    savedBooksViewModel: SavedBooksViewModel
 ) {
     val configuration = LocalConfiguration.current
     val screenWidthDp = configuration.screenWidthDp.dp
-    val app = LocalContext.current.applicationContext as ReadTrackApplication
-    val savedBooksViewModel: SavedBooksViewModel = viewModel(
-        factory = SavedBooksViewModelFactory(app.appContainer.booksRepository)
-    )
     val savedBooks by savedBooksViewModel.savedBooks.collectAsState()
     var selectedTabIndex by remember { mutableStateOf(0) }
     Column {
@@ -69,7 +68,12 @@ fun LibraryScreen(
                 AsyncImage(
                     model = book.thumbnail,
                     contentDescription = null,
-                    modifier = Modifier.fillMaxWidth().padding(16.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .clickable {
+                            savedBooksViewModel.selectBook(book.id)
+                            navController.navigate("${ReadTrackScreen.MyBook.name}/${book.id}") }
                 )
             }
         }
