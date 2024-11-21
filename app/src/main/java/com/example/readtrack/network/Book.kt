@@ -21,8 +21,6 @@ data class VolumeInfo(
     val description: String?,
     val imageLinks: ImageLinks = ImageLinks("", ""),
     val pageCount: Int?,
-    val averageRating: Double?,
-    val ratingsCount: Int?,
     val categories: List<String>?,
 )
 

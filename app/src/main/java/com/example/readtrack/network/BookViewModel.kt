@@ -51,7 +51,5 @@ class BookViewModel(
     bookItem: BookItem
 ) :ViewModel(){
     val book= mutableStateOf(bookItem)
-    val comment = mutableStateOf<String?>(null)
-    val progress = mutableStateOf<Int?>(null)
 }
 

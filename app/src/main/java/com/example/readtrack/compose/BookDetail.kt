@@ -1,5 +1,6 @@
 package com.example.readtrack.compose
 
+import android.util.Half.toFloat
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Business
@@ -23,11 +25,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.readtrack.R
 import com.example.readtrack.ReadTrackApplication
 import com.example.readtrack.network.BookData
 import com.example.readtrack.network.BookViewModel
@@ -95,7 +99,12 @@ fun BookDetail(
                     contentDescription = null,
                     modifier = Modifier.padding(8.dp)
                 )
-                Text(text = bookItem.volumeInfo.categories.toString())
+                if(bookItem.volumeInfo.categories?.get(0).toString().length>12){
+                    Text(text = bookItem.volumeInfo.categories?.get(0).toString().substring(0,12)+"...")
+                }
+                else{
+                    Text(text = bookItem.volumeInfo.categories?.get(0) ?: "ジャンルなし")
+                }
             }
             Spacer(modifier = Modifier.weight(1f))
             Column(
@@ -119,7 +128,12 @@ fun BookDetail(
                     contentDescription = null,
                     modifier = Modifier.padding(8.dp)
                 )
-                Text(text = bookItem.volumeInfo.publisher.toString())
+                if(bookItem.volumeInfo.publisher.toString().length>5){
+                    Text(text = bookItem.volumeInfo.publisher.toString().substring(0,5)+"...")
+                }
+                else{
+                    Text(text = bookItem.volumeInfo.publisher.toString())
+                }
             }
             Spacer(modifier = Modifier.weight(1f))
         }
