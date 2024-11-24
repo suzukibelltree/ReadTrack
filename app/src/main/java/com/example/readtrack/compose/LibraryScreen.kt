@@ -64,6 +64,7 @@ fun LibraryScreen(
             )
         }
         LazyVerticalGrid(columns = GridCells.Adaptive(screenWidthDp/3 )) {
+            // ここでselectedTabIndexに応じて表示する本のリストを変える
             items(savedBooks) { book ->
                 AsyncImage(
                     model = book.thumbnail,

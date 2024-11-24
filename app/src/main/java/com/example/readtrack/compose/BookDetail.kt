@@ -1,6 +1,7 @@
 package com.example.readtrack.compose
 
 import android.util.Half.toFloat
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,6 +38,8 @@ import com.example.readtrack.network.BookData
 import com.example.readtrack.network.BookViewModel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun BookDetail(
@@ -48,6 +51,8 @@ fun BookDetail(
     val context = LocalContext.current
     val app = context.applicationContext as ReadTrackApplication
     val db = app.appContainer.booksRepository
+    val currentDate = LocalDate.now()
+    val formattedDate = currentDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -148,10 +153,12 @@ fun BookDetail(
                     description = bookItem.volumeInfo.description,
                     thumbnail = bookItem.volumeInfo.imageLinks.thumbnail,
                     pageCount = bookItem.volumeInfo.pageCount,
+                    registeredDate = formattedDate
                 )
                 coroutineScope.launch {
                     db.insert(book)
                 }
+                Toast.makeText(context, "ライブラリに追加しました", Toast.LENGTH_SHORT).show()
             },
         ) {
             Text("ライブラリに追加")

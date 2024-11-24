@@ -83,8 +83,8 @@ fun BooksList(
     navController: NavController
 ) {
     LazyColumn {
-        itemsIndexed(books) { index,book ->
-            BookCard(book, navController,index)
+        items(books) { book ->
+            BookCard(book, navController)
             HorizontalDivider()
         }
     }
@@ -94,8 +94,7 @@ fun BooksList(
 @Composable
 fun BookCard(
     book:BookItem,
-    navController: NavController,
-    index:Int
+    navController: NavController
 ){
     val bookViewModel = viewModel<BookViewModel>(
         key = book.id,

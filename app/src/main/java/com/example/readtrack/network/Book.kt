@@ -43,5 +43,6 @@ data class BookData(
     val pageCount: Int?,
     var readpage: Int? = 0, //読んだページ数
     var comment: String? = "", //本に対するコメント、感想
-    var progress: Int? = 0, //登録された本の状態(0:未読,1:読書中,2:読了)
+    var progress: Int = 0, //登録された本の状態(0:未読,1:読書中,2:読了)
+    var registeredDate: String = "", //本が登録された日付
 )
