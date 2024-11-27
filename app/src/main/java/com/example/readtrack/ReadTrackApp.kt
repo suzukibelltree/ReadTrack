@@ -139,7 +139,7 @@ fun ReadTrackApp(
                 arguments = listOf(navArgument("savedbookId") { type = NavType.StringType })
             ){ backStackEntry ->
                 val savedbookId = backStackEntry.arguments?.getString("savedbookId") ?: ""
-                MyBookScreen(savedbookId, savedBooksViewModel)
+                MyBookScreen(savedbookId, savedBooksViewModel,navController)
             }
         }
     }

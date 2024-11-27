@@ -33,4 +33,14 @@ class SavedBooksViewModel(private val booksRepository: BooksRepository) : ViewMo
             }
         }
     }
+    fun updateBook(book: BookData) {
+        viewModelScope.launch {
+            booksRepository.updateBook(book)
+        }
+    }
+    fun deleteBook(book: BookData) {
+        viewModelScope.launch {
+            booksRepository.deleteBook(book)
+        }
+    }
 }

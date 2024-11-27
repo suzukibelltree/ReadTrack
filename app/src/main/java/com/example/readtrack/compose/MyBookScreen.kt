@@ -1,3 +1,4 @@
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -25,16 +26,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.readtrack.ReadTrackScreen
 import com.example.readtrack.network.BookData
 import com.example.readtrack.room.SavedBooksViewModel
 
 @Composable
-fun MyBookScreen(bookId: String, savedBooksViewModel: SavedBooksViewModel) {
+fun MyBookScreen(
+    bookId: String,
+    savedBooksViewModel: SavedBooksViewModel,
+    navController: NavController
+) {
     LaunchedEffect(bookId) {
         savedBooksViewModel.fetchBookDetails(bookId)
     }
@@ -46,6 +54,16 @@ fun MyBookScreen(bookId: String, savedBooksViewModel: SavedBooksViewModel) {
         ) {
             var readpage by remember { mutableStateOf(book.readpage) }
             var comment by remember { mutableStateOf(book.comment) }
+            var selectedoption by remember {
+                mutableStateOf(
+                    when (book.progress) {
+                        0 -> "未読"
+                        1 -> "読書中"
+                        else -> "読了"
+                    }
+                )
+            }
+            val context = LocalContext.current
             Row {
                 AsyncImage(
                     model = book.thumbnail,
@@ -86,7 +104,12 @@ fun MyBookScreen(bookId: String, savedBooksViewModel: SavedBooksViewModel) {
                         text = "読書状態",
                         fontSize = 16.sp,
                     )
-                    EditBookState(book = book)
+                    EditBookState(
+                        selectedoption = selectedoption,
+                        onSelectionChange = { newSelection ->
+                            selectedoption = newSelection
+                        }
+                    )
                 }
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -113,13 +136,33 @@ fun MyBookScreen(bookId: String, savedBooksViewModel: SavedBooksViewModel) {
                     modifier = Modifier.padding(8.dp)
                 )
                 Button(
-                    onClick = { /*ここでupdate*/ },
+                    onClick = {
+                        Toast.makeText(context, "変更を保存しました", Toast.LENGTH_SHORT).show()
+                        //ここで変更を保存
+                        savedBooksViewModel.updateBook(
+                            book.copy(
+                                progress = when (selectedoption) {
+                                    "未読" -> 0
+                                    "読書中" -> 1
+                                    else -> 2
+                                },
+                                readpage = readpage,
+                                comment = comment
+                            )
+                        )
+                    },
                     modifier = Modifier.padding(8.dp)
                 ) {
                     Text("変更を保存する")
                 }
                 Button(
-                    onClick = { /*ここでdelete*/ },
+                    onClick = {
+                        //ここでライブラリから削除
+                        navController.navigate(ReadTrackScreen.Library.name)
+                        savedBooksViewModel.deleteBook(book)
+                        Toast.makeText(context, "ライブラリから削除しました", Toast.LENGTH_SHORT)
+                            .show()
+                    },
                     modifier = Modifier.padding(8.dp)
                 ) {
                     Text("ライブラリから削除する")
@@ -133,19 +176,11 @@ fun MyBookScreen(bookId: String, savedBooksViewModel: SavedBooksViewModel) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditBookState(
-    book: BookData,
+    selectedoption: String,
+    onSelectionChange: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     val options = listOf("未読", "読書中", "読了")
-    var selectedoption by remember {
-        mutableStateOf(
-            when (book.progress) {
-                0 -> "未読"
-                1 -> "読書中"
-                else -> "読了"
-            }
-        )
-    }
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = it },
@@ -154,7 +189,9 @@ fun EditBookState(
         val intersectionSource = remember { MutableInteractionSource() }
         TextField(
             value = selectedoption,
-            onValueChange = { selectedoption = it },
+            onValueChange = { newSelection ->
+                onSelectionChange(newSelection)
+            },
             interactionSource = intersectionSource,
             readOnly = true,
             modifier = Modifier
@@ -168,7 +205,7 @@ fun EditBookState(
             options.forEach { option ->
                 DropdownMenuItem(
                     onClick = {
-                        selectedoption = option
+                        onSelectionChange(option)
                         expanded = false
                     },
                     text = {

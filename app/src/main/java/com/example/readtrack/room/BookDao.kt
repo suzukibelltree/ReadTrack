@@ -15,10 +15,10 @@ interface BookDao {
     suspend fun insert(book: BookData)
 
     @Update
-    suspend fun update(book: BookData)
+    suspend fun updateBook(book: BookData)
 
     @Delete
-    suspend fun delete(book: BookData)
+    suspend fun deleteBook(book: BookData)
 
     @Query("SELECT * FROM BookData")
     fun getAllBooks(): List<BookData>
