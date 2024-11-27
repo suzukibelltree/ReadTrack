@@ -65,7 +65,13 @@ fun LibraryScreen(
         }
         LazyVerticalGrid(columns = GridCells.Adaptive(screenWidthDp/3 )) {
             // ここでselectedTabIndexに応じて表示する本のリストを変える
-            items(savedBooks) { book ->
+            val filteredBooks = when (selectedTabIndex) {
+                0 -> savedBooks.filter { it.progress == 0 }
+                1 -> savedBooks.filter { it.progress == 1 }
+                2 -> savedBooks.filter { it.progress == 2 }
+                else -> savedBooks
+            }
+            items(filteredBooks) { book ->
                 AsyncImage(
                     model = book.thumbnail,
                     contentDescription = null,
