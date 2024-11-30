@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -19,11 +18,13 @@ import com.example.readtrack.ReadTrackScreen
 @Composable
 fun RegisterProcessScreen(
     navController: NavController
-){
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
-        modifier = Modifier.fillMaxSize().padding(16.dp)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
         Text(
             text = "登録方法を選択してください。",
@@ -32,7 +33,7 @@ fun RegisterProcessScreen(
             modifier = Modifier.padding(16.dp)
         )
         Button(
-            onClick = { navController.navigate(ReadTrackScreen.Search.name)},
+            onClick = { navController.navigate(ReadTrackScreen.Search.name) },
             modifier = Modifier.padding(16.dp)
         ) {
             Text("タイトルを検索して登録")

@@ -69,10 +69,6 @@ fun MiniBookCard(
     navController: NavController,
     message: String
 ) {
-    // 本の情報を表示するカード
-    // 本のタイトル、著者、出版社、出版日、ページ数、カテゴリ、サムネイル画像を表示
-    // カードをタップすると、本の詳細画面に遷移
-    // カードの下部には、読書状況を示すアイコンを表示
     Card(
         modifier = Modifier.fillMaxWidth().padding(16.dp),
         onClick = { navController.navigate("${ReadTrackScreen.MyBook.name}/${book.id}") }

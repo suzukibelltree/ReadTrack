@@ -126,6 +126,7 @@ fun MyBookScreen(
                             .padding(8.dp)
                             .weight(1f),
                         singleLine = true,
+                        readOnly = if(selectedoption == "読書中") false else true,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
                     Text(
