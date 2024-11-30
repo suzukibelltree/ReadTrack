@@ -32,6 +32,7 @@ import com.example.readtrack.network.BookData
 import com.example.readtrack.network.BookViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -44,8 +45,8 @@ fun BookDetail(
     val context = LocalContext.current
     val app = context.applicationContext as ReadTrackApplication
     val db = app.appContainer.booksRepository
-    val currentDate = LocalDate.now()
-    val formattedDate = currentDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
+    val currentDateTime = LocalDateTime.now()
+    val formattedDate = currentDateTime.format(DateTimeFormatter.ofPattern("yyyy/MM/dd/HH:mm"))
     Column(
         modifier = Modifier
             .fillMaxSize()

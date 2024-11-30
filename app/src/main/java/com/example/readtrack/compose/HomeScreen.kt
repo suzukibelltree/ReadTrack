@@ -9,6 +9,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -27,38 +30,49 @@ fun HomeScreen(
     val savedBooks = savedBooksViewModel.savedBooks.collectAsState()
     val finishedBooks = savedBooks.value.filter { it.progress == 2 }
     // もっとも最近に更新された本のインスタンスを取得
-    val latestBook = savedBooks.value.maxByOrNull { it.updatedDate }
-    val newBook = savedBooks.value.maxByOrNull { it.registeredDate }
+    val updatedBook by remember(savedBooks.value) {
+        derivedStateOf { savedBooks.value.maxByOrNull { it.updatedDate } }
+    }
+
+    val newBook by remember(savedBooks.value) {
+        derivedStateOf { savedBooks.value.maxByOrNull { it.registeredDate } }
+    }
     Column {
         Text(
             text = "これまでに読了した本：${finishedBooks.size}冊",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.fillMaxWidth().padding(8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
             )
         Text(
             text ="最後に更新された本",
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.fillMaxWidth().padding(8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
             )
-        latestBook?.let {
+        updatedBook?.let {
             MiniBookCard(
                 it,
                 navController,
-                "${latestBook.updatedDate}にアクセスしました")
+                "最終アクセス：${updatedBook!!.updatedDate}")
         }
         Text(
             text = "新しく登録された本",
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.fillMaxWidth().padding(8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
             )
         newBook?.let {
             MiniBookCard(
                 it,
                 navController,
-                "${newBook.registeredDate}に追加されました")
+                "追加日時：${newBook!!.registeredDate}")
         }
     }
 }
@@ -70,7 +84,9 @@ fun MiniBookCard(
     message: String
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth().padding(16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
         onClick = { navController.navigate("${ReadTrackScreen.MyBook.name}/${book.id}") }
     ) {
         Row {

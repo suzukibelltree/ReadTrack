@@ -37,6 +37,7 @@ import com.example.readtrack.ReadTrackScreen
 import com.example.readtrack.network.BookData
 import com.example.readtrack.room.SavedBooksViewModel
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -49,8 +50,8 @@ fun MyBookScreen(
         savedBooksViewModel.fetchBookDetails(bookId)
     }
     val selectedBook by savedBooksViewModel.selectedBook.collectAsState()
-    val currentDate = LocalDate.now()
-    val formattedDate = currentDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
+    val currentDateTime = LocalDateTime.now()
+    val formattedDate = currentDateTime.format(DateTimeFormatter.ofPattern("yyyy/MM/dd/HH:mm"))
     selectedBook?.let { book ->
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -121,7 +122,13 @@ fun MyBookScreen(
                     Text("読了ページ数")
                     OutlinedTextField(
                         value = readpage.toString(),
-                        onValueChange = { readpage = it.toInt() },
+                        onValueChange = { newValue ->
+                            try {
+                                readpage = newValue.toInt()
+                            } catch (e: NumberFormatException) {
+                                readpage = 0
+                            }
+                        },
                         modifier = Modifier
                             .padding(8.dp)
                             .weight(1f),
