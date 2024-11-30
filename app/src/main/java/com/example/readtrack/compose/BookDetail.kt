@@ -153,7 +153,8 @@ fun BookDetail(
                     description = bookItem.volumeInfo.description,
                     thumbnail = bookItem.volumeInfo.imageLinks.thumbnail,
                     pageCount = bookItem.volumeInfo.pageCount,
-                    registeredDate = formattedDate
+                    registeredDate = formattedDate,
+                    updatedDate = formattedDate
                 )
                 coroutineScope.launch {
                     db.insert(book)

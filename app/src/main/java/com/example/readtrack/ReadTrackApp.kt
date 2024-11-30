@@ -108,7 +108,7 @@ fun ReadTrackApp(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(ReadTrackScreen.Home.name) {
-                HomeScreen(navController)
+                HomeScreen(navController,savedBooksViewModel)
             }
             composable(ReadTrackScreen.Library.name) {
                 LibraryScreen(navController,savedBooksViewModel)

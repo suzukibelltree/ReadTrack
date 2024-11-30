@@ -36,6 +36,8 @@ import coil.compose.AsyncImage
 import com.example.readtrack.ReadTrackScreen
 import com.example.readtrack.network.BookData
 import com.example.readtrack.room.SavedBooksViewModel
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun MyBookScreen(
@@ -47,6 +49,8 @@ fun MyBookScreen(
         savedBooksViewModel.fetchBookDetails(bookId)
     }
     val selectedBook by savedBooksViewModel.selectedBook.collectAsState()
+    val currentDate = LocalDate.now()
+    val formattedDate = currentDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
     selectedBook?.let { book ->
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -147,7 +151,8 @@ fun MyBookScreen(
                                     else -> 2
                                 },
                                 readpage = readpage,
-                                comment = comment
+                                comment = comment,
+                                updatedDate = formattedDate
                             )
                         )
                     },

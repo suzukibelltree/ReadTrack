@@ -45,4 +45,5 @@ data class BookData(
     var comment: String? = "", //本に対するコメント、感想
     var progress: Int = 0, //登録された本の状態(0:未読,1:読書中,2:読了)
     var registeredDate: String = "", //本が登録された日付
+    var updatedDate: String = "" //本の情報が更新された日付
 )
