@@ -23,6 +23,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
@@ -76,16 +77,34 @@ fun ReadTrackApp(
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
             ) {
                 Spacer(modifier = Modifier.weight(0.5f))
-                IconButton(onClick = { navController.navigate(ReadTrackScreen.Home.name) }) {
+                Column(
+                    modifier = Modifier.padding(vertical = 4.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    IconButton(onClick = { navController.navigate(ReadTrackScreen.Home.name) }) {
                         Icon(Icons.Default.Home, contentDescription = "Home")
+                    }
+                    Text("ホーム", fontSize = 12.sp, color = Color.Black)
                 }
                 Spacer(modifier = Modifier.weight(0.5f))
-                IconButton(onClick = { navController.navigate(ReadTrackScreen.Library.name) }) {
-                    Icon(Icons.Default.Menu, contentDescription = "Library")
+                Column(
+                    modifier = Modifier.padding(vertical = 4.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    IconButton(onClick = { navController.navigate(ReadTrackScreen.Library.name) }) {
+                        Icon(Icons.Default.Menu, contentDescription = "Library")
+                    }
+                    Text("ライブラリ", fontSize = 12.sp, color = Color.Black)
                 }
                 Spacer(modifier = Modifier.weight(0.5f))
-                IconButton(onClick = { navController.navigate(ReadTrackScreen.Setting.name) }) {
-                    Icon(Icons.Default.Settings, contentDescription = "Setting")
+                Column(
+                    modifier = Modifier.padding(vertical = 4.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    IconButton(onClick = { navController.navigate(ReadTrackScreen.Setting.name) }) {
+                        Icon(Icons.Default.Settings, contentDescription = "Setting")
+                    }
+                    Text("設定", fontSize = 12.sp, color = Color.Black)
                 }
                 Spacer(modifier = Modifier.weight(0.5f))
             }
