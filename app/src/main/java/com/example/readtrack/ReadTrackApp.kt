@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavType
@@ -72,21 +73,21 @@ fun ReadTrackApp(
         },
         bottomBar = {
             BottomAppBar(
-                containerColor = Color.LightGray,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
             ) {
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.weight(0.5f))
                 IconButton(onClick = { navController.navigate(ReadTrackScreen.Home.name) }) {
-                    Icon(Icons.Default.Home, contentDescription = "Home")
+                        Icon(Icons.Default.Home, contentDescription = "Home")
                 }
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.weight(0.5f))
                 IconButton(onClick = { navController.navigate(ReadTrackScreen.Library.name) }) {
                     Icon(Icons.Default.Menu, contentDescription = "Library")
                 }
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.weight(0.5f))
                 IconButton(onClick = { navController.navigate(ReadTrackScreen.Setting.name) }) {
                     Icon(Icons.Default.Settings, contentDescription = "Setting")
                 }
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.weight(0.5f))
             }
         },
         floatingActionButton = {

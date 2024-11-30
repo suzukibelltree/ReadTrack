@@ -79,8 +79,8 @@ fun BookDetail(
             modifier = Modifier.fillMaxWidth()
         ) {
             //あらすじについてはボタンを押すとすべてを表示するように後で修正する？
-            if (bookItem.volumeInfo.description.toString().length > 50) {
-                Text(text = bookItem.volumeInfo.description.toString().substring(0, 50) + "...")
+            if (bookItem.volumeInfo.description.toString().length > 100) {
+                Text(text = bookItem.volumeInfo.description.toString().substring(0, 100) + "...")
             } else {
                 Text(text = bookItem.volumeInfo.description.toString())
             }
@@ -90,25 +90,6 @@ fun BookDetail(
         Row(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Spacer(modifier = Modifier.weight(1f))
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text = "ジャンル")
-                Icon(
-                    imageVector = Icons.Default.Face,
-                    contentDescription = null,
-                    modifier = Modifier.padding(8.dp)
-                )
-                if (bookItem.volumeInfo.categories?.get(0).toString().length > 12) {
-                    Text(
-                        text = bookItem.volumeInfo.categories?.get(0).toString()
-                            .substring(0, 12) + "..."
-                    )
-                } else {
-                    Text(text = bookItem.volumeInfo.categories?.get(0) ?: "ジャンルなし")
-                }
-            }
             Spacer(modifier = Modifier.weight(1f))
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -158,6 +139,7 @@ fun BookDetail(
                 }
                 Toast.makeText(context, "ライブラリに追加しました", Toast.LENGTH_SHORT).show()
             },
+            modifier = Modifier.padding(16.dp)
         ) {
             Text("ライブラリに追加")
         }
