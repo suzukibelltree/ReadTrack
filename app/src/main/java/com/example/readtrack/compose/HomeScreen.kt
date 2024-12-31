@@ -22,6 +22,13 @@ import com.example.readtrack.ReadTrackScreen
 import com.example.readtrack.network.BookData
 import com.example.readtrack.room.SavedBooksViewModel
 
+/**
+ * ホーム画面
+ * アプリが起動したらこの画面からスタートする
+ * 直近で情報を更新した本、直近で登録された本の情報を表示する
+ * @param navController ナビゲーションコントローラー
+ * @param savedBooksViewModel 保存された本のViewModel
+ */
 @Composable
 fun HomeScreen(
     navController: NavController,
@@ -75,8 +82,16 @@ fun HomeScreen(
                 "追加日時：${newBook!!.registeredDate}")
         }
     }
+    // TODO: 直近半年(1年?)で読了した本の数を月別にグラフ表示
 }
 
+/**
+ * 本の簡単な情報を表示するカード
+ * HomeScreenにて、最後に更新された本、新しく登録された本の情報を表示するのに使用
+ * @param book 本の情報
+ * @param navController ナビゲーションコントローラー
+ * @param message 表示するメッセージ
+ */
 @Composable
 fun MiniBookCard(
     book: BookData,

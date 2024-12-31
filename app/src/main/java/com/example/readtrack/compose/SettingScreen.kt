@@ -1,6 +1,5 @@
 package com.example.readtrack.compose
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 
@@ -8,4 +7,5 @@ import androidx.navigation.NavController
 fun SettingScreen(
     navController: NavController
 ) {
+    // TODO: 設定画面の実装
 }

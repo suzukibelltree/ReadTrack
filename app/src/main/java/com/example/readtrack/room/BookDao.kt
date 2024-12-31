@@ -26,7 +26,6 @@ interface BookDao {
     @Query("SELECT * FROM BookData")
     fun getAllBooksFlow(): Flow<List<BookData>>
 
-    // In BookDao.kt
     @Query("SELECT * FROM BookData WHERE id = :bookId")
     suspend fun getBookById(bookId: String): BookData?
 }

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Business
-import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -31,10 +30,15 @@ import com.example.readtrack.ReadTrackApplication
 import com.example.readtrack.network.BookData
 import com.example.readtrack.network.BookViewModel
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+/**
+ * 本の詳細画面
+ * SearchScreenで選択した本の詳細を表示する
+ * @param navController ナビゲーションコントローラー
+ * @param bookViewModel 選択された本のViewModel
+ */
 @Composable
 fun BookDetail(
     navController: NavController,

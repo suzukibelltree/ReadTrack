@@ -59,31 +59,29 @@ dependencies {
     implementation(libs.androidx.room.ktx)
 
     //For navigation compose
-    val nav_version = "2.8.0"
-    implementation("androidx.navigation:navigation-compose:$nav_version")
+    implementation(libs.androidx.navigation.compose)
 
     // ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     // Retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation(libs.retrofit)
+    implementation(libs.okhttp)
 
     //Gson Converter
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation(libs.converter.gson)
 
     // Gson
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation(libs.gson)
 
     // Coil
-    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation(libs.coil.compose)
 
-    implementation("androidx.compose.material:material-icons-extended:1.5.1")
+    implementation(libs.androidx.material.icons.extended)
 
     // material3
-    implementation("androidx.compose.material3:material3:1.3.1")
-    implementation("androidx.compose.material3:material3-window-size-class:1.3.1")
-    implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.4.0-alpha04")
+    implementation(libs.material3)
+    implementation(libs.androidx.material3.adaptive.navigation.suite)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

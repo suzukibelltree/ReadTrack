@@ -1,6 +1,6 @@
 package com.example.readtrack
 
-import MyBookScreen
+import com.example.readtrack.compose.MyBookScreen
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -26,7 +26,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,6 +49,9 @@ import com.example.readtrack.network.BookViewModelFactory
 import com.example.readtrack.room.SavedBooksViewModel
 import com.example.readtrack.room.SavedBooksViewModelFactory
 
+/**
+ * ReadTrackアプリケーションの画面遷移を管理する
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReadTrackApp(
@@ -111,7 +113,7 @@ fun ReadTrackApp(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navController.navigate(ReadTrackScreen.RegistProcess.name) },
+                onClick = { navController.navigate(ReadTrackScreen.registProcess.name) },
                 contentColor = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier.padding(16.dp)
             ) {
@@ -136,7 +138,7 @@ fun ReadTrackApp(
             composable(ReadTrackScreen.Setting.name) {
                 SettingScreen(navController)
             }
-            composable(ReadTrackScreen.RegistProcess.name) {
+            composable(ReadTrackScreen.registProcess.name) {
                 RegisterProcessScreen(navController)
             }
             composable(ReadTrackScreen.Search.name) {
@@ -155,11 +157,11 @@ fun ReadTrackApp(
                 BookDetail(navController, bookViewModel)
             }
             composable(
-                route = "${ReadTrackScreen.MyBook.name}/{savedbookId}",
-                arguments = listOf(navArgument("savedbookId") { type = NavType.StringType })
+                route = "${ReadTrackScreen.MyBook.name}/{savedBookId}",
+                arguments = listOf(navArgument("savedBookId") { type = NavType.StringType })
             ){ backStackEntry ->
-                val savedbookId = backStackEntry.arguments?.getString("savedbookId") ?: ""
-                MyBookScreen(savedbookId, savedBooksViewModel,navController)
+                val savedBookId = backStackEntry.arguments?.getString("savedBookId") ?: ""
+                MyBookScreen(savedBookId, savedBooksViewModel,navController)
             }
         }
     }

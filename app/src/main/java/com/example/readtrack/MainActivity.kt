@@ -13,7 +13,7 @@ import com.example.readtrack.network.BookListViewModel
 import com.example.readtrack.ui.theme.ReadTrackTheme
 
 class MainActivity : ComponentActivity() {
-    val viewModel: BookListViewModel by viewModels()
+    private val bookListViewModel: BookListViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ReadTrackApp(viewModel)
+                    ReadTrackApp(bookListViewModel)
                 }
             }
         }

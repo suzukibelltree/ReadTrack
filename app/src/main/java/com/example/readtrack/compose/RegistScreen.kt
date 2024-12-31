@@ -15,6 +15,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.readtrack.ReadTrackScreen
 
+/**
+ * 本を新しく登録する際の登録手段を選択する画面
+ * @param navController ナビゲーションコントローラー
+ */
 @Composable
 fun RegisterProcessScreen(
     navController: NavController
@@ -38,5 +42,6 @@ fun RegisterProcessScreen(
         ) {
             Text("タイトルを検索して登録")
         }
+        //TODO: バーコードから登録する機能を追加
     }
 }

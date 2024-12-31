@@ -1,6 +1,5 @@
 package com.example.readtrack.compose
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,6 +36,11 @@ import com.example.readtrack.network.BookListViewModel
 import com.example.readtrack.network.BookViewModel
 import com.example.readtrack.network.BookViewModelFactory
 
+/**
+ * 本を検索する画面
+ * @param viewModel 本のリストのViewModel
+ * @param navController ナビゲーションコントローラー
+ */
 @Composable
 fun SearchScreen(
     viewModel: BookListViewModel,
@@ -65,7 +69,7 @@ fun SearchScreen(
         when {
             viewModel.isLoading -> CircularProgressIndicator()
             viewModel.errorMessage != null -> Text("Error: ${viewModel.errorMessage}")
-            else -> BooksList(
+            else -> BooksCardList(
                 books = viewModel.books,
                 navController = navController
             )
@@ -73,9 +77,13 @@ fun SearchScreen(
     }
 }
 
-
+/**
+ * 検索された本のリストを表示する
+ * @param books 本のリスト
+ * @param navController ナビゲーションコントローラー
+ */
 @Composable
-fun BooksList(
+fun BooksCardList(
     books: List<BookItem>,
     navController: NavController
 ) {
@@ -87,17 +95,20 @@ fun BooksList(
     }
 }
 
-
+/**
+ * 検索された本一冊の情報を表示するカード
+ * @param book 本の情報
+ * @param navController ナビゲーションコントローラー
+ */
 @Composable
 fun BookCard(
     book: BookItem,
     navController: NavController
 ) {
-    val bookViewModel = viewModel<BookViewModel>(
+    viewModel<BookViewModel>(
         key = book.id,
         factory = BookViewModelFactory(book)
     )
-    Log.d("BookCard", "BookViewModel created with key: ${book.id}")
     Card(
         modifier = Modifier
             .fillMaxWidth()

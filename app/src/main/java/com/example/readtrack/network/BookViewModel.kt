@@ -9,6 +9,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
+/**
+ * Google Books APIから取得した本の情報を保持するViewModel
+ */
 class BookListViewModel : ViewModel() {
     private val _books = mutableStateListOf<BookItem>()
     val books: List<BookItem> get() = _books
@@ -16,9 +19,6 @@ class BookListViewModel : ViewModel() {
     var isLoading by mutableStateOf(false)
     var errorMessage by mutableStateOf<String?>(null)
 
-    fun getBookItemById(bookId: String): BookItem? {
-        return books.find { it.id == bookId }
-    }
 
     fun searchBooks(query: String, apiKey: String) {
         viewModelScope.launch {

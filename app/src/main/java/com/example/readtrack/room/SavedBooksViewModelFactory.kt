@@ -3,6 +3,9 @@ package com.example.readtrack.room
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
+/**
+ * SavedBooksViewModelのインスタンスを生成するファクトリ
+ */
 class SavedBooksViewModelFactory(
     private val booksRepository: BooksRepository
 ) : ViewModelProvider.Factory {

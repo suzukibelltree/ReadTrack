@@ -4,7 +4,7 @@ enum class ReadTrackScreen() {
     Home,
     Library,
     Setting,
-    RegistProcess,
+    registProcess,
     Search,
     BookDetail,
     MyBook

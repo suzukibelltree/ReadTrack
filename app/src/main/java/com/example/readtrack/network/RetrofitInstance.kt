@@ -3,6 +3,9 @@ package com.example.readtrack.network
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+/**
+ * Retrofitのインスタンスを生成するクラス
+ */
 object RetrofitInstance {
     private const val BASE_URL = "https://www.googleapis.com/books/v1/"
 

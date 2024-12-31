@@ -14,7 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -26,6 +26,12 @@ import coil.compose.AsyncImage
 import com.example.readtrack.ReadTrackScreen
 import com.example.readtrack.room.SavedBooksViewModel
 
+/**
+ * ライブラリ画面
+ * 登録した本の一覧をここで表示する
+ * @param navController ナビゲーションコントローラー
+ * @param savedBooksViewModel 保存された本のViewModel
+ */
 @Composable
 fun LibraryScreen(
     navController: NavController,
@@ -34,7 +40,7 @@ fun LibraryScreen(
     val configuration = LocalConfiguration.current
     val screenWidthDp = configuration.screenWidthDp.dp
     val savedBooks by savedBooksViewModel.savedBooks.collectAsState()
-    var selectedTabIndex by remember { mutableStateOf(0) }
+    var selectedTabIndex by remember { mutableIntStateOf(0) }
     Column {
         TabRow(
             selectedTabIndex = selectedTabIndex,
@@ -79,8 +85,8 @@ fun LibraryScreen(
                             }
                     )
                     LinearProgressIndicator(
-                        progress = book.readpage!!.toFloat() / book.pageCount!!.toFloat(),
-                        modifier = Modifier.fillMaxWidth().padding(16.dp)
+                        progress = { book.readpage!!.toFloat() / book.pageCount!!.toFloat() },
+                        modifier = Modifier.fillMaxWidth().padding(16.dp),
                     )
                 }
             }

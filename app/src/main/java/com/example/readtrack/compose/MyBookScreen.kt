@@ -1,16 +1,14 @@
+package com.example.readtrack.compose
+
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -34,18 +32,23 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.readtrack.ReadTrackScreen
-import com.example.readtrack.network.BookData
 import com.example.readtrack.room.SavedBooksViewModel
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+/**
+ * 自分が登録した本の詳細を表示する画面
+ * @param bookId 本のID
+ * @param savedBooksViewModel 保存された本のViewModel
+ * @param navController ナビゲーションコントローラー
+ */
 @Composable
 fun MyBookScreen(
     bookId: String,
     savedBooksViewModel: SavedBooksViewModel,
     navController: NavController
 ) {
+    // TODO: 全体的に使用感が良くないのでUIの見直しを行う
     LaunchedEffect(bookId) {
         savedBooksViewModel.fetchBookDetails(bookId)
     }
@@ -57,9 +60,9 @@ fun MyBookScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            var readpage by remember { mutableStateOf(book.readpage) }
+            var readPagesCount by remember { mutableStateOf(book.readpage) }
             var comment by remember { mutableStateOf(book.comment) }
-            var selectedoption by remember {
+            var selectedOption by remember {
                 mutableStateOf(
                     when (book.progress) {
                         0 -> "未読"
@@ -110,9 +113,9 @@ fun MyBookScreen(
                         fontSize = 16.sp,
                     )
                     EditBookState(
-                        selectedoption = selectedoption,
+                        selectedOption = selectedOption,
                         onSelectionChange = { newSelection ->
-                            selectedoption = newSelection
+                            selectedOption = newSelection
                         }
                     )
                 }
@@ -121,19 +124,19 @@ fun MyBookScreen(
                 ) {
                     Text("読了ページ数")
                     OutlinedTextField(
-                        value = readpage.toString(),
+                        value = readPagesCount.toString(),
                         onValueChange = { newValue ->
-                            try {
-                                readpage = newValue.toInt()
+                            readPagesCount = try {
+                                newValue.toInt()
                             } catch (e: NumberFormatException) {
-                                readpage = 0
+                                0
                             }
                         },
                         modifier = Modifier
                             .padding(8.dp)
                             .weight(1f),
                         singleLine = true,
-                        readOnly = if(selectedoption == "読書中") false else true,
+                        readOnly = selectedOption != "読書中",
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
                     Text(
@@ -153,12 +156,12 @@ fun MyBookScreen(
                         //ここで変更を保存
                         savedBooksViewModel.updateBook(
                             book.copy(
-                                progress = when (selectedoption) {
+                                progress = when (selectedOption) {
                                     "未読" -> 0
                                     "読書中" -> 1
                                     else -> 2
                                 },
-                                readpage = readpage,
+                                readpage = readPagesCount,
                                 comment = comment,
                                 updatedDate = formattedDate
                             )
@@ -189,7 +192,7 @@ fun MyBookScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditBookState(
-    selectedoption: String,
+    selectedOption: String,
     onSelectionChange: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -201,7 +204,7 @@ fun EditBookState(
     ) {
         val intersectionSource = remember { MutableInteractionSource() }
         TextField(
-            value = selectedoption,
+            value = selectedOption,
             onValueChange = { newSelection ->
                 onSelectionChange(newSelection)
             },
