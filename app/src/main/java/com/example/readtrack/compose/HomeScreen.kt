@@ -52,20 +52,21 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
-            )
+        )
         Text(
-            text ="最後に更新された本",
+            text = "最後に更新された本",
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
-            )
+        )
         updatedBook?.let {
             MiniBookCard(
                 it,
                 navController,
-                "最終アクセス：${updatedBook!!.updatedDate}")
+                "最終アクセス：${updatedBook!!.updatedDate}"
+            )
         }
         Text(
             text = "新しく登録された本",
@@ -74,12 +75,13 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
-            )
+        )
         newBook?.let {
             MiniBookCard(
                 it,
                 navController,
-                "追加日時：${newBook!!.registeredDate}")
+                "追加日時：${newBook!!.registeredDate}"
+            )
         }
     }
     // TODO: 直近半年(1年?)で読了した本の数を月別にグラフ表示
@@ -111,7 +113,10 @@ fun MiniBookCard(
                 modifier = Modifier.size(100.dp)
             )
             Column {
-                Text(book.title)
+                Text(
+                    text = book.title,
+                    fontWeight = FontWeight.Bold
+                )
                 Text(text = message)
             }
         }

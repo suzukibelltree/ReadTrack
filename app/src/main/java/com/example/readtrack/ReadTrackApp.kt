@@ -5,7 +5,11 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
@@ -27,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -65,13 +70,8 @@ fun ReadTrackApp(
     Scaffold(
         topBar = {
             TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
-                title = {
-                    Text(text = "${currentRoute(navController)} Screen")
-                }
+                title = {},
+                modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)
             )
         },
         bottomBar = {
@@ -84,7 +84,11 @@ fun ReadTrackApp(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     IconButton(onClick = { navController.navigate(ReadTrackScreen.Home.name) }) {
-                        Icon(Icons.Default.Home, contentDescription = "Home")
+                        Image(
+                            painter = painterResource(id = R.drawable.home),
+                            contentDescription = "Home",
+                            modifier = Modifier.size(24.dp)
+                        )
                     }
                     Text("ホーム", fontSize = 12.sp, color = Color.Black)
                 }
@@ -94,7 +98,11 @@ fun ReadTrackApp(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     IconButton(onClick = { navController.navigate(ReadTrackScreen.Library.name) }) {
-                        Icon(Icons.Default.Menu, contentDescription = "Library")
+                        Image(
+                            painter = painterResource(id = R.drawable.library),
+                            contentDescription = "Library",
+                            modifier = Modifier.size(24.dp)
+                        )
                     }
                     Text("ライブラリ", fontSize = 12.sp, color = Color.Black)
                 }
@@ -104,7 +112,11 @@ fun ReadTrackApp(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     IconButton(onClick = { navController.navigate(ReadTrackScreen.Setting.name) }) {
-                        Icon(Icons.Default.Settings, contentDescription = "Setting")
+                        Image(
+                            painter = painterResource(id = R.drawable.setting),
+                            contentDescription = "Setting",
+                            modifier = Modifier.size(24.dp)
+                        )
                     }
                     Text("設定", fontSize = 12.sp, color = Color.Black)
                 }
