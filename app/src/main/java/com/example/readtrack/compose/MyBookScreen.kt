@@ -5,7 +5,6 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,13 +15,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -41,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.readtrack.ReadTrackScreen
 import com.example.readtrack.network.BookData
 import com.example.readtrack.room.SavedBooksViewModel
 import java.time.LocalDateTime
@@ -63,6 +56,7 @@ fun MyBookScreen(
         savedBooksViewModel.fetchBookDetails(bookId)
     }
     val selectedBook by savedBooksViewModel.selectedBook.collectAsState()
+    var showDialog by remember { mutableStateOf(false) }
     val currentDateTime = LocalDateTime.now()
     val formattedDate = currentDateTime.format(DateTimeFormatter.ofPattern("yyyy/MM/dd/HH:mm"))
     selectedBook?.let { book ->
@@ -215,11 +209,7 @@ fun MyBookScreen(
                 }
                 Button(
                     onClick = {
-                        //ここでライブラリから削除
-                        navController.navigate(ReadTrackScreen.Library.name)
-                        savedBooksViewModel.deleteBook(book)
-                        Toast.makeText(context, "ライブラリから削除しました", Toast.LENGTH_SHORT)
-                            .show()
+                        showDialog = true
                     },
                     modifier = Modifier
                         .padding(8.dp)
@@ -232,50 +222,14 @@ fun MyBookScreen(
             }
 
         }
-    } ?: Text("Book not found")
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun EditBookState(
-    selectedOption: String,
-    onSelectionChange: (String) -> Unit
-) {
-    var expanded by remember { mutableStateOf(false) }
-    val options = listOf("未読", "読書中", "読了")
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = it },
-        modifier = Modifier.padding(8.dp)
-    ) {
-        val intersectionSource = remember { MutableInteractionSource() }
-        TextField(
-            value = selectedOption,
-            onValueChange = { newSelection ->
-                onSelectionChange(newSelection)
-            },
-            interactionSource = intersectionSource,
-            readOnly = true,
-            modifier = Modifier
-                .menuAnchor()
-                .clickable { expanded = true }
-        )
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            options.forEach { option ->
-                DropdownMenuItem(
-                    onClick = {
-                        onSelectionChange(option)
-                        expanded = false
-                    },
-                    text = {
-                        Text(option)
-                    })
-            }
+        if (showDialog) {
+            DeleteBookDialog(
+                navController = navController,
+                savedBooksViewModel = savedBooksViewModel,
+                book = book
+            )
         }
-    }
+    } ?: Text("Book not found")
 }
 
 /**
