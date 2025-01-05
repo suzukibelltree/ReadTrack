@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -41,7 +42,12 @@ fun BottomBar(navController: NavController) {
                     modifier = Modifier.size(24.dp)
                 )
             }
-            Text("ホーム", fontSize = 12.sp, color = Color.Black)
+            Text(
+                text = "ホーム",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            )
         }
         Spacer(modifier = Modifier.weight(0.5f))
         Column(
@@ -55,7 +61,12 @@ fun BottomBar(navController: NavController) {
                     modifier = Modifier.size(24.dp)
                 )
             }
-            Text("ライブラリ", fontSize = 12.sp, color = Color.Black)
+            Text(
+                text = "ライブラリ",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            )
         }
         Spacer(modifier = Modifier.weight(0.5f))
         Column(
@@ -69,7 +80,12 @@ fun BottomBar(navController: NavController) {
                     modifier = Modifier.size(24.dp)
                 )
             }
-            Text("設定", fontSize = 12.sp, color = Color.Black)
+            Text(
+                text = "設定",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            )
         }
         Spacer(modifier = Modifier.weight(0.5f))
     }

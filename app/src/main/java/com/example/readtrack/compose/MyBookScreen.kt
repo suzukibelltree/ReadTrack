@@ -73,7 +73,7 @@ fun MyBookScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            var readPagesCount by remember { mutableStateOf(book.readpage) }
+            var readPagesCount by remember { mutableStateOf(book.readpage.toString()) }
             var comment by remember { mutableStateOf(book.comment) }
             val context = LocalContext.current
             Row {
@@ -153,13 +153,9 @@ fun MyBookScreen(
                 ) {
                     Text("読了ページ数")
                     OutlinedTextField(
-                        value = readPagesCount.toString(),
+                        value = readPagesCount,
                         onValueChange = { newValue ->
-                            readPagesCount = try {
-                                newValue.toInt()
-                            } catch (e: NumberFormatException) {
-                                0
-                            }
+                            readPagesCount = newValue
                         },
                         modifier = Modifier
                             .padding(8.dp)
@@ -194,7 +190,7 @@ fun MyBookScreen(
                                     "読書中" -> 1
                                     else -> 2
                                 },
-                                readpage = readPagesCount,
+                                readpage = readPagesCount.toInt(),
                                 comment = comment,
                                 updatedDate = formattedDate
                             )
