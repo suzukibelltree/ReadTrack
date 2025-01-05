@@ -9,7 +9,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
-import com.example.readtrack.ReadTrackScreen
+import com.example.readtrack.Route
 import com.example.readtrack.network.BookData
 import com.example.readtrack.room.SavedBooksViewModel
 
@@ -46,7 +46,7 @@ fun DeleteBookDialog(
                 Button(
                     onClick = {
                         savedBooksViewModel.deleteBook(book)
-                        navController.navigate(ReadTrackScreen.Library.name)
+                        navController.navigate(Route.Library)
                         Toast.makeText(context, "本を削除しました", Toast.LENGTH_SHORT).show()
                     }
                 ) {

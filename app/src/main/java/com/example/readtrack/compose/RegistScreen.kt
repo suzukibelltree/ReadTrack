@@ -13,7 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.readtrack.ReadTrackScreen
+import com.example.readtrack.Route
 
 /**
  * 本を新しく登録する際の登録手段を選択する画面
@@ -37,7 +37,7 @@ fun RegisterProcessScreen(
             modifier = Modifier.padding(16.dp)
         )
         Button(
-            onClick = { navController.navigate(ReadTrackScreen.Search.name) },
+            onClick = { navController.navigate(Route.Search) },
             modifier = Modifier.padding(16.dp)
         ) {
             Text("タイトルを検索して登録")

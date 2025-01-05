@@ -30,7 +30,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.readtrack.BuildConfig
-import com.example.readtrack.ReadTrackScreen
+import com.example.readtrack.Route
 import com.example.readtrack.network.BookItem
 import com.example.readtrack.network.BookListViewModel
 import com.example.readtrack.network.BookViewModel
@@ -114,7 +114,7 @@ fun BookCard(
             .fillMaxWidth()
             .padding(8.dp)
             .clickable {
-                navController.navigate("${ReadTrackScreen.BookDetail.name}/${book.id}")
+                navController.navigate("${Route.BookDetail}/${book.id}")
             }
     ) {
         Row {

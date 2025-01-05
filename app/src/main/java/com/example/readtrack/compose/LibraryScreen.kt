@@ -23,7 +23,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.readtrack.ReadTrackScreen
+import com.example.readtrack.Route
 import com.example.readtrack.room.SavedBooksViewModel
 
 /**
@@ -81,7 +81,7 @@ fun LibraryScreen(
                             .padding(16.dp)
                             .clickable {
                                 savedBooksViewModel.selectBook(book.id)
-                                navController.navigate("${ReadTrackScreen.MyBook.name}/${book.id}")
+                                navController.navigate("${Route.MyBook}/${book.id}")
                             }
                     )
                     LinearProgressIndicator(

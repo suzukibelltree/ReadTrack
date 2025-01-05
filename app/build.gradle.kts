@@ -84,6 +84,7 @@ dependencies {
     implementation(libs.material3)
     implementation(libs.androidx.material3.adaptive.navigation.suite)
 
+    // kotlin serialization
     implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.junit)

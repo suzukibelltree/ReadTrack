@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.readtrack.ReadTrackScreen
+import com.example.readtrack.Route
 import com.example.readtrack.network.BookData
 import com.example.readtrack.room.SavedBooksViewModel
 
@@ -104,7 +104,7 @@ fun MiniBookCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        onClick = { navController.navigate("${ReadTrackScreen.MyBook.name}/${book.id}") }
+        onClick = { navController.navigate("${Route.MyBook}/${book.id}") }
     ) {
         Row {
             AsyncImage(

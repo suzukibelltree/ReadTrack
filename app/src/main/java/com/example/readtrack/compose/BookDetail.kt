@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.readtrack.ReadTrackApplication
+import com.example.readtrack.Route
 import com.example.readtrack.network.BookData
 import com.example.readtrack.network.BookViewModel
 import kotlinx.coroutines.launch
@@ -142,6 +143,7 @@ fun BookDetail(
                     db.insert(book)
                 }
                 Toast.makeText(context, "ライブラリに追加しました", Toast.LENGTH_SHORT).show()
+                navController.navigate(Route.Library)
             },
             modifier = Modifier.padding(16.dp)
         ) {
