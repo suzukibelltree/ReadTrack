@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     alias(libs.plugins.googleDevToolsKsp)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -82,6 +83,9 @@ dependencies {
     // material3
     implementation(libs.material3)
     implementation(libs.androidx.material3.adaptive.navigation.suite)
+
+    implementation(libs.kotlinx.serialization.json)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
