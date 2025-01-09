@@ -13,6 +13,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -20,8 +21,15 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.readtrack.Route
 import com.example.readtrack.network.BookData
+import com.example.readtrack.room.ReadLog
 import com.example.readtrack.room.ReadLogsViewModel
 import com.example.readtrack.room.SavedBooksViewModel
+import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
+import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
+import com.patrykandpatrick.vico.compose.chart.Chart
+import com.patrykandpatrick.vico.compose.component.lineComponent
+import com.patrykandpatrick.vico.core.chart.column.ColumnChart
+import com.patrykandpatrick.vico.core.entry.entryModelOf
 
 /**
  * ホーム画面
@@ -46,6 +54,9 @@ fun HomeScreen(
     val newBook by remember(savedBooks.value) {
         derivedStateOf { savedBooks.value.maxByOrNull { it.registeredDate } }
     }
+    val readLogs = readLogsViewModel.allLogs.collectAsState()
+    // 直近4か月分の読書ログを取得
+    val recentReadLogs = readLogs.value.sortedByDescending { it.yearMonthId }.take(4).reversed()
     Column {
         Text(
             text = "これまでに読了した本：${finishedBooks.size}冊",
@@ -85,8 +96,8 @@ fun HomeScreen(
                 "追加日時：${newBook!!.registeredDate}"
             )
         }
+        ReadLogGraph(recentReadLogs)
     }
-    // TODO: 直近半年で読了した本の数を月別にグラフ表示
 }
 
 /**
@@ -122,5 +133,61 @@ fun MiniBookCard(
                 Text(text = message)
             }
         }
+    }
+}
+
+/**
+ * 読書ログをグラフで表示するコンポーザブル関数
+ * @param readLogs 読書ログのリスト
+ */
+@Composable
+fun ReadLogGraph(
+    readLogs: List<ReadLog>
+){
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Text(
+            text = "読書ログ",
+            fontWeight = FontWeight.Bold,
+        )
+        // TODO: 直近半年で読了した本の数を月別にグラフ表示
+        val chartEntryModel = entryModelOf(
+            *readLogs.mapIndexed { index, log ->
+                index to log.readPages.toFloat()
+            }.toTypedArray()
+        )
+        Chart(
+            chart = ColumnChart(
+                listOf(
+                    lineComponent(
+                        color = Color.Blue,
+                        thickness = 8.dp
+                    )
+                ),
+            ),
+            model = chartEntryModel,
+            startAxis = rememberStartAxis(
+                title = "ページ数",
+                valueFormatter = { value, _ -> value.toInt().toString() }
+            ),
+            bottomAxis = rememberBottomAxis(
+                title = "年/月",
+                valueFormatter = { value, _ ->
+                    // valueはインデックスなので、対応するreadLogsのyearMonthIdを取得
+                    val index = value.toInt()
+                    if (index in readLogs.indices) {
+                        val yearMonthId = readLogs[index].yearMonthId.toString()
+                        // YYYYMMをYYYY/MMに変換する
+                        val formatted = yearMonthId.substring(0, 4) + "/" + yearMonthId.substring(4)
+                        formatted
+                    } else {
+                        ""
+                    }
+                }
+            ),
+        )
     }
 }
