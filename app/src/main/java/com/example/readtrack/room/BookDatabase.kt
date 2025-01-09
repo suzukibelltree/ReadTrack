@@ -6,9 +6,10 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.readtrack.network.BookData
 
-@Database(entities = [BookData::class], version = 1, exportSchema = false)
+@Database(entities = [BookData::class,ReadLog::class], version = 1)
 abstract class BookDatabase :RoomDatabase() {
     abstract  fun bookDao(): BookDao
+    abstract fun readLogDao(): ReadLogDao
 
     companion object{
         @Volatile

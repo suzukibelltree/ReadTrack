@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.readtrack.network.BookData
+import com.example.readtrack.room.ReadLogsViewModel
 import com.example.readtrack.room.SavedBooksViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -44,21 +45,27 @@ import java.time.format.DateTimeFormatter
  * 自分が登録した本の詳細を表示する画面
  * @param bookId 本のID
  * @param savedBooksViewModel 保存された本のViewModel
+ * @param readLogsViewModel 読書ログのViewModel
  * @param navController ナビゲーションコントローラー
  */
 @Composable
 fun MyBookScreen(
     bookId: String,
     savedBooksViewModel: SavedBooksViewModel,
+    readLogsViewModel: ReadLogsViewModel,
     navController: NavController
 ) {
     LaunchedEffect(bookId) {
         savedBooksViewModel.fetchBookDetails(bookId)
     }
     val selectedBook by savedBooksViewModel.selectedBook.collectAsState()
+    val readLogs = readLogsViewModel.allLogs.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
     val currentDateTime = LocalDateTime.now()
+    val currentYearMonthId = DateTimeFormatter.ofPattern("yyyyMM").format(currentDateTime).toInt()
     val formattedDate = currentDateTime.format(DateTimeFormatter.ofPattern("yyyy/MM/dd/HH:mm"))
+    // 現在の月に一致するReadLogのインスタンスのみを取得
+    val currentMonthLog = readLogs.value.find { it.yearMonthId == currentYearMonthId }
     selectedBook?.let { book ->
         var selectedOption by remember {
             mutableStateOf(
@@ -76,6 +83,7 @@ fun MyBookScreen(
             var readPagesCount by remember { mutableStateOf(book.readpage.toString()) }
             var comment by remember { mutableStateOf(book.comment) }
             val context = LocalContext.current
+            var pagesReadDiff by remember { mutableStateOf(0) }
             Row {
                 AsyncImage(
                     model = book.thumbnail,
@@ -156,6 +164,9 @@ fun MyBookScreen(
                         value = readPagesCount,
                         onValueChange = { newValue ->
                             readPagesCount = newValue
+                            if (newValue.toInt() > book.readpage!!) {
+                                pagesReadDiff = newValue.toInt() - book.readpage!!
+                            }
                         },
                         modifier = Modifier
                             .padding(8.dp)
@@ -193,6 +204,15 @@ fun MyBookScreen(
                                 readpage = readPagesCount.toInt(),
                                 comment = comment,
                                 updatedDate = formattedDate
+                            )
+                        )
+                        readLogsViewModel.upsertLogInViewModelScope(
+                            currentMonthLog?.copy(
+                                yearMonthId = currentYearMonthId,
+                                readPages = currentMonthLog.readPages + pagesReadDiff
+                            ) ?: com.example.readtrack.room.ReadLog(
+                                yearMonthId = currentYearMonthId,
+                                readPages = pagesReadDiff
                             )
                         )
                     },

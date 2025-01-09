@@ -4,10 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import androidx.navigation.NavType
 import com.example.readtrack.compose.BookDetail
 import com.example.readtrack.compose.HomeScreen
 import com.example.readtrack.compose.LibraryScreen
@@ -18,6 +18,7 @@ import com.example.readtrack.compose.SettingScreen
 import com.example.readtrack.network.BookListViewModel
 import com.example.readtrack.network.BookViewModel
 import com.example.readtrack.network.BookViewModelFactory
+import com.example.readtrack.room.ReadLogsViewModel
 import com.example.readtrack.room.SavedBooksViewModel
 
 /**
@@ -32,6 +33,7 @@ fun ReadTrackNavHost(
     navController: NavHostController,
     viewModel: BookListViewModel,
     savedBooksViewModel: SavedBooksViewModel,
+    readLogsViewModel: ReadLogsViewModel,
     modifier: Modifier = Modifier
 ) {
     NavHost(
@@ -40,7 +42,7 @@ fun ReadTrackNavHost(
         modifier = modifier
     ) {
         composable<Route.Home> {
-            HomeScreen(navController, savedBooksViewModel)
+            HomeScreen(navController, savedBooksViewModel, readLogsViewModel)
         }
         composable<Route.Library> {
             LibraryScreen(navController, savedBooksViewModel)
@@ -74,7 +76,7 @@ fun ReadTrackNavHost(
             arguments = listOf(navArgument("savedBookId") { type = NavType.StringType })
         ) { backStackEntry ->
             val savedBookId = backStackEntry.arguments?.getString("savedBookId") ?: ""
-            MyBookScreen(savedBookId, savedBooksViewModel, navController)
+            MyBookScreen(savedBookId, savedBooksViewModel, readLogsViewModel, navController)
         }
     }
 }

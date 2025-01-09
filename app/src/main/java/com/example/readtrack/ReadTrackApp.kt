@@ -20,6 +20,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.readtrack.compose.BottomBar
 import com.example.readtrack.network.BookListViewModel
+import com.example.readtrack.room.ReadLogsViewModel
+import com.example.readtrack.room.ReadLogsViewModelFactory
 import com.example.readtrack.room.SavedBooksViewModel
 import com.example.readtrack.room.SavedBooksViewModelFactory
 
@@ -35,6 +37,9 @@ fun ReadTrackApp(
     val app = LocalContext.current.applicationContext as ReadTrackApplication
     val savedBooksViewModel: SavedBooksViewModel = viewModel(
         factory = SavedBooksViewModelFactory(app.appContainer.booksRepository)
+    )
+    val readLogsViewModel: ReadLogsViewModel = viewModel(
+        factory = ReadLogsViewModelFactory(app.appContainer.readLogRepository)
     )
     val navController = rememberNavController()
     Scaffold(
@@ -64,7 +69,8 @@ fun ReadTrackApp(
             navController = navController,
             viewModel = viewModel,
             savedBooksViewModel = savedBooksViewModel,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding),
+            readLogsViewModel = readLogsViewModel
         )
     }
 }

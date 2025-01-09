@@ -35,7 +35,7 @@ import com.example.readtrack.room.SavedBooksViewModel
 @Composable
 fun LibraryScreen(
     navController: NavController,
-    savedBooksViewModel: SavedBooksViewModel
+    savedBooksViewModel: SavedBooksViewModel,
 ) {
     val configuration = LocalConfiguration.current
     val screenWidthDp = configuration.screenWidthDp.dp

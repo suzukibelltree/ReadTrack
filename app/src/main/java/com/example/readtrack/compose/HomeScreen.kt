@@ -20,6 +20,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.readtrack.Route
 import com.example.readtrack.network.BookData
+import com.example.readtrack.room.ReadLogsViewModel
 import com.example.readtrack.room.SavedBooksViewModel
 
 /**
@@ -28,11 +29,13 @@ import com.example.readtrack.room.SavedBooksViewModel
  * 直近で情報を更新した本、直近で登録された本の情報を表示する
  * @param navController ナビゲーションコントローラー
  * @param savedBooksViewModel 保存された本のViewModel
+ * @param readLogsViewModel 読書ログのViewModel
  */
 @Composable
 fun HomeScreen(
     navController: NavController,
-    savedBooksViewModel: SavedBooksViewModel
+    savedBooksViewModel: SavedBooksViewModel,
+    readLogsViewModel: ReadLogsViewModel
 ) {
     val savedBooks = savedBooksViewModel.savedBooks.collectAsState()
     val finishedBooks = savedBooks.value.filter { it.progress == 2 }
@@ -40,7 +43,6 @@ fun HomeScreen(
     val updatedBook by remember(savedBooks.value) {
         derivedStateOf { savedBooks.value.maxByOrNull { it.updatedDate } }
     }
-
     val newBook by remember(savedBooks.value) {
         derivedStateOf { savedBooks.value.maxByOrNull { it.registeredDate } }
     }
@@ -84,7 +86,7 @@ fun HomeScreen(
             )
         }
     }
-    // TODO: 直近半年(1年?)で読了した本の数を月別にグラフ表示
+    // TODO: 直近半年で読了した本の数を月別にグラフ表示
 }
 
 /**

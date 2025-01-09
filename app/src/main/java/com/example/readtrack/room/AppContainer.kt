@@ -7,6 +7,7 @@ import android.content.Context
  */
 interface AppContainer {
     val booksRepository: BooksRepository
+    val readLogRepository: ReadLogRepository
 }
 
 /**
@@ -15,5 +16,8 @@ interface AppContainer {
 class AppDataContainer(private val context: Context) : AppContainer {
     override val booksRepository: BooksRepository by lazy {
         DatabaseBooksRepository(BookDatabase.getDatabase(context).bookDao())
+    }
+    override val readLogRepository: ReadLogRepository by lazy {
+        DatabaseReadLogRepository(BookDatabase.getDatabase(context).readLogDao())
     }
 }
