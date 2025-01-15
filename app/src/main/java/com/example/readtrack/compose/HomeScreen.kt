@@ -163,7 +163,7 @@ fun ReadLogGraph(
             chart = ColumnChart(
                 listOf(
                     lineComponent(
-                        color = Color.Blue,
+                        color = Color.Cyan,
                         thickness = 8.dp
                     )
                 ),

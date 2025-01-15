@@ -14,16 +14,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.readtrack.compose.BottomBar
 import com.example.readtrack.network.BookListViewModel
 import com.example.readtrack.room.ReadLogsViewModel
-import com.example.readtrack.room.ReadLogsViewModelFactory
 import com.example.readtrack.room.SavedBooksViewModel
-import com.example.readtrack.room.SavedBooksViewModelFactory
 
 /**
  * アプリのメイン画面
@@ -34,13 +31,8 @@ import com.example.readtrack.room.SavedBooksViewModelFactory
 fun ReadTrackApp(
     viewModel: BookListViewModel,
 ) {
-    val app = LocalContext.current.applicationContext as ReadTrackApplication
-    val savedBooksViewModel: SavedBooksViewModel = viewModel(
-        factory = SavedBooksViewModelFactory(app.appContainer.booksRepository)
-    )
-    val readLogsViewModel: ReadLogsViewModel = viewModel(
-        factory = ReadLogsViewModelFactory(app.appContainer.readLogRepository)
-    )
+    val savedBooksViewModel: SavedBooksViewModel = hiltViewModel()
+    val readLogsViewModel: ReadLogsViewModel = hiltViewModel()
     val navController = rememberNavController()
     Scaffold(
         topBar = {

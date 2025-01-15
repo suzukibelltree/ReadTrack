@@ -4,18 +4,21 @@ package com.example.readtrack.room
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.readtrack.network.BookData
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 /**
  * 登録された本のリストの情報を保持するViewModel
  * @param booksRepository 本の情報を取得するためのリポジトリ
  */
-class SavedBooksViewModel(private val booksRepository: BooksRepository) : ViewModel() {
+@HiltViewModel
+class SavedBooksViewModel @Inject constructor(private val booksRepository: BooksRepository) : ViewModel() {
     val savedBooks: StateFlow<List<BookData>> = booksRepository.getAllBooksFlow()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _selectedBook = MutableStateFlow<BookData?>(null)

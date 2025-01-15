@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -83,7 +84,7 @@ fun MyBookScreen(
             var readPagesCount by remember { mutableStateOf(book.readpage.toString()) }
             var comment by remember { mutableStateOf(book.comment) }
             val context = LocalContext.current
-            var pagesReadDiff by remember { mutableStateOf(0) }
+            var pagesReadDiff by remember { mutableIntStateOf(0) }
             Row {
                 AsyncImage(
                     model = book.thumbnail,
@@ -163,9 +164,12 @@ fun MyBookScreen(
                     OutlinedTextField(
                         value = readPagesCount,
                         onValueChange = { newValue ->
-                            readPagesCount = newValue
-                            if (newValue.toInt() > book.readpage!!) {
-                                pagesReadDiff = newValue.toInt() - book.readpage!!
+                            // 空の文字列や無効な数字が入力された場合は処理しない
+                            if (newValue.isNotEmpty() && newValue.all { it.isDigit() }) {
+                                readPagesCount = newValue
+                                if (newValue.toInt() > book.readpage!!) {
+                                    pagesReadDiff = newValue.toInt() - book.readpage!!
+                                }
                             }
                         },
                         modifier = Modifier
@@ -175,6 +179,7 @@ fun MyBookScreen(
                         readOnly = selectedOption != "読書中",
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
+
                     Text(
                         text = "/${book.pageCount}ページ",
                         modifier = Modifier.align(Alignment.CenterVertically)
