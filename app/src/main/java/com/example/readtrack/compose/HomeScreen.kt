@@ -143,7 +143,7 @@ fun MiniBookCard(
 @Composable
 fun ReadLogGraph(
     readLogs: List<ReadLog>
-){
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -153,7 +153,6 @@ fun ReadLogGraph(
             text = "読書ログ",
             fontWeight = FontWeight.Bold,
         )
-        // TODO: 直近半年で読了した本の数を月別にグラフ表示
         val chartEntryModel = entryModelOf(
             *readLogs.mapIndexed { index, log ->
                 index to log.readPages.toFloat()
