@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -98,6 +99,11 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
     // Jetpack Compose Hilt Extensions
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.8.0"))
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.firebaseui:firebase-ui-auth:8.0.2")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
