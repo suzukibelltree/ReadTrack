@@ -36,11 +36,10 @@ import coil.compose.AsyncImage
 import com.example.readtrack.R
 import com.example.readtrack.ReadTrackApplication
 import com.example.readtrack.Route
+import com.example.readtrack.getCurrentFormattedTime
 import com.example.readtrack.network.BookData
 import com.example.readtrack.network.BookViewModel
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 /**
  * 本の詳細画面
@@ -58,8 +57,7 @@ fun BookDetail(
     val context = LocalContext.current
     val app = context.applicationContext as ReadTrackApplication
     val db = app.appContainer.booksRepository
-    val currentDateTime = LocalDateTime.now()
-    val formattedDate = currentDateTime.format(DateTimeFormatter.ofPattern("yyyy/MM/dd/HH:mm"))
+    val formattedDate = getCurrentFormattedTime()
     Column(
         modifier = Modifier
             .fillMaxSize()

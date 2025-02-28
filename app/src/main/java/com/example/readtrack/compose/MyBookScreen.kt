@@ -39,12 +39,12 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.readtrack.R
 import com.example.readtrack.Route
+import com.example.readtrack.getCurrentFormattedTime
+import com.example.readtrack.getCurrentYearMonthAsInt
 import com.example.readtrack.network.BookData
 import com.example.readtrack.room.ReadLog
 import com.example.readtrack.room.ReadLogsViewModel
 import com.example.readtrack.room.SavedBooksViewModel
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 /**
  * 自分が登録した本の詳細を表示する画面
@@ -66,9 +66,8 @@ fun MyBookScreen(
     val selectedBook by savedBooksViewModel.selectedBook.collectAsState()
     val readLogs = readLogsViewModel.allLogs.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
-    val currentDateTime = LocalDateTime.now()
-    val currentYearMonthId = DateTimeFormatter.ofPattern("yyyyMM").format(currentDateTime).toInt()
-    val formattedDate = currentDateTime.format(DateTimeFormatter.ofPattern("yyyy/MM/dd/HH:mm"))
+    val currentYearMonthId = getCurrentYearMonthAsInt()
+    val formattedDate = getCurrentFormattedTime()
     // 現在の月に一致するReadLogのインスタンスのみを取得
     val currentMonthLog = readLogs.value.find { it.yearMonthId == currentYearMonthId }
     selectedBook?.let { book ->
