@@ -36,7 +36,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.readtrack.R
+import com.example.readtrack.Route
 import com.example.readtrack.network.BookData
+import com.example.readtrack.room.ReadLog
 import com.example.readtrack.room.ReadLogsViewModel
 import com.example.readtrack.room.SavedBooksViewModel
 import java.time.LocalDateTime
@@ -81,9 +84,11 @@ fun MyBookScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // ユーザーのページ数入力を受け付ける
             var readPagesCount by remember { mutableStateOf(book.readpage.toString()) }
             var comment by remember { mutableStateOf(book.comment) }
             val context = LocalContext.current
+            // ページ数の差分(変更前後)を保持
             var pagesReadDiff by remember { mutableIntStateOf(0) }
             Row {
                 AsyncImage(
@@ -130,32 +135,36 @@ fun MyBookScreen(
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     ReadStateCard(
-                        book,
-                        0,
-                        com.example.readtrack.R.drawable.frame,
-                        "未読",
+                        book = book,
+                        progress = 0,
+                        icon = R.drawable.frame,
+                        contentDescription = "未読",
                         onProgressChange = {
                             selectedOption = "未読"
                             book.progress = 0
+                            readPagesCount = "0"
                         })
                     ReadStateCard(
-                        book,
-                        1,
-                        com.example.readtrack.R.drawable.reading,
-                        "読書中",
+                        book = book,
+                        progress = 1,
+                        icon = R.drawable.reading,
+                        contentDescription = "読書中",
                         onProgressChange = {
                             selectedOption = "読書中"
                             book.progress = 1
-                        })
+                        }
+                    )
                     ReadStateCard(
-                        book,
-                        2,
-                        com.example.readtrack.R.drawable.finished,
-                        "読了",
+                        book = book,
+                        progress = 2,
+                        icon = R.drawable.finished,
+                        contentDescription = "読了",
                         onProgressChange = {
                             selectedOption = "読了"
                             book.progress = 2
-                        })
+                            readPagesCount = book.pageCount.toString()
+                        }
+                    )
                 }
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -164,11 +173,18 @@ fun MyBookScreen(
                     OutlinedTextField(
                         value = readPagesCount,
                         onValueChange = { newValue ->
-                            // 空の文字列や無効な数字が入力された場合は処理しない
-                            if (newValue.isNotEmpty() && newValue.all { it.isDigit() }) {
+                            // 空の文字列になるときにアプリがクラッシュするのを防ぐ
+                            if (newValue.isEmpty()) {
+                                readPagesCount = ""
+                            } else if (newValue.all { it.isDigit() }) { //無効な数字が入力された場合は処理しない
                                 readPagesCount = newValue
+                                // 読了ページ数が増加したら差分を計算
                                 if (newValue.toInt() > book.readpage!!) {
                                     pagesReadDiff = newValue.toInt() - book.readpage!!
+                                }
+                                // 読了ページ数がページ数を超える場合はページ数に合わせる
+                                if (newValue.toInt() > book.pageCount!!) {
+                                    readPagesCount = book.pageCount.toString()
                                 }
                             }
                         },
@@ -176,7 +192,8 @@ fun MyBookScreen(
                             .padding(8.dp)
                             .weight(1f),
                         singleLine = true,
-                        readOnly = selectedOption != "読書中",
+                        // 状態が読書中の場合のみ読了ページ数を変更できるようにする
+                        readOnly = (selectedOption != "読書中"),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
 
@@ -197,8 +214,9 @@ fun MyBookScreen(
                 //TODO: 保存する情報を感想ではなくメモにするか検討
                 Button(
                     onClick = {
+                        // 保存ボタンが押されたときにトーストで通知
                         Toast.makeText(context, "変更を保存しました", Toast.LENGTH_SHORT).show()
-                        //ここで変更を保存
+                        //ここで変更された本の情報を保存
                         savedBooksViewModel.updateBook(
                             book.copy(
                                 progress = when (selectedOption) {
@@ -211,15 +229,17 @@ fun MyBookScreen(
                                 updatedDate = formattedDate
                             )
                         )
+                        // 読了ページ数の差分がある場合は読書記録を更新
                         readLogsViewModel.upsertLogInViewModelScope(
                             currentMonthLog?.copy(
                                 yearMonthId = currentYearMonthId,
                                 readPages = currentMonthLog.readPages + pagesReadDiff
-                            ) ?: com.example.readtrack.room.ReadLog(
+                            ) ?: ReadLog(
                                 yearMonthId = currentYearMonthId,
                                 readPages = pagesReadDiff
                             )
                         )
+                        navController.navigate(Route.Library)
                     },
                     modifier = Modifier
                         .padding(8.dp)
