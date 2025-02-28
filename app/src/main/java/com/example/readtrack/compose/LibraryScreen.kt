@@ -3,6 +3,7 @@ package com.example.readtrack.compose
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -78,6 +79,7 @@ fun LibraryScreen(
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxWidth()
+                            .height(120.dp)
                             .padding(16.dp)
                             .clickable {
                                 savedBooksViewModel.selectBook(book.id)
@@ -86,7 +88,9 @@ fun LibraryScreen(
                     )
                     LinearProgressIndicator(
                         progress = { book.readpage!!.toFloat() / book.pageCount!!.toFloat() },
-                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
                     )
                 }
             }
