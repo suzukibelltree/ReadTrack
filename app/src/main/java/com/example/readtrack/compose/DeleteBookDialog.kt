@@ -6,9 +6,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
+import com.example.readtrack.R
 import com.example.readtrack.Route
 import com.example.readtrack.network.BookData
 import com.example.readtrack.room.SavedBooksViewModel
@@ -34,11 +36,11 @@ fun DeleteBookDialog(
         AlertDialog(
             onDismissRequest = { },
             title = {
-                Text("本を削除しますか？")
+                Text(text = stringResource(R.string.deleteDialog_question))
             },
             text = {
                 Text(
-                    text = "本を削除すると、登録された本の情報が全て削除されます。",
+                    text = stringResource(R.string.deleteDialog_alert),
                     fontWeight = FontWeight.Bold
                 )
             },
@@ -47,10 +49,11 @@ fun DeleteBookDialog(
                     onClick = {
                         savedBooksViewModel.deleteBook(book)
                         navController.navigate(Route.Library)
-                        Toast.makeText(context, "本を削除しました", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, R.string.deleteDialog_deleted, Toast.LENGTH_SHORT)
+                            .show()
                     }
                 ) {
-                    Text("削除")
+                    Text(text = stringResource(R.string.deleteDialog_positive))
                 }
             },
             dismissButton = {
@@ -59,7 +62,7 @@ fun DeleteBookDialog(
                         navController.popBackStack()
                     }
                 ) {
-                    Text("キャンセル")
+                    Text(text = stringResource(R.string.deleteDialog_cancel))
                 }
             }
         )

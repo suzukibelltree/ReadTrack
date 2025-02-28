@@ -21,9 +21,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.readtrack.R
 import com.example.readtrack.Route
 import com.example.readtrack.room.SavedBooksViewModel
 
@@ -51,17 +53,17 @@ fun LibraryScreen(
             Tab(
                 selected = selectedTabIndex == 0,
                 onClick = { selectedTabIndex = 0 },
-                text = { Text("未読") }
+                text = { Text(text = stringResource(R.string.read_state_unread)) }
             )
             Tab(
                 selected = selectedTabIndex == 1,
                 onClick = { selectedTabIndex = 1 },
-                text = { Text("読書中") }
+                text = { Text(text = stringResource(R.string.read_state_reading)) }
             )
             Tab(
                 selected = selectedTabIndex == 2,
                 onClick = { selectedTabIndex = 2 },
-                text = { Text("読了") }
+                text = { Text(text = stringResource(R.string.read_state_read)) }
             )
         }
         LazyVerticalGrid(columns = GridCells.Adaptive(screenWidthDp / 3)) {

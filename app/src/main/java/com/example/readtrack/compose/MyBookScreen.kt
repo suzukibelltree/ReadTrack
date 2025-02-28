@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -74,9 +75,9 @@ fun MyBookScreen(
         var selectedOption by remember {
             mutableStateOf(
                 when (book.progress) {
-                    0 -> "未読"
-                    1 -> "読書中"
-                    else -> "読了"
+                    0 -> R.string.read_state_unread
+                    1 -> R.string.read_state_reading
+                    else -> R.string.read_state_read
                 }
             )
         }
@@ -108,10 +109,10 @@ fun MyBookScreen(
                         text = book.author,
                     )
                     Text(
-                        text = "出版日:${book.publishedDate.toString()}",
+                        text = stringResource(R.string.myBook_publishedDate, book.publishedDate!!),
                     )
                     Text(
-                        text = "ライブラリに追加した日: ${book.registeredDate}"
+                        text = stringResource(R.string.myBook_addedDate, book.registeredDate),
                     )
                 }
             }
@@ -122,7 +123,7 @@ fun MyBookScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "読書状態",
+                    text = stringResource(R.string.myBook_readState),
                     fontSize = 16.sp,
                     modifier = Modifier.align(Alignment.Start)
                 )
@@ -138,9 +139,9 @@ fun MyBookScreen(
                         book = book,
                         progress = 0,
                         icon = R.drawable.frame,
-                        contentDescription = "未読",
+                        contentDescription = stringResource(R.string.read_state_unread),
                         onProgressChange = {
-                            selectedOption = "未読"
+                            selectedOption = R.string.read_state_unread
                             book.progress = 0
                             readPagesCount = "0"
                         })
@@ -148,9 +149,9 @@ fun MyBookScreen(
                         book = book,
                         progress = 1,
                         icon = R.drawable.reading,
-                        contentDescription = "読書中",
+                        contentDescription = stringResource(R.string.read_state_reading),
                         onProgressChange = {
-                            selectedOption = "読書中"
+                            selectedOption = R.string.read_state_reading
                             book.progress = 1
                         }
                     )
@@ -158,9 +159,9 @@ fun MyBookScreen(
                         book = book,
                         progress = 2,
                         icon = R.drawable.finished,
-                        contentDescription = "読了",
+                        contentDescription = stringResource(R.string.read_state_read),
                         onProgressChange = {
-                            selectedOption = "読了"
+                            selectedOption = R.string.read_state_read
                             book.progress = 2
                             readPagesCount = book.pageCount.toString()
                         }
@@ -169,7 +170,7 @@ fun MyBookScreen(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("読了ページ数")
+                    Text(text = stringResource(R.string.myBook_pagesRead))
                     OutlinedTextField(
                         value = readPagesCount,
                         onValueChange = { newValue ->
@@ -193,17 +194,18 @@ fun MyBookScreen(
                             .weight(1f),
                         singleLine = true,
                         // 状態が読書中の場合のみ読了ページ数を変更できるようにする
-                        readOnly = (selectedOption != "読書中"),
+                        readOnly = (selectedOption != R.string.read_state_reading),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
 
                     Text(
-                        text = "/${book.pageCount}ページ",
+                        text = stringResource(R.string.myBook_pageCount, book.pageCount!!),
                         modifier = Modifier.align(Alignment.CenterVertically)
                     )
                 }
+                //TODO: 保存する情報を感想ではなくメモにするか検討
                 Text(
-                    text = "メモ",
+                    text = stringResource(R.string.myBook_memo),
                     modifier = Modifier.align(Alignment.Start)
                 )
                 OutlinedTextField(
@@ -211,17 +213,17 @@ fun MyBookScreen(
                     onValueChange = { comment = it },
                     modifier = Modifier.padding(8.dp)
                 )
-                //TODO: 保存する情報を感想ではなくメモにするか検討
                 Button(
                     onClick = {
                         // 保存ボタンが押されたときにトーストで通知
-                        Toast.makeText(context, "変更を保存しました", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, R.string.myBook_Save_complete, Toast.LENGTH_SHORT)
+                            .show()
                         //ここで変更された本の情報を保存
                         savedBooksViewModel.updateBook(
                             book.copy(
                                 progress = when (selectedOption) {
-                                    "未読" -> 0
-                                    "読書中" -> 1
+                                    R.string.read_state_unread -> 0
+                                    R.string.read_state_reading -> 1
                                     else -> 2
                                 },
                                 readpage = readPagesCount.toInt(),
@@ -246,7 +248,7 @@ fun MyBookScreen(
                         .fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp)
                 ) {
-                    Text("変更を保存する")
+                    Text(text = stringResource(R.string.myBook_Save))
                 }
                 Button(
                     onClick = {
@@ -258,7 +260,7 @@ fun MyBookScreen(
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(Color.Black)
                 ) {
-                    Text("ライブラリから削除する")
+                    Text(text = stringResource(R.string.myBook_delete))
                 }
             }
 
@@ -270,7 +272,7 @@ fun MyBookScreen(
                 book = book
             )
         }
-    } ?: Text("Book not found")
+    } ?: Text(text = stringResource(R.string.myBook_book_not_found))
 }
 
 /**
@@ -310,9 +312,9 @@ fun ReadStateCard(
         )
         Text(
             text = when (progress) {
-                0 -> "未読"
-                1 -> "読書中"
-                else -> "読了"
+                0 -> stringResource(R.string.read_state_unread)
+                1 -> stringResource(R.string.read_state_reading)
+                else -> stringResource(R.string.read_state_read)
             },
             fontSize = 20.sp,
             modifier = Modifier.align(Alignment.CenterHorizontally)

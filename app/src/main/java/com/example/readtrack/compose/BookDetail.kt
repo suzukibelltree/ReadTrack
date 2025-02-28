@@ -27,11 +27,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.readtrack.R
 import com.example.readtrack.ReadTrackApplication
 import com.example.readtrack.Route
 import com.example.readtrack.network.BookData
@@ -104,7 +106,9 @@ fun BookDetail(
                         horizontalArrangement = Arrangement.End
                     ) {
                         Text(
-                            text = if (isExpanded) "閉じる" else "もっと見る",
+                            text = if (isExpanded) stringResource(R.string.bookDetail_collapse) else stringResource(
+                                R.string.bookDetail_expand
+                            ),
                             fontWeight = FontWeight.ExtraBold,
                             modifier = Modifier
                                 .clickable { isExpanded = !isExpanded }
@@ -122,19 +126,19 @@ fun BookDetail(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "ページ数")
+                Text(text = stringResource(R.string.home_pageCount))
                 Icon(
                     imageVector = Icons.Filled.Book,
                     contentDescription = null,
                     modifier = Modifier.padding(8.dp)
                 )
-                Text(text = bookItem.volumeInfo.pageCount.toString() + "ページ")
+                Text(text = bookItem.volumeInfo.pageCount.toString() + stringResource(R.string.bookDetail_page))
             }
             Spacer(modifier = Modifier.weight(1f))
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "出版社")
+                Text(text = stringResource(R.string.bookDetail_publisher))
                 Icon(
                     imageVector = Icons.Filled.Business,
                     contentDescription = null,
@@ -165,11 +169,11 @@ fun BookDetail(
                 coroutineScope.launch {
                     db.insert(book)
                 }
-                Toast.makeText(context, "ライブラリに追加しました", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.bookDetail_added, Toast.LENGTH_SHORT).show()
                 navController.navigate(Route.Library)
             }, modifier = Modifier.padding(16.dp)
         ) {
-            Text("ライブラリに追加")
+            Text(text = stringResource(R.string.bookDetail_addButton))
         }
     }
 }

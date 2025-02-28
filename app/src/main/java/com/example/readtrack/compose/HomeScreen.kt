@@ -14,11 +14,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.readtrack.R
 import com.example.readtrack.Route
 import com.example.readtrack.network.BookData
 import com.example.readtrack.room.ReadLog
@@ -59,7 +61,7 @@ fun HomeScreen(
     val recentReadLogs = readLogs.value.sortedByDescending { it.yearMonthId }.take(4).reversed()
     Column {
         Text(
-            text = "これまでに読了した本：${finishedBooks.size}冊",
+            text = stringResource(R.string.home_number_of_FinishedBooks, finishedBooks.size),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
@@ -67,7 +69,7 @@ fun HomeScreen(
                 .padding(8.dp)
         )
         Text(
-            text = "最後に更新された本",
+            text = stringResource(R.string.home_last_updatedBook),
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
@@ -76,13 +78,13 @@ fun HomeScreen(
         )
         updatedBook?.let {
             MiniBookCard(
-                it,
-                navController,
-                "最終アクセス：${updatedBook!!.updatedDate}"
+                book = it,
+                navController = navController,
+                message = stringResource(R.string.home_last_updatedDate, updatedBook!!.updatedDate)
             )
         }
         Text(
-            text = "新しく登録された本",
+            text = stringResource(R.string.home_new_addedBook),
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
@@ -91,9 +93,9 @@ fun HomeScreen(
         )
         newBook?.let {
             MiniBookCard(
-                it,
-                navController,
-                "追加日時：${newBook!!.registeredDate}"
+                book = it,
+                navController = navController,
+                message = "追加日時：${newBook!!.registeredDate}"
             )
         }
         ReadLogGraph(recentReadLogs)
@@ -150,7 +152,7 @@ fun ReadLogGraph(
             .padding(16.dp)
     ) {
         Text(
-            text = "読書ログ",
+            text = stringResource(R.string.home_readLog),
             fontWeight = FontWeight.Bold,
         )
         val chartEntryModel = entryModelOf(
@@ -169,11 +171,11 @@ fun ReadLogGraph(
             ),
             model = chartEntryModel,
             startAxis = rememberStartAxis(
-                title = "ページ数",
+                title = stringResource(R.string.home_pageCount),
                 valueFormatter = { value, _ -> value.toInt().toString() }
             ),
             bottomAxis = rememberBottomAxis(
-                title = "年/月",
+                title = stringResource(R.string.home_yearMonth),
                 valueFormatter = { value, _ ->
                     // valueはインデックスなので、対応するreadLogsのyearMonthIdを取得
                     val index = value.toInt()

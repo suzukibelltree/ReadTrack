@@ -9,10 +9,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.readtrack.R
 import com.example.readtrack.Route
 
 /**
@@ -31,7 +33,7 @@ fun RegisterProcessScreen(
             .padding(16.dp)
     ) {
         Text(
-            text = "登録方法を選択してください。",
+            text = stringResource(R.string.register_process),
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(16.dp)
@@ -40,7 +42,7 @@ fun RegisterProcessScreen(
             onClick = { navController.navigate(Route.Search) },
             modifier = Modifier.padding(16.dp)
         ) {
-            Text("タイトルを検索して登録")
+            Text(text = stringResource(R.string.register_title))
         }
         //TODO: バーコードから登録する機能を追加
     }

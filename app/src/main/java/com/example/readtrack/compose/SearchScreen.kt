@@ -134,7 +134,7 @@ fun BookCard(
                         text = book.volumeInfo.authors?.joinToString(", ") ?: "Unknown",
                     )
                     Text(
-                        text = book.volumeInfo.publisher ?: "No publisher",
+                        text = book.volumeInfo.publisher ?: "Unknown",
                     )
                 }
             }
