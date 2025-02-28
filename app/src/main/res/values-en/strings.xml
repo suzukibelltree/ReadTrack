@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ReadTrack</string>
+    <string name="read_state_unread">Unread</string>
+    <string name="read_state_reading">Reading</string>
+    <string name="read_state_read">Finished Reading</string>
+    <string name="screen_home">Home</string>
+    <string name="screen_library">Library</string>
+    <string name="screen_setting">Settings</string>
+    <string name="deleteDialog_question">Do you want to delete this book?</string>
+    <string name="deleteDialog_alert">Deleting the book will remove all registered information.</string>
+    <string name="deleteDialog_deleted">The book has been deleted.</string>
+    <string name="deleteDialog_positive">Delete</string>
+    <string name="deleteDialog_cancel">Cancel</string>
+    <string name="bookDetail_expand">See more</string>
+    <string name="bookDetail_collapse">Collapse</string>
+    <string name="bookDetail_page">Page</string>
+    <string name="bookDetail_publisher">Publisher</string>
+    <string name="bookDetail_added">Added to library</string>
+    <string name="bookDetail_addButton">Add to library</string>
+    <string name="home_number_of_FinishedBooks">Books finished: %s</string>
+    <string name="home_last_updatedBook">Last updated book</string>
+    <string name="home_last_updatedDate">Last access: %s</string>
+    <string name="home_new_addedBook">Newly registered book</string>
+    <string name="home_new_addedDate">Date added</string>
+    <string name="home_readLog">Reading log</string>
+    <string name="home_pageCount">Page count</string>
+    <string name="home_yearMonth">Year/Month</string>
+    <string name="myBook_publishedDate">Publication date: %s</string>
+    <string name="myBook_addedDate">Date added to library: %s</string>
+    <string name="myBook_readState">Reading status</string>
+    <string name="myBook_pagesRead">Pages read</string>
+    <string name="myBook_Save">Save changes</string>
+    <string name="myBook_Save_complete">Changes saved</string>
+    <string name="myBook_delete">Remove from library</string>
+    <string name="myBook_book_not_found">Book not found</string>
+    <string name="myBook_memo">Memo</string>
+    <string name="myBook_pageCount">/ %s pages</string>
+    <string name="register_process">Please select a registration method</string>
+    <string name="register_title">Search by title to register</string>
+    <string name="search_title">Enter title</string>
+    <string name="search_button">Search</string>
+    <string name="search_unknown">Unknown</string>
+    <string name="setting_character_size">Change font size</string>
+    <string name="setting_theme_color">Change theme color</string>
+    <string name="setting_switch_dark_light">Switch Dark/Light mode</string>
+</resources>
