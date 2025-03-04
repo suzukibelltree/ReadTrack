@@ -76,15 +76,15 @@ data class ImageLinks(
 data class BookData(
     @PrimaryKey val id: String,
     val title: String,
-    val author:String,
+    val author: String,
     val publisher: String?,
     val publishedDate: String?,
     val description: String?,
     val thumbnail: String,
     val pageCount: Int?,
-    var readpage: Int? = 0, //読んだページ数
-    var comment: String? = "", //本に対するコメント、感想
-    var progress: Int = 0, //登録された本の状態(0:未読,1:読書中,2:読了)
-    var registeredDate: String = "", //本が登録された日付
-    var updatedDate: String = "" //本の情報が更新された日付
+    val readpage: Int? = 0, //読んだページ数
+    val comment: String? = "", //本に対するコメント、感想
+    val progress: Int = 0, //登録された本の状態(0:未読,1:読書中,2:読了)
+    val registeredDate: String = "", //本が登録された日付
+    val updatedDate: String = "" //本の情報が更新された日付
 )

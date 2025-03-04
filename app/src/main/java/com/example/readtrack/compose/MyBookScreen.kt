@@ -72,7 +72,7 @@ fun MyBookScreen(
     val currentMonthLog = readLogs.value.find { it.yearMonthId == currentYearMonthId }
     selectedBook?.let { book ->
         var selectedOption by remember {
-            mutableStateOf(
+            mutableIntStateOf(
                 when (book.progress) {
                     0 -> R.string.read_state_unread
                     1 -> R.string.read_state_reading
@@ -141,7 +141,6 @@ fun MyBookScreen(
                         contentDescription = stringResource(R.string.read_state_unread),
                         onProgressChange = {
                             selectedOption = R.string.read_state_unread
-                            book.progress = 0
                             readPagesCount = "0"
                         })
                     ReadStateCard(
@@ -151,7 +150,6 @@ fun MyBookScreen(
                         contentDescription = stringResource(R.string.read_state_reading),
                         onProgressChange = {
                             selectedOption = R.string.read_state_reading
-                            book.progress = 1
                         }
                     )
                     ReadStateCard(
@@ -161,7 +159,6 @@ fun MyBookScreen(
                         contentDescription = stringResource(R.string.read_state_read),
                         onProgressChange = {
                             selectedOption = R.string.read_state_read
-                            book.progress = 2
                             readPagesCount = book.pageCount.toString()
                         }
                     )
@@ -180,7 +177,7 @@ fun MyBookScreen(
                                 readPagesCount = newValue
                                 // 読了ページ数が増加したら差分を計算
                                 if (newValue.toInt() > book.readpage!!) {
-                                    pagesReadDiff = newValue.toInt() - book.readpage!!
+                                    pagesReadDiff = newValue.toInt() - book.readpage
                                 }
                                 // 読了ページ数がページ数を超える場合はページ数に合わせる
                                 if (newValue.toInt() > book.pageCount!!) {
