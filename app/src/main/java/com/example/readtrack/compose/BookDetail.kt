@@ -38,21 +38,20 @@ import com.example.readtrack.ReadTrackApplication
 import com.example.readtrack.Route
 import com.example.readtrack.getCurrentFormattedTime
 import com.example.readtrack.network.BookData
-import com.example.readtrack.network.BookViewModel
+import com.example.readtrack.network.BookItem
 import kotlinx.coroutines.launch
 
 /**
  * 本の詳細画面
  * SearchScreenで選択した本の詳細を表示する
  * @param navController ナビゲーションコントローラー
- * @param bookViewModel 選択された本のViewModel
+ * @param bookItem 選択された本の情報
  */
 @Composable
 fun BookDetail(
     navController: NavController,
-    bookViewModel: BookViewModel,
+    bookItem: BookItem,
 ) {
-    val bookItem by bookViewModel.book
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val app = context.applicationContext as ReadTrackApplication

@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
@@ -19,7 +18,7 @@ class BookListViewModel : ViewModel() {
     var isLoading by mutableStateOf(false)
     var errorMessage by mutableStateOf<String?>(null)
 
-
+    // Google Books APIから本を検索する
     fun searchBooks(query: String, apiKey: String) {
         viewModelScope.launch {
             isLoading = true
@@ -35,21 +34,10 @@ class BookListViewModel : ViewModel() {
             }
         }
     }
-}
 
-class BookViewModelFactory(private val bookItem: BookItem) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(BookViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return BookViewModel(bookItem) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
+    // 本のIDから本を取得する
+    fun fetchBookById(bookId: String): BookItem? {
+        return _books.find { it.id == bookId }
     }
-}
-
-class BookViewModel(
-    bookItem: BookItem
-) :ViewModel(){
-    val book= mutableStateOf(bookItem)
 }
 

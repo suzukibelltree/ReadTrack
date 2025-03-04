@@ -2,7 +2,6 @@ package com.example.readtrack
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -16,8 +15,6 @@ import com.example.readtrack.compose.RegisterProcessScreen
 import com.example.readtrack.compose.SearchScreen
 import com.example.readtrack.compose.SettingScreen
 import com.example.readtrack.network.BookListViewModel
-import com.example.readtrack.network.BookViewModel
-import com.example.readtrack.network.BookViewModelFactory
 import com.example.readtrack.room.ReadLogsViewModel
 import com.example.readtrack.room.SavedBooksViewModel
 
@@ -61,12 +58,9 @@ fun ReadTrackNavHost(
             arguments = listOf(navArgument("bookId") { type = NavType.StringType })
         ) { backStackEntry ->
             val bookId = backStackEntry.arguments?.getString("bookId") ?: ""
-            val bookItem = viewModel.books.find { it.id == bookId }
-            val bookViewModel: BookViewModel? = bookItem?.let {
-                viewModel(factory = BookViewModelFactory(it))
-            }
-            if (bookViewModel != null) {
-                BookDetail(navController, bookViewModel)
+            val bookItem = viewModel.fetchBookById(bookId)
+            if (bookItem != null) {
+                BookDetail(navController, bookItem)
             } else {
                 // エラーハンドリング
             }

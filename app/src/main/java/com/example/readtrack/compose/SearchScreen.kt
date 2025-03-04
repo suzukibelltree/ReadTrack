@@ -26,15 +26,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.readtrack.BuildConfig
 import com.example.readtrack.Route
 import com.example.readtrack.network.BookItem
 import com.example.readtrack.network.BookListViewModel
-import com.example.readtrack.network.BookViewModel
-import com.example.readtrack.network.BookViewModelFactory
 
 /**
  * 本を検索する画面
@@ -105,10 +102,6 @@ fun BookCard(
     book: BookItem,
     navController: NavController
 ) {
-    viewModel<BookViewModel>(
-        key = book.id,
-        factory = BookViewModelFactory(book)
-    )
     Card(
         modifier = Modifier
             .fillMaxWidth()
