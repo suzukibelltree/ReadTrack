@@ -17,3 +17,8 @@ fun getCurrentYearMonthAsInt(): Int {
     val yearMonth = YearMonth.now()
     return "${yearMonth.year}${String.format("%02d", yearMonth.monthValue)}".toInt()
 }
+
+// 文字列YYYYMMをYYYY/MMに変換する関数
+fun convertYearMonthId(yearMonthId: Int): String {
+    return yearMonthId.toString().substring(0, 4) + "/" + yearMonthId.toString().substring(4)
+}

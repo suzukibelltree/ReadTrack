@@ -37,18 +37,18 @@ object AppModule {
     }
 
     @Provides
-    fun provideBooksDao(database:BookDatabase): BookDao {
+    fun provideBooksDao(database: BookDatabase): BookDao {
         return database.bookDao()
-    }
-
-    @Provides
-    fun provideReadLogDao(database: BookDatabase): ReadLogDao {
-        return database.readLogDao()
     }
 
     @Provides
     @Singleton
     fun provideReadLogRepository(readLogDao: ReadLogDao): ReadLogRepository {
         return DatabaseReadLogRepository(readLogDao) // 実際の実装クラスを返す
+    }
+
+    @Provides
+    fun provideReadLogDao(database: BookDatabase): ReadLogDao {
+        return database.readLogDao()
     }
 }

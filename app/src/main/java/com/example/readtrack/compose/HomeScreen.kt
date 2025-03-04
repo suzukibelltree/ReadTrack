@@ -22,6 +22,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.readtrack.R
 import com.example.readtrack.Route
+import com.example.readtrack.convertYearMonthId
 import com.example.readtrack.network.BookData
 import com.example.readtrack.room.ReadLog
 import com.example.readtrack.room.ReadLogsViewModel
@@ -180,9 +181,7 @@ fun ReadLogGraph(
                     // valueはインデックスなので、対応するreadLogsのyearMonthIdを取得
                     val index = value.toInt()
                     if (index in readLogs.indices) {
-                        val yearMonthId = readLogs[index].yearMonthId.toString()
-                        // YYYYMMをYYYY/MMに変換する
-                        val formatted = yearMonthId.substring(0, 4) + "/" + yearMonthId.substring(4)
+                        val formatted = convertYearMonthId(readLogs[index].yearMonthId)
                         formatted
                     } else {
                         ""

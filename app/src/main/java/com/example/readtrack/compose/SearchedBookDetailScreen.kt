@@ -33,11 +33,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.readtrack.ConvertBookItemToBookData
 import com.example.readtrack.R
 import com.example.readtrack.ReadTrackApplication
 import com.example.readtrack.Route
-import com.example.readtrack.getCurrentFormattedTime
-import com.example.readtrack.network.BookData
 import com.example.readtrack.network.BookItem
 import kotlinx.coroutines.launch
 
@@ -56,7 +55,6 @@ fun BookDetail(
     val context = LocalContext.current
     val app = context.applicationContext as ReadTrackApplication
     val db = app.appContainer.booksRepository
-    val formattedDate = getCurrentFormattedTime()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -151,18 +149,7 @@ fun BookDetail(
         }
         Button(
             onClick = {
-                val book = BookData(
-                    id = bookItem.id,
-                    title = bookItem.volumeInfo.title,
-                    author = bookItem.volumeInfo.authors?.get(0) ?: "",
-                    publisher = bookItem.volumeInfo.publisher,
-                    publishedDate = bookItem.volumeInfo.publishedDate,
-                    description = bookItem.volumeInfo.description,
-                    thumbnail = bookItem.volumeInfo.imageLinks.thumbnail,
-                    pageCount = bookItem.volumeInfo.pageCount,
-                    registeredDate = formattedDate,
-                    updatedDate = formattedDate
-                )
+                val book = ConvertBookItemToBookData(bookItem)
                 coroutineScope.launch {
                     db.insert(book)
                 }
