@@ -12,10 +12,10 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 /**
- * ReadLogの状態を管理するViewModel
+ * ホーム画面に対応したViewModel
  */
 @HiltViewModel
-class ReadLogsViewModel @Inject constructor(
+class HomeViewModel @Inject constructor(
     private val savedBooksRepository: BooksRepository,
     private val readLogRepository: ReadLogRepository
 ) : ViewModel() {

@@ -6,12 +6,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * Google Books APIから取得した本の情報を保持するViewModel
  */
-class BookListViewModel : ViewModel() {
+@HiltViewModel
+class BookListViewModel @Inject constructor(private val apiService: GoogleBooksApiService) :
+    ViewModel() {
     private val _books = mutableStateListOf<BookItem>()
     val books: List<BookItem> get() = _books
 
@@ -24,7 +28,7 @@ class BookListViewModel : ViewModel() {
             isLoading = true
             errorMessage = null
             try {
-                val response = RetrofitInstance.api.searchBooks(query, apiKey)
+                val response = apiService.searchBooks(query, apiKey)
                 _books.clear()
                 response.items?.let { _books.addAll(it) }
             } catch (e: Exception) {

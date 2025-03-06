@@ -1,4 +1,4 @@
-package com.example.readtrack
+package com.example.readtrack.module
 
 import android.content.Context
 import androidx.room.Room

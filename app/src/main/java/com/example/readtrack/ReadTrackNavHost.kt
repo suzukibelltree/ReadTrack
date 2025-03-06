@@ -2,6 +2,7 @@ package com.example.readtrack
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -15,34 +16,32 @@ import com.example.readtrack.compose.RegisterProcessScreen
 import com.example.readtrack.compose.SearchScreen
 import com.example.readtrack.compose.SettingScreen
 import com.example.readtrack.network.BookListViewModel
-import com.example.readtrack.room.ReadLogsViewModel
-import com.example.readtrack.room.SavedBooksViewModel
+import com.example.readtrack.room.HomeViewModel
+import com.example.readtrack.room.MyBooksViewModel
 
 /**
  * アプリの画面遷移を管理する
  * @param navController ナビゲーションコントローラー
- * @param bookListViewModel 本のリストのViewModel
- * @param savedBooksViewModel 保存された本のViewModel
  * @param modifier Modifier
  */
 @Composable
 fun ReadTrackNavHost(
     navController: NavHostController,
-    bookListViewModel: BookListViewModel,
-    savedBooksViewModel: SavedBooksViewModel,
-    readLogsViewModel: ReadLogsViewModel,
     modifier: Modifier = Modifier
 ) {
+    val bookListViewModel: BookListViewModel = hiltViewModel()
+    val myBooksViewModel: MyBooksViewModel = hiltViewModel()
+    val homeViewModel: HomeViewModel = hiltViewModel()
     NavHost(
         navController = navController,
         startDestination = Route.Home,
         modifier = modifier
     ) {
         composable<Route.Home> {
-            HomeScreen(navController, readLogsViewModel)
+            HomeScreen(navController, homeViewModel)
         }
         composable<Route.Library> {
-            LibraryScreen(navController, savedBooksViewModel)
+            LibraryScreen(navController, myBooksViewModel)
         }
         composable<Route.Setting> {
             SettingScreen(navController)
@@ -70,7 +69,7 @@ fun ReadTrackNavHost(
             arguments = listOf(navArgument("savedBookId") { type = NavType.StringType })
         ) { backStackEntry ->
             val savedBookId = backStackEntry.arguments?.getString("savedBookId") ?: ""
-            MyBookScreen(savedBookId, savedBooksViewModel, navController)
+            MyBookScreen(savedBookId, myBooksViewModel, navController)
         }
     }
 }

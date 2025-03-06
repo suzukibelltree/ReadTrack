@@ -13,18 +13,18 @@ import androidx.navigation.NavController
 import com.example.readtrack.R
 import com.example.readtrack.Route
 import com.example.readtrack.network.BookData
-import com.example.readtrack.room.SavedBooksViewModel
+import com.example.readtrack.room.MyBooksViewModel
 
 /**
  * 本を削除する際に表示するダイアログ
  * @param navController ナビゲーションコントローラー
- * @param savedBooksViewModel 保存された本のViewModel
+ * @param myBooksViewModel 保存された本のViewModel
  * @param book 削除する本の情報
  */
 @Composable
 fun DeleteBookDialog(
     navController: NavController,
-    savedBooksViewModel: SavedBooksViewModel,
+    myBooksViewModel: MyBooksViewModel,
     book: BookData
 ) {
     val context = LocalContext.current
@@ -47,7 +47,7 @@ fun DeleteBookDialog(
             confirmButton = {
                 Button(
                     onClick = {
-                        savedBooksViewModel.deleteBook(book)
+                        myBooksViewModel.deleteBook(book)
                         navController.navigate(Route.Library)
                         Toast.makeText(context, R.string.deleteDialog_deleted, Toast.LENGTH_SHORT)
                             .show()

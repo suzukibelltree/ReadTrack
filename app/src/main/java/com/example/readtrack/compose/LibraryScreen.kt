@@ -27,22 +27,22 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.readtrack.R
 import com.example.readtrack.Route
-import com.example.readtrack.room.SavedBooksViewModel
+import com.example.readtrack.room.MyBooksViewModel
 
 /**
  * ライブラリ画面
  * 登録した本の一覧をここで表示する
  * @param navController ナビゲーションコントローラー
- * @param savedBooksViewModel 保存された本のViewModel
+ * @param myBooksViewModel 保存された本のViewModel
  */
 @Composable
 fun LibraryScreen(
     navController: NavController,
-    savedBooksViewModel: SavedBooksViewModel,
+    myBooksViewModel: MyBooksViewModel,
 ) {
     val configuration = LocalConfiguration.current
     val screenWidthDp = configuration.screenWidthDp.dp
-    val savedBooks by savedBooksViewModel.savedBooks.collectAsState()
+    val savedBooks by myBooksViewModel.savedBooks.collectAsState()
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     Column {
         TabRow(
@@ -84,7 +84,7 @@ fun LibraryScreen(
                             .height(120.dp)
                             .padding(16.dp)
                             .clickable {
-                                savedBooksViewModel.selectBook(book.id)
+                                myBooksViewModel.selectBook(book.id)
                                 navController.navigate("${Route.MyBook}/${book.id}")
                             }
                     )

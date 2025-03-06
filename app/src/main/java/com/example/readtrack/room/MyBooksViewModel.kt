@@ -20,7 +20,7 @@ import javax.inject.Inject
  * @param readLogRepository 読書ログの情報を取得するためのリポジトリ
  */
 @HiltViewModel
-class SavedBooksViewModel @Inject constructor(
+class MyBooksViewModel @Inject constructor(
     private val booksRepository: BooksRepository,
     private val readLogRepository: ReadLogRepository
 ) : ViewModel() {

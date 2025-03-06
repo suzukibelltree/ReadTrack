@@ -41,26 +41,26 @@ import com.example.readtrack.R
 import com.example.readtrack.Route
 import com.example.readtrack.getCurrentFormattedTime
 import com.example.readtrack.getCurrentYearMonthAsInt
+import com.example.readtrack.room.MyBooksViewModel
 import com.example.readtrack.room.ReadLog
-import com.example.readtrack.room.SavedBooksViewModel
 
 /**
  * 自分が登録した本の詳細を表示する画面
  * @param bookId 本のID
- * @param savedBooksViewModel 保存された本のViewModel
+ * @param myBooksViewModel 保存された本のViewModel
  * @param navController ナビゲーションコントローラー
  */
 @Composable
 fun MyBookScreen(
     bookId: String,
-    savedBooksViewModel: SavedBooksViewModel,
+    myBooksViewModel: MyBooksViewModel,
     navController: NavController
 ) {
     LaunchedEffect(bookId) {
-        savedBooksViewModel.fetchBookDetails(bookId)
+        myBooksViewModel.fetchBookDetails(bookId)
     }
-    val selectedBook by savedBooksViewModel.selectedBook.collectAsState()
-    val readLogs = savedBooksViewModel.allLogs.collectAsState()
+    val selectedBook by myBooksViewModel.selectedBook.collectAsState()
+    val readLogs = myBooksViewModel.allLogs.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
     val currentYearMonthId = getCurrentYearMonthAsInt()
     val formattedDate = getCurrentFormattedTime()
@@ -211,7 +211,7 @@ fun MyBookScreen(
                         Toast.makeText(context, R.string.myBook_Save_complete, Toast.LENGTH_SHORT)
                             .show()
                         //ここで変更された本の情報を保存
-                        savedBooksViewModel.updateBook(
+                        myBooksViewModel.updateBook(
                             book.copy(
                                 progress = when (selectedOption) {
                                     R.string.read_state_unread -> 0
@@ -224,7 +224,7 @@ fun MyBookScreen(
                             )
                         )
                         // 読了ページ数の差分がある場合は読書記録を更新
-                        savedBooksViewModel.upsertLog(
+                        myBooksViewModel.upsertLog(
                             currentMonthLog?.copy(
                                 yearMonthId = currentYearMonthId,
                                 readPages = currentMonthLog.readPages + pagesReadDiff
@@ -260,7 +260,7 @@ fun MyBookScreen(
         if (showDialog) {
             DeleteBookDialog(
                 navController = navController,
-                savedBooksViewModel = savedBooksViewModel,
+                myBooksViewModel = myBooksViewModel,
                 book = book
             )
         }
