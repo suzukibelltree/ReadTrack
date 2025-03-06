@@ -1,8 +1,10 @@
 package com.example.readtrack.compose
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.BottomAppBar
@@ -31,63 +33,64 @@ fun BottomBar(navController: NavController) {
     BottomAppBar(
         containerColor = MaterialTheme.colorScheme.primaryContainer,
     ) {
-        Spacer(modifier = Modifier.weight(0.5f))
-        Column(
-            modifier = Modifier.padding(vertical = 4.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            IconButton(onClick = { navController.navigate(Route.Home) }) {
-                Image(
-                    painter = painterResource(id = R.drawable.home),
-                    contentDescription = "Home",
-                    modifier = Modifier.size(24.dp)
+            Column(
+                modifier = Modifier.padding(vertical = 4.dp, horizontal = 40.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                IconButton(onClick = { navController.navigate(Route.Home) }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.home),
+                        contentDescription = "Home",
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+                Text(
+                    text = stringResource(id = R.string.screen_home),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
                 )
             }
-            Text(
-                text = stringResource(id = R.string.screen_home),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-        }
-        Spacer(modifier = Modifier.weight(0.5f))
-        Column(
-            modifier = Modifier.padding(vertical = 4.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            IconButton(onClick = { navController.navigate(Route.Library) }) {
-                Image(
-                    painter = painterResource(id = R.drawable.library),
-                    contentDescription = "Library",
-                    modifier = Modifier.size(24.dp)
+            Column(
+                modifier = Modifier.padding(vertical = 4.dp, horizontal = 40.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                IconButton(onClick = { navController.navigate(Route.Library) }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.library),
+                        contentDescription = "Library",
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+                Text(
+                    text = stringResource(id = R.string.screen_library),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
                 )
             }
-            Text(
-                text = stringResource(id = R.string.screen_library),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-        }
-        Spacer(modifier = Modifier.weight(0.5f))
-        Column(
-            modifier = Modifier.padding(vertical = 4.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            IconButton(onClick = { navController.navigate(Route.Setting) }) {
-                Image(
-                    painter = painterResource(id = R.drawable.setting),
-                    contentDescription = "Setting",
-                    modifier = Modifier.size(24.dp)
+            Column(
+                modifier = Modifier.padding(vertical = 4.dp, horizontal = 40.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                IconButton(onClick = { navController.navigate(Route.Setting) }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.setting),
+                        contentDescription = "Setting",
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+                Text(
+                    text = stringResource(id = R.string.screen_setting),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
                 )
             }
-            Text(
-                text = stringResource(id = R.string.screen_setting),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
         }
-        Spacer(modifier = Modifier.weight(0.5f))
     }
 }

@@ -38,19 +38,19 @@ fun ReadTrackNavHost(
         modifier = modifier
     ) {
         composable<Route.Home> {
-            HomeScreen(navController, homeViewModel)
+            HomeScreen(navController = navController, homeViewModel = homeViewModel)
         }
         composable<Route.Library> {
-            LibraryScreen(navController, myBooksViewModel)
+            LibraryScreen(navController = navController, myBooksViewModel = myBooksViewModel)
         }
         composable<Route.Setting> {
-            SettingScreen(navController)
+            SettingScreen(navController = navController)
         }
         composable<Route.RegisterProcess> {
-            RegisterProcessScreen(navController)
+            RegisterProcessScreen(navController = navController)
         }
         composable<Route.Search> {
-            SearchScreen(bookListViewModel, navController)
+            SearchScreen(navController = navController, viewModel = bookListViewModel)
         }
         composable(
             route = "${Route.BookDetail}/{bookId}",
@@ -59,7 +59,7 @@ fun ReadTrackNavHost(
             val bookId = backStackEntry.arguments?.getString("bookId") ?: ""
             val bookItem = bookListViewModel.fetchBookById(bookId)
             if (bookItem != null) {
-                BookDetail(navController, bookItem)
+                BookDetail(navController = navController, bookItem = bookItem)
             } else {
                 // エラーハンドリング
             }
@@ -69,7 +69,11 @@ fun ReadTrackNavHost(
             arguments = listOf(navArgument("savedBookId") { type = NavType.StringType })
         ) { backStackEntry ->
             val savedBookId = backStackEntry.arguments?.getString("savedBookId") ?: ""
-            MyBookScreen(savedBookId, myBooksViewModel, navController)
+            MyBookScreen(
+                navController = navController,
+                bookId = savedBookId,
+                myBooksViewModel = myBooksViewModel
+            )
         }
     }
 }

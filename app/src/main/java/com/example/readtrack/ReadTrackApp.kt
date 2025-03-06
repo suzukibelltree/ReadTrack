@@ -33,7 +33,7 @@ fun ReadTrackApp() {
             )
         },
         bottomBar = {
-            BottomBar(navController)
+            BottomBar(navController = navController)
         },
         floatingActionButton = {
             FloatingActionButton(

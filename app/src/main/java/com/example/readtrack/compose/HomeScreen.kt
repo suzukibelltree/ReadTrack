@@ -96,7 +96,7 @@ fun HomeScreen(
                 message = "追加日時：${newBook!!.registeredDate}"
             )
         }
-        ReadLogGraph(recentReadLogs)
+        ReadLogGraph(readLogs = recentReadLogs)
     }
 }
 
