@@ -41,30 +41,26 @@ import com.example.readtrack.R
 import com.example.readtrack.Route
 import com.example.readtrack.getCurrentFormattedTime
 import com.example.readtrack.getCurrentYearMonthAsInt
-import com.example.readtrack.network.BookData
 import com.example.readtrack.room.ReadLog
-import com.example.readtrack.room.ReadLogsViewModel
 import com.example.readtrack.room.SavedBooksViewModel
 
 /**
  * 自分が登録した本の詳細を表示する画面
  * @param bookId 本のID
  * @param savedBooksViewModel 保存された本のViewModel
- * @param readLogsViewModel 読書ログのViewModel
  * @param navController ナビゲーションコントローラー
  */
 @Composable
 fun MyBookScreen(
     bookId: String,
     savedBooksViewModel: SavedBooksViewModel,
-    readLogsViewModel: ReadLogsViewModel,
     navController: NavController
 ) {
     LaunchedEffect(bookId) {
         savedBooksViewModel.fetchBookDetails(bookId)
     }
     val selectedBook by savedBooksViewModel.selectedBook.collectAsState()
-    val readLogs = readLogsViewModel.allLogs.collectAsState()
+    val readLogs = savedBooksViewModel.allLogs.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
     val currentYearMonthId = getCurrentYearMonthAsInt()
     val formattedDate = getCurrentFormattedTime()
@@ -135,28 +131,28 @@ fun MyBookScreen(
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     ReadStateCard(
-                        book = book,
                         progress = 0,
                         icon = R.drawable.frame,
                         contentDescription = stringResource(R.string.read_state_unread),
+                        selectedOption = selectedOption,
                         onProgressChange = {
                             selectedOption = R.string.read_state_unread
                             readPagesCount = "0"
                         })
                     ReadStateCard(
-                        book = book,
                         progress = 1,
                         icon = R.drawable.reading,
                         contentDescription = stringResource(R.string.read_state_reading),
+                        selectedOption = selectedOption,
                         onProgressChange = {
                             selectedOption = R.string.read_state_reading
                         }
                     )
                     ReadStateCard(
-                        book = book,
                         progress = 2,
                         icon = R.drawable.finished,
                         contentDescription = stringResource(R.string.read_state_read),
+                        selectedOption = selectedOption,
                         onProgressChange = {
                             selectedOption = R.string.read_state_read
                             readPagesCount = book.pageCount.toString()
@@ -228,7 +224,7 @@ fun MyBookScreen(
                             )
                         )
                         // 読了ページ数の差分がある場合は読書記録を更新
-                        readLogsViewModel.upsertLogInViewModelScope(
+                        savedBooksViewModel.upsertLog(
                             currentMonthLog?.copy(
                                 yearMonthId = currentYearMonthId,
                                 readPages = currentMonthLog.readPages + pagesReadDiff
@@ -273,28 +269,30 @@ fun MyBookScreen(
 
 /**
  * 本の読書状況(3状態)を表示するカード
- * @param book 本の情報
  * @param progress 本の読書状況
  * @param icon アイコン
  * @param contentDescription アイコンの説明
  */
 @Composable
 fun ReadStateCard(
-    book: BookData,
     progress: Int,
+    selectedOption: Int,
     @DrawableRes icon: Int,
     contentDescription: String,
-    onProgressChange: (Int) -> Unit
+    onProgressChange: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .size(100.dp)
-            .clickable { onProgressChange(progress) }
+            .clickable { onProgressChange() }
             .padding(8.dp)
             .border(
                 width = 2.dp,
-                color = if (
-                    book.progress == progress
+                color = if (selectedOption == when (progress) {
+                        0 -> R.string.read_state_unread
+                        1 -> R.string.read_state_reading
+                        else -> R.string.read_state_read
+                    }
                 ) Color.Blue else Color.Gray,
                 shape = RoundedCornerShape(8.dp)
             )

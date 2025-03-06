@@ -24,11 +24,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.readtrack.BuildConfig
+import com.example.readtrack.R
 import com.example.readtrack.Route
 import com.example.readtrack.network.BookItem
 import com.example.readtrack.network.BookListViewModel
@@ -54,12 +56,12 @@ fun SearchScreen(
         OutlinedTextField(
             value = query,
             onValueChange = { query = it },
-            label = { Text("タイトルを入力") },
+            label = { Text(text = stringResource(R.string.search_title)) },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
         Button(onClick = { viewModel.searchBooks(query, apiKey) }) {
-            Text("検索")
+            Text(text = stringResource(R.string.search_button))
         }
         Spacer(modifier = Modifier.height(16.dp))
 

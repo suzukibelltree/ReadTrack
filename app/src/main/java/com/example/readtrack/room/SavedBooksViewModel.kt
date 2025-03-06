@@ -15,14 +15,23 @@ import javax.inject.Inject
 
 /**
  * 登録された本のリストの情報を保持するViewModel
+ * ライブラリ画面とそこから遷移するMyBookScreenで使用する
  * @param booksRepository 本の情報を取得するためのリポジトリ
+ * @param readLogRepository 読書ログの情報を取得するためのリポジトリ
  */
 @HiltViewModel
-class SavedBooksViewModel @Inject constructor(private val booksRepository: BooksRepository) : ViewModel() {
+class SavedBooksViewModel @Inject constructor(
+    private val booksRepository: BooksRepository,
+    private val readLogRepository: ReadLogRepository
+) : ViewModel() {
     val savedBooks: StateFlow<List<BookData>> = booksRepository.getAllBooksFlow()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _selectedBook = MutableStateFlow<BookData?>(null)
     val selectedBook: StateFlow<BookData?> = _selectedBook
+
+    val allLogs: StateFlow<List<ReadLog>> = readLogRepository.getAllLogs()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val _allLogs = MutableStateFlow<ReadLog?>(null)
 
     /**
      * IDから本の情報を取得する
@@ -63,6 +72,15 @@ class SavedBooksViewModel @Inject constructor(private val booksRepository: Books
     fun deleteBook(book: BookData) {
         viewModelScope.launch {
             booksRepository.deleteBook(book)
+        }
+    }
+
+    /**
+     * 読書ログの更新
+     */
+    fun upsertLog(readLog: ReadLog) {
+        viewModelScope.launch {
+            readLogRepository.upsertLog(readLog)
         }
     }
 }

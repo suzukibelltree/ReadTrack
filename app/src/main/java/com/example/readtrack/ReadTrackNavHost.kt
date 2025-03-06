@@ -70,7 +70,7 @@ fun ReadTrackNavHost(
             arguments = listOf(navArgument("savedBookId") { type = NavType.StringType })
         ) { backStackEntry ->
             val savedBookId = backStackEntry.arguments?.getString("savedBookId") ?: ""
-            MyBookScreen(savedBookId, savedBooksViewModel, readLogsViewModel, navController)
+            MyBookScreen(savedBookId, savedBooksViewModel, navController)
         }
     }
 }
