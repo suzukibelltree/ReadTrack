@@ -26,7 +26,6 @@ import com.example.readtrack.convertYearMonthId
 import com.example.readtrack.network.BookData
 import com.example.readtrack.room.ReadLog
 import com.example.readtrack.room.ReadLogsViewModel
-import com.example.readtrack.room.SavedBooksViewModel
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
@@ -39,16 +38,14 @@ import com.patrykandpatrick.vico.core.entry.entryModelOf
  * アプリが起動したらこの画面からスタートする
  * 直近で情報を更新した本、直近で登録された本の情報を表示する
  * @param navController ナビゲーションコントローラー
- * @param savedBooksViewModel 保存された本のViewModel
  * @param readLogsViewModel 読書ログのViewModel
  */
 @Composable
 fun HomeScreen(
     navController: NavController,
-    savedBooksViewModel: SavedBooksViewModel,
     readLogsViewModel: ReadLogsViewModel
 ) {
-    val savedBooks = savedBooksViewModel.savedBooks.collectAsState()
+    val savedBooks = readLogsViewModel.allBooks.collectAsState()
     val finishedBooks = savedBooks.value.filter { it.progress == 2 }
     // もっとも最近に更新された本のインスタンスを取得
     val updatedBook by remember(savedBooks.value) {

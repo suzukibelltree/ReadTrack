@@ -21,14 +21,14 @@ import com.example.readtrack.room.SavedBooksViewModel
 /**
  * アプリの画面遷移を管理する
  * @param navController ナビゲーションコントローラー
- * @param viewModel 本のリストのViewModel
+ * @param bookListViewModel 本のリストのViewModel
  * @param savedBooksViewModel 保存された本のViewModel
  * @param modifier Modifier
  */
 @Composable
 fun ReadTrackNavHost(
     navController: NavHostController,
-    viewModel: BookListViewModel,
+    bookListViewModel: BookListViewModel,
     savedBooksViewModel: SavedBooksViewModel,
     readLogsViewModel: ReadLogsViewModel,
     modifier: Modifier = Modifier
@@ -39,7 +39,7 @@ fun ReadTrackNavHost(
         modifier = modifier
     ) {
         composable<Route.Home> {
-            HomeScreen(navController, savedBooksViewModel, readLogsViewModel)
+            HomeScreen(navController, readLogsViewModel)
         }
         composable<Route.Library> {
             LibraryScreen(navController, savedBooksViewModel)
@@ -51,14 +51,14 @@ fun ReadTrackNavHost(
             RegisterProcessScreen(navController)
         }
         composable<Route.Search> {
-            SearchScreen(viewModel, navController)
+            SearchScreen(bookListViewModel, navController)
         }
         composable(
             route = "${Route.BookDetail}/{bookId}",
             arguments = listOf(navArgument("bookId") { type = NavType.StringType })
         ) { backStackEntry ->
             val bookId = backStackEntry.arguments?.getString("bookId") ?: ""
-            val bookItem = viewModel.fetchBookById(bookId)
+            val bookItem = bookListViewModel.fetchBookById(bookId)
             if (bookItem != null) {
                 BookDetail(navController, bookItem)
             } else {

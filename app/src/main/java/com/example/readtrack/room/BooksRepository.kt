@@ -3,7 +3,8 @@ package com.example.readtrack.room
 import com.example.readtrack.network.BookData
 import kotlinx.coroutines.flow.Flow
 
-interface BooksRepository{
+interface BooksRepository {
+    val allBooks: Flow<List<BookData>>
     fun getAllBooks(): List<BookData>
     suspend fun insert(book: BookData)
     suspend fun updateBook(book: BookData)

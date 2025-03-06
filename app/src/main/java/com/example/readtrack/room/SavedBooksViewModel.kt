@@ -24,14 +24,18 @@ class SavedBooksViewModel @Inject constructor(
     private val booksRepository: BooksRepository,
     private val readLogRepository: ReadLogRepository
 ) : ViewModel() {
-    val savedBooks: StateFlow<List<BookData>> = booksRepository.getAllBooksFlow()
+    // ローカルに保存されている本の情報
+    private val _savedBooks = MutableStateFlow<BookData?>(null)
+    val savedBooks: StateFlow<List<BookData>> = booksRepository.allBooks
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
     private val _selectedBook = MutableStateFlow<BookData?>(null)
     val selectedBook: StateFlow<BookData?> = _selectedBook
 
-    val allLogs: StateFlow<List<ReadLog>> = readLogRepository.getAllLogs()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    // ローカルに保存されている読書ログの情報
     private val _allLogs = MutableStateFlow<ReadLog?>(null)
+    val allLogs: StateFlow<List<ReadLog>> = readLogRepository.allLogs
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     /**
      * IDから本の情報を取得する

@@ -59,7 +59,7 @@ fun ReadTrackApp(
     ) { innerPadding ->
         ReadTrackNavHost(
             navController = navController,
-            viewModel = viewModel,
+            bookListViewModel = viewModel,
             savedBooksViewModel = savedBooksViewModel,
             modifier = Modifier.padding(innerPadding),
             readLogsViewModel = readLogsViewModel
