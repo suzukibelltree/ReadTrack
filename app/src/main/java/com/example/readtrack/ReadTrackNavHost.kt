@@ -1,6 +1,8 @@
 package com.example.readtrack
 
+import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -8,6 +10,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.readtrack.authentication.FirebaseAuthScreen
 import com.example.readtrack.compose.BookDetail
 import com.example.readtrack.compose.HomeScreen
 import com.example.readtrack.compose.LibraryScreen
@@ -18,6 +21,7 @@ import com.example.readtrack.compose.SettingScreen
 import com.example.readtrack.network.BookListViewModel
 import com.example.readtrack.room.HomeViewModel
 import com.example.readtrack.room.MyBooksViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 /**
  * アプリの画面遷移を管理する
@@ -32,13 +36,35 @@ fun ReadTrackNavHost(
     val bookListViewModel: BookListViewModel = hiltViewModel()
     val myBooksViewModel: MyBooksViewModel = hiltViewModel()
     val homeViewModel: HomeViewModel = hiltViewModel()
+    var currentUser = FirebaseAuth.getInstance().currentUser
+    LaunchedEffect(currentUser) {
+        Log.d("hoge", "hoge")
+        if (currentUser == null) {
+            navController.navigate(Route.Login) {
+                popUpTo("home") { inclusive = true }
+            }
+        } else {
+            navController.navigate(Route.Home) {
+                popUpTo("login") { inclusive = true }
+            }
+        }
+    }
     NavHost(
         navController = navController,
-        startDestination = Route.Home,
+        startDestination = if (currentUser == null) Route.Login else Route.Home,
         modifier = modifier
     ) {
+        composable<Route.Login> {
+            FirebaseAuthScreen {
+                currentUser = it
+            }
+        }
         composable<Route.Home> {
-            HomeScreen(navController = navController, homeViewModel = homeViewModel)
+            HomeScreen(
+                navController = navController,
+                homeViewModel = homeViewModel,
+                user = currentUser!!
+            )
         }
         composable<Route.Library> {
             LibraryScreen(navController = navController, myBooksViewModel = myBooksViewModel)
