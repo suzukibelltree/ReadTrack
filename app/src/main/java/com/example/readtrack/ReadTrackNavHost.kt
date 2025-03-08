@@ -50,6 +50,7 @@ fun ReadTrackNavHost(
     NavHost(
         navController = navController,
         startDestination = if (currentUser == null) Route.Login else Route.Home,
+        modifier = modifier
     ) {
         composable<Route.Login> {
             FirebaseAuthScreen(navController = navController) {

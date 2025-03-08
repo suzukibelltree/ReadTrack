@@ -28,9 +28,11 @@ fun ReadTrackApp() {
     val currentRoute = currentBackStackEntry?.destination?.route
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {},
-            )
+            if (currentRoute != null && currentRoute.substringAfter("Route.") != Route.Login.toString()) {
+                TopAppBar(
+                    title = {},
+                )
+            }
         },
         bottomBar = {
             if (currentRoute != null && currentRoute.substringAfter("Route.") != Route.Login.toString()) {
