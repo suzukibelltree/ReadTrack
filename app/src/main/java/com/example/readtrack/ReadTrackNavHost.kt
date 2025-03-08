@@ -1,6 +1,5 @@
 package com.example.readtrack
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -31,14 +30,13 @@ import com.google.firebase.auth.FirebaseAuth
 @Composable
 fun ReadTrackNavHost(
     navController: NavHostController,
-    modifier: Modifier = Modifier
+    modifier: Modifier
 ) {
     val bookListViewModel: BookListViewModel = hiltViewModel()
     val myBooksViewModel: MyBooksViewModel = hiltViewModel()
     val homeViewModel: HomeViewModel = hiltViewModel()
     var currentUser = FirebaseAuth.getInstance().currentUser
     LaunchedEffect(currentUser) {
-        Log.d("hoge", "hoge")
         if (currentUser == null) {
             navController.navigate(Route.Login) {
                 popUpTo("home") { inclusive = true }
@@ -52,10 +50,9 @@ fun ReadTrackNavHost(
     NavHost(
         navController = navController,
         startDestination = if (currentUser == null) Route.Login else Route.Home,
-        modifier = modifier
     ) {
         composable<Route.Login> {
-            FirebaseAuthScreen {
+            FirebaseAuthScreen(navController = navController) {
                 currentUser = it
             }
         }

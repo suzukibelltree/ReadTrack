@@ -15,6 +15,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.readtrack.R
+import com.example.readtrack.Route
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun SettingScreen(
@@ -50,6 +52,21 @@ fun SettingScreen(
                 .fillMaxWidth()
                 .padding(16.dp)
                 .clickable { }
+        )
+        HorizontalDivider()
+        Text(
+            text = "ログアウト",
+            fontSize = 24.sp,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .clickable {
+                    FirebaseAuth
+                        .getInstance()
+                        .signOut()
+                    //currentUser = null // ログイン状態をリセット
+                    navController.navigate(Route.Login)
+                }
         )
         HorizontalDivider()
     }
