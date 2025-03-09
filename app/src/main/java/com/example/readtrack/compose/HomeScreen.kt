@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -24,9 +25,13 @@ import coil.compose.AsyncImage
 import com.example.readtrack.R
 import com.example.readtrack.Route
 import com.example.readtrack.convertYearMonthId
+import com.example.readtrack.datastore.getValue
 import com.example.readtrack.network.BookData
 import com.example.readtrack.room.HomeViewModel
 import com.example.readtrack.room.ReadLog
+import com.example.readtrack.ui.theme.PastelBlue
+import com.example.readtrack.ui.theme.PastelGreen
+import com.example.readtrack.ui.theme.PastelRed
 import com.google.firebase.auth.FirebaseUser
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
@@ -63,7 +68,12 @@ fun HomeScreen(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "ユーザー名：${user.displayName}", fontSize = 20.sp)
+        Text(
+            text = "${user.displayName}さん、ようこそ！",
+            fontSize = 20.sp,
+            modifier = Modifier
+                .padding(8.dp)
+        )
         Text(
             text = stringResource(R.string.home_number_of_FinishedBooks, finishedBooks.size),
             fontSize = 24.sp,
@@ -150,6 +160,8 @@ fun MiniBookCard(
 fun ReadLogGraph(
     readLogs: List<ReadLog>
 ) {
+    val context = LocalContext.current
+    val themeColor by getValue(context, "theme_color").collectAsState(initial = "")
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -168,7 +180,12 @@ fun ReadLogGraph(
             chart = ColumnChart(
                 listOf(
                     lineComponent(
-                        color = Color.Cyan,
+                        color = when (themeColor) {
+                            "青" -> PastelBlue
+                            "赤" -> PastelRed
+                            "緑" -> PastelGreen
+                            else -> Color.LightGray
+                        },
                         thickness = 8.dp
                     )
                 ),
