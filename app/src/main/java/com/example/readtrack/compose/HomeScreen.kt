@@ -12,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -26,6 +27,7 @@ import com.example.readtrack.convertYearMonthId
 import com.example.readtrack.network.BookData
 import com.example.readtrack.room.HomeViewModel
 import com.example.readtrack.room.ReadLog
+import com.google.firebase.auth.FirebaseUser
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
@@ -43,7 +45,8 @@ import com.patrykandpatrick.vico.core.entry.entryModelOf
 @Composable
 fun HomeScreen(
     navController: NavController,
-    homeViewModel: HomeViewModel
+    homeViewModel: HomeViewModel,
+    user: FirebaseUser
 ) {
     val savedBooks = homeViewModel.allBooks.collectAsState()
     val finishedBooks = savedBooks.value.filter { it.progress == 2 }
@@ -57,7 +60,10 @@ fun HomeScreen(
     val readLogs = homeViewModel.allLogs.collectAsState()
     // 直近4か月分の読書ログを取得
     val recentReadLogs = readLogs.value.sortedByDescending { it.yearMonthId }.take(4).reversed()
-    Column {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "ユーザー名：${user.displayName}", fontSize = 20.sp)
         Text(
             text = stringResource(R.string.home_number_of_FinishedBooks, finishedBooks.size),
             fontSize = 24.sp,
