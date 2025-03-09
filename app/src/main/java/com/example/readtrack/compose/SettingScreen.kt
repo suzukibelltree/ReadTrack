@@ -216,7 +216,6 @@ fun SettingScreen(
                     FirebaseAuth
                         .getInstance()
                         .signOut()
-                    //currentUser = null // ログイン状態をリセット
                     navController.navigate(Route.Login)
                 }
         )

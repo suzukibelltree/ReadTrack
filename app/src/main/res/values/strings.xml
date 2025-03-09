@@ -43,4 +43,7 @@
     <string name="setting_character_size">文字サイズの変更</string>
     <string name="setting_theme_color">テーマカラーの変更</string>
     <string name="setting_switch_dark_light">ダークモード/ライトモード切替</string>
+    <string name="drawer_home">ホーム</string>
+    <string name="drawer_library">ライブラリ</string>
+    <string name="drawer_setting">設定</string>
 </resources>

@@ -1,21 +1,42 @@
 package com.example.readtrack
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.readtrack.compose.BottomBar
+import com.example.readtrack.compose.TopTextList
+import kotlinx.coroutines.launch
 
 /**
  * アプリのメイン画面
@@ -24,40 +45,118 @@ import com.example.readtrack.compose.BottomBar
 @Composable
 fun ReadTrackApp() {
     val navController = rememberNavController()
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = currentBackStackEntry?.destination?.route
-    Scaffold(
-        topBar = {
-            if (currentRoute != null && currentRoute.substringAfter("Route.") != Route.Login.toString()) {
-                TopAppBar(
-                    title = {},
-                )
-            }
+    val currentRoute = currentBackStackEntry?.destination?.route?.substringAfter("Route.")
+    val topBarTitle = when (currentRoute) {
+        Route.Home.toString() -> TopTextList.Home.value
+        Route.Library.toString() -> TopTextList.Library.value
+        Route.RegisterProcess.toString() -> TopTextList.RegisterProcess.value
+        Route.Setting.toString() -> TopTextList.Setting.value
+        Route.Search.toString() -> TopTextList.Search.value
+        Route.BookDetail.toString() -> TopTextList.BookDetail.value
+        else -> "MyBook"
+    }
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            DrawerContent(
+                drawerState = drawerState,
+                navController = navController,
+                currentRouteName = currentRoute ?: ""
+            )
         },
-        bottomBar = {
-            if (currentRoute != null && currentRoute.substringAfter("Route.") != Route.Login.toString()) {
-                BottomBar(navController = navController)
-            }
-        },
-        floatingActionButton = {
-            if (currentRoute != null && currentRoute.substringAfter("Route.") != Route.Login.toString()) {
-                FloatingActionButton(
-                    onClick = { navController.navigate(Route.RegisterProcess) },
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Image(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Add"
+        scrimColor = Color.White
+    ) {
+        Scaffold(
+            topBar = {
+                if (currentRoute != Route.Login.toString()) {
+                    TopAppBar(
+                        title = {
+                            Text(
+                                text = topBarTitle,
+                                modifier = Modifier.padding(16.dp)
+                            )
+                        },
+                        navigationIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = "メニュー",
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .size(32.dp)
+                                    .clickable {
+                                        scope.launch {
+                                            drawerState.open()
+                                        }
+                                    }
+                            )
+                        },
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = Color.Cyan
+                        )
                     )
                 }
+            },
+            floatingActionButton = {
+                if (currentRoute != Route.Login.toString()) {
+                    FloatingActionButton(
+                        onClick = { navController.navigate(Route.RegisterProcess) },
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Image(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Add"
+                        )
+                    }
+                }
             }
+        ) { innerPadding ->
+            ReadTrackNavHost(
+                navController = navController,
+                modifier = Modifier.padding(innerPadding),
+            )
         }
-    ) { innerPadding ->
-        ReadTrackNavHost(
-            navController = navController,
-            modifier = Modifier.padding(innerPadding),
-        )
+    }
+}
+
+@Composable
+fun DrawerContent(
+    drawerState: DrawerState,
+    navController: NavController,
+    currentRouteName: String
+) {
+    val scope = rememberCoroutineScope()
+    val menuItems = listOf(
+        stringResource(R.string.drawer_home) to Route.Home,
+        stringResource(R.string.drawer_library) to Route.Library,
+        stringResource(R.string.drawer_setting) to Route.Setting,
+    )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Spacer(modifier = Modifier.height(32.dp))
+        menuItems.forEach { (title, route) ->
+            ListItem(
+                modifier = Modifier
+                    .clickable {
+                        scope.launch { drawerState.close() }
+                        navController.navigate(route)
+                    }
+                    .padding(8.dp),
+                headlineContent = {
+                    Text(
+                        text = title,
+                        color = if (currentRouteName == route.toString()) Color.Blue else Color.Black
+                    )
+                },
+            )
+            HorizontalDivider()
+        }
     }
 }
 

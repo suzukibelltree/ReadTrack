@@ -63,7 +63,12 @@ fun HomeScreen(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "ユーザー名：${user.displayName}", fontSize = 20.sp)
+        Text(
+            text = "${user.displayName}さん、ようこそ！",
+            fontSize = 20.sp,
+            modifier = Modifier
+                .padding(8.dp)
+        )
         Text(
             text = stringResource(R.string.home_number_of_FinishedBooks, finishedBooks.size),
             fontSize = 24.sp,
