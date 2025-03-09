@@ -37,9 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.readtrack.R
 import com.example.readtrack.Route
-import com.example.readtrack.datastore.getDarkLightTheme
 import com.example.readtrack.datastore.getValue
-import com.example.readtrack.datastore.saveDarkLightTheme
 import com.example.readtrack.datastore.saveValue
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.first
@@ -55,74 +53,12 @@ fun SettingScreen(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        var selectedCharSize by remember { mutableStateOf("") }
         var selectedThemeColor by remember { mutableStateOf("") }
-        var isDarkTheme by remember { mutableStateOf(false) }
         LaunchedEffect(Unit) {
             scope.launch {
-                selectedCharSize = getValue(context, "character_size").first()
                 selectedThemeColor = getValue(context, "theme_color").first()
-                isDarkTheme = getDarkLightTheme(context).first()
             }
         }
-        Column {
-            var sizeMenuExpand by remember { mutableStateOf(false) }
-            Row {
-                Icon(
-                    imageVector = if (sizeMenuExpand) Icons.Default.Remove else Icons.Default.Add,
-                    contentDescription = "Add",
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .clickable { sizeMenuExpand = !sizeMenuExpand }
-                )
-                Text(
-                    text = stringResource(R.string.setting_character_size),
-                    fontSize = 20.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                )
-            }
-            AnimatedVisibility(sizeMenuExpand) {
-                val radiooptions1 = listOf("小", "中", "大")
-                val (selectedOption, onOptionSelected) = remember { mutableStateOf(selectedCharSize) }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp), // 選択肢の間にスペースを追加
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    radiooptions1.forEach { text ->
-                        Row(
-                            Modifier
-                                .selectable(
-                                    selected = (text == selectedCharSize),
-                                    onClick = {
-                                        onOptionSelected(text)
-                                        selectedCharSize = text
-                                    },
-                                    role = Role.RadioButton,
-
-                                    )
-                                .padding(horizontal = 16.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            RadioButton(
-                                selected = (text == selectedOption),
-                                onClick = null
-                            )
-                            Text(
-                                text = text,
-                                style = MaterialTheme.typography.bodyLarge,
-                                modifier = Modifier.padding(start = 16.dp)
-                            )
-                        }
-                    }
-                }
-            }
-        }
-        HorizontalDivider()
         Column {
             var themeMenuExpand by remember { mutableStateOf(false) }
             Row {
@@ -185,64 +121,6 @@ fun SettingScreen(
             }
         }
         HorizontalDivider()
-        Column {
-            var switchDarkExpand by remember { mutableStateOf(false) }
-            Row {
-                Icon(
-                    imageVector = if (switchDarkExpand) Icons.Default.Remove else Icons.Default.Add,
-                    contentDescription = "Open Menu",
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .clickable { switchDarkExpand = !switchDarkExpand }
-                )
-                Text(
-                    text = stringResource(R.string.setting_switch_dark_light),
-                    fontSize = 20.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                )
-            }
-            AnimatedVisibility(switchDarkExpand) {
-                val radiooptions3 = listOf("ダーク", "ライト")
-                val (selectedOption, onOptionSelected) = remember { mutableStateOf(if (isDarkTheme) "ダーク" else "ライト") }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp), // 選択肢の間にスペースを追加
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    radiooptions3.forEach { text ->
-                        Row(
-                            Modifier
-                                .selectable(
-                                    selected = (text == selectedOption),
-                                    onClick = {
-                                        onOptionSelected(text)
-                                        isDarkTheme = (text == "ダーク")
-                                    },
-                                    role = Role.RadioButton
-                                )
-                                .padding(horizontal = 16.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            RadioButton(
-                                selected = (text == selectedOption),
-                                onClick = null
-                            )
-                            Text(
-                                text = text,
-                                style = MaterialTheme.typography.bodyLarge,
-                                modifier = Modifier.padding(start = 16.dp)
-                            )
-                        }
-                    }
-
-                }
-            }
-        }
-        HorizontalDivider()
         Text(
             text = "ログアウト",
             fontSize = 20.sp,
@@ -261,22 +139,11 @@ fun SettingScreen(
         Button(
             onClick = {
                 scope.launch {
-                    if (selectedCharSize != "") {
-                        saveValue(
-                            context = context,
-                            key = "character_size",
-                            value = selectedCharSize
-                        )
-                        saveValue(
-                            context = context,
-                            key = "theme_color",
-                            value = selectedThemeColor
-                        )
-                        saveDarkLightTheme(
-                            context = context,
-                            value = isDarkTheme
-                        )
-                    }
+                    saveValue(
+                        context = context,
+                        key = "theme_color",
+                        value = selectedThemeColor
+                    )
                 }
                 Toast.makeText(context, "設定を保存しました", Toast.LENGTH_SHORT).show()
             }

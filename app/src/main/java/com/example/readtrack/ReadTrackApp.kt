@@ -27,10 +27,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.datastore.core.DataStore
@@ -40,8 +42,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.readtrack.compose.TopTextList
+import com.example.readtrack.datastore.getValue
+import com.example.readtrack.ui.theme.PastelBlue
+import com.example.readtrack.ui.theme.PastelGreen
+import com.example.readtrack.ui.theme.PastelRed
 import kotlinx.coroutines.launch
-
 
 val Context.datastore: DataStore<Preferences> by preferencesDataStore(name = "character_size")
 
@@ -65,6 +70,8 @@ fun ReadTrackApp() {
         Route.BookDetail.toString() -> TopTextList.BookDetail.value
         else -> "MyBook"
     }
+    val context = LocalContext.current
+    val themeColor by getValue(context, "theme_color").collectAsState(initial = "")
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -101,7 +108,12 @@ fun ReadTrackApp() {
                             )
                         },
                         colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = Color.Cyan
+                            containerColor = when (themeColor) {
+                                "青" -> PastelBlue
+                                "緑" -> PastelGreen
+                                "赤" -> PastelRed
+                                else -> Color.Gray
+                            }
                         )
                     )
                 }

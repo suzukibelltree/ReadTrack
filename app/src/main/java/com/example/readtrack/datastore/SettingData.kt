@@ -1,7 +1,6 @@
 package com.example.readtrack.datastore
 
 import android.content.Context
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.readtrack.datastore
@@ -22,17 +21,5 @@ suspend fun saveValue(context: Context, key: String, value: String) {
 fun getValue(context: Context, key: String): Flow<String> {
     return context.datastore.data.map { preferences ->
         preferences[stringPreferencesKey(key)] ?: "unknown"
-    }
-}
-
-suspend fun saveDarkLightTheme(context: Context, value: Boolean) {
-    context.datastore.edit { preferences ->
-        preferences[booleanPreferencesKey("dark_light_theme")] = value
-    }
-}
-
-fun getDarkLightTheme(context: Context): Flow<Boolean> {
-    return context.datastore.data.map { preferences ->
-        preferences[booleanPreferencesKey("dark_light_theme")] ?: false
     }
 }
