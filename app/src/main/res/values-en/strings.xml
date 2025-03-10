@@ -34,7 +34,7 @@
     <string name="myBook_Save_complete">Changes saved</string>
     <string name="myBook_delete">Remove from library</string>
     <string name="myBook_book_not_found">Book not found</string>
-    <string name="myBook_memo">Memo</string>
+    <string name="myBook_comment">Comment</string>
     <string name="myBook_pageCount">/ %s pages</string>
     <string name="register_process">Please select a registration method</string>
     <string name="register_title">Search by title to register</string>
