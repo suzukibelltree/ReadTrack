@@ -81,7 +81,7 @@ fun ReadTrackApp() {
                 currentRouteName = currentRoute ?: ""
             )
         },
-        scrimColor = Color.White
+        scrimColor = Color.White.copy(alpha = 0.9f)
     ) {
         Scaffold(
             topBar = {

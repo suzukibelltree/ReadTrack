@@ -11,12 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -48,6 +44,7 @@ fun SettingScreen(
     navController: NavController
 ) {
     val scope = rememberCoroutineScope()
+    var showExplainDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -61,24 +58,16 @@ fun SettingScreen(
         }
         Column {
             var themeMenuExpand by remember { mutableStateOf(false) }
-            Row {
-                Icon(
-                    imageVector = if (themeMenuExpand) Icons.Default.Remove else Icons.Default.Add,
-                    contentDescription = "Open Menu",
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .clickable { themeMenuExpand = !themeMenuExpand }
-                )
-                Text(
-                    text = stringResource(R.string.setting_theme_color),
-                    fontSize = 20.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                )
-            }
+            Text(
+                text = stringResource(R.string.setting_theme_color),
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .clickable { themeMenuExpand = !themeMenuExpand }
+            )
             AnimatedVisibility(themeMenuExpand) {
-                val radiooptions2 = listOf("青", "赤", "緑")
+                val colorOptions = listOf("青", "赤", "緑")
                 val (selectedOption, onOptionSelected) = remember {
                     mutableStateOf(
                         selectedThemeColor
@@ -91,7 +80,7 @@ fun SettingScreen(
                     horizontalArrangement = Arrangement.spacedBy(16.dp), // 選択肢の間にスペースを追加
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    radiooptions2.forEach { text ->
+                    colorOptions.forEach { text ->
                         Row(
                             Modifier
                                 .selectable(
@@ -120,6 +109,17 @@ fun SettingScreen(
                 }
             }
         }
+        HorizontalDivider()
+        Text(
+            text = "このアプリの使い方",
+            fontSize = 20.sp,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .clickable {
+                    showExplainDialog = true
+                }
+        )
         HorizontalDivider()
         Text(
             text = "ログアウト",
@@ -151,5 +151,8 @@ fun SettingScreen(
             Text(text = "この設定を保存する")
         }
         Spacer(modifier = Modifier.weight(1f))
+    }
+    if (showExplainDialog) {
+        HowToUseDialog { showExplainDialog = false }
     }
 }
