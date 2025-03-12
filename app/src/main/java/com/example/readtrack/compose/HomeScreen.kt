@@ -69,7 +69,7 @@ fun HomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "${user.displayName}さん、ようこそ！",
+            text = stringResource(R.string.home_greeting, user.displayName!!),
             fontSize = 20.sp,
             modifier = Modifier
                 .padding(8.dp)
@@ -109,7 +109,7 @@ fun HomeScreen(
             MiniBookCard(
                 book = it,
                 navController = navController,
-                message = "追加日時：${newBook!!.registeredDate}"
+                message = stringResource(R.string.home_new_addedDate, newBook!!.registeredDate)
             )
         }
         ReadLogGraph(readLogs = recentReadLogs)

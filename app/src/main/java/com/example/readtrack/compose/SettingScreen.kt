@@ -77,7 +77,7 @@ fun SettingScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp), // 選択肢の間にスペースを追加
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     colorOptions.forEach { text ->
@@ -111,7 +111,7 @@ fun SettingScreen(
         }
         HorizontalDivider()
         Text(
-            text = "このアプリの使い方",
+            text = stringResource(id = R.string.setting_how_to_use),
             fontSize = 20.sp,
             modifier = Modifier
                 .fillMaxWidth()
@@ -122,7 +122,7 @@ fun SettingScreen(
         )
         HorizontalDivider()
         Text(
-            text = "ログアウト",
+            text = stringResource(id = R.string.setting_logout),
             fontSize = 20.sp,
             modifier = Modifier
                 .fillMaxWidth()

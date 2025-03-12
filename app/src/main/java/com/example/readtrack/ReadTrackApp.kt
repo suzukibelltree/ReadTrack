@@ -61,15 +61,7 @@ fun ReadTrackApp() {
     val scope = rememberCoroutineScope()
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route?.substringAfter("Route.")
-    val topBarTitle = when (currentRoute) {
-        Route.Home.toString() -> TopTextList.Home.value
-        Route.Library.toString() -> TopTextList.Library.value
-        Route.RegisterProcess.toString() -> TopTextList.RegisterProcess.value
-        Route.Setting.toString() -> TopTextList.Setting.value
-        Route.Search.toString() -> TopTextList.Search.value
-        Route.BookDetail.toString() -> TopTextList.BookDetail.value
-        else -> "MyBook"
-    }
+    val topBarTitle = getTopBarTitle(currentRoute)
     val context = LocalContext.current
     val themeColor by getValue(context, "theme_color").collectAsState(initial = "")
     ModalNavigationDrawer(
@@ -179,4 +171,17 @@ fun DrawerContent(
     }
 }
 
+@Composable
+fun getTopBarTitle(currentRoute: String?): String {
+    val context = LocalContext.current
+    return when (currentRoute) {
+        Route.Home.toString() -> context.getString(TopTextList.Home.resId)
+        Route.Library.toString() -> context.getString(TopTextList.Library.resId)
+        Route.RegisterProcess.toString() -> context.getString(TopTextList.RegisterProcess.resId)
+        Route.Setting.toString() -> context.getString(TopTextList.Setting.resId)
+        Route.Search.toString() -> context.getString(TopTextList.Search.resId)
+        Route.BookDetail.toString() -> context.getString(TopTextList.BookDetail.resId)
+        else -> context.getString(TopTextList.MyBook.resId) // 文字列リソースを適用
+    }
+}
 

@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name">ReadTrack</string>
+    <string name="app_topBar_home">ホーム</string>
+    <string name="app_topBar_library">ライブラリ</string>
+    <string name="app_topBar_setting">設定</string>
+    <string name="app_topBar_register_process">登録方法の選択</string>
+    <string name="app_topBar_search">検索</string>
+    <string name="app_topBar_detail">本の詳細</string>
+    <string name="app_topBar_myBook">マイbook</string>
     <string name="read_state_unread">未読</string>
     <string name="read_state_reading">読書中</string>
     <string name="read_state_read">読了</string>
@@ -18,10 +25,11 @@
     <string name="bookDetail_added">ライブラリに追加しました</string>
     <string name="bookDetail_addButton">ライブラリに追加</string>
     <string name="home_number_of_FinishedBooks">これまでに読了した本：%s 冊</string>
+    <string name="home_greeting">%s さん、こんにちは！</string>
     <string name="home_last_updatedBook">最後に更新した本</string>
     <string name="home_last_updatedDate">最終アクセス：%s </string>
     <string name="home_new_addedBook">新しく登録された本</string>
-    <string name="home_new_addedDate">追加日時</string>
+    <string name="home_new_addedDate">追加日時: %s</string>
     <string name="home_readLog">読書ログ</string>
     <string name="home_pageCount">ページ数</string>
     <string name="home_yearMonth">年/月</string>
@@ -42,7 +50,32 @@
     <string name="search_unknown">不明</string>
     <string name="setting_character_size">文字サイズの変更</string>
     <string name="setting_theme_color">テーマカラーの変更</string>
+    <string name="setting_how_to_use">このアプリの使い方</string>
+    <string name="setting_logout">ログアウト</string>
     <string name="setting_switch_dark_light">ダークモード/ライトモード切替</string>
+    <string name="setting_explain_first_title">1.🔍本を検索してライブラリに追加</string>
+    <string name="setting_explain_second_title">2.📚読書状態とページ数を記録</string>
+    <string name="setting_explain_third_title">3.📊月ごとの読書統計を確認</string>
+    <string name="setting_explain_first">
+        画面右下のボタンから本のタイトルを検索し、詳細情報のページから「ライブラリに追加」ボタンを押すと、その本の情報を保存できます。\n
+        追加した本は、いつでもライブラリから確認できます。
+    </string>
+    <string name="setting_explain_second">
+        ライブラリにある本は、以下の読書状態を設定できます。\n
+        \n
+        未読 📘（まだ読んでいない）\n
+        読書中 📖（読んでいる途中）\n
+        読了 ✅（読み終わった）\n
+        \n
+        また、読んだページ数を入力して進捗を記録できます。
+    </string>
+    <string name="setting_explain_third">
+        読んだページ数は月ごとに記録され、グラフで確認できます。\n
+        読書の進み具合を振り返りながら、次の本を読む計画を立てましょう！
+    </string>
+    <string name="setting_explain_back">戻る</string>
+    <string name="setting_explain_next">次へ</string>
+    <string name="setting_explain_finish">閉じる</string>
     <string name="drawer_home">ホーム</string>
     <string name="drawer_library">ライブラリ</string>
     <string name="drawer_setting">設定</string>
