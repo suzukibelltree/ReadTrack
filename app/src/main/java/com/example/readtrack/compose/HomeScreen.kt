@@ -32,7 +32,6 @@ import com.example.readtrack.room.ReadLog
 import com.example.readtrack.ui.theme.PastelBlue
 import com.example.readtrack.ui.theme.PastelGreen
 import com.example.readtrack.ui.theme.PastelRed
-import com.google.firebase.auth.FirebaseUser
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
@@ -51,7 +50,6 @@ import com.patrykandpatrick.vico.core.entry.entryModelOf
 fun HomeScreen(
     navController: NavController,
     homeViewModel: HomeViewModel,
-    user: FirebaseUser
 ) {
     val savedBooks = homeViewModel.allBooks.collectAsState()
     val finishedBooks = savedBooks.value.filter { it.progress == 2 }
@@ -68,12 +66,6 @@ fun HomeScreen(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = stringResource(R.string.home_greeting, user.displayName!!),
-            fontSize = 20.sp,
-            modifier = Modifier
-                .padding(8.dp)
-        )
         Text(
             text = stringResource(R.string.home_number_of_FinishedBooks, finishedBooks.size),
             fontSize = 24.sp,
@@ -181,9 +173,9 @@ fun ReadLogGraph(
                 listOf(
                     lineComponent(
                         color = when (themeColor) {
-                            "青" -> PastelBlue
-                            "赤" -> PastelRed
-                            "緑" -> PastelGreen
+                            stringResource(R.string.setting_theme_color_blue) -> PastelBlue
+                            stringResource(R.string.setting_theme_color_red) -> PastelRed
+                            stringResource(R.string.setting_theme_color_green) -> PastelGreen
                             else -> Color.LightGray
                         },
                         thickness = 8.dp

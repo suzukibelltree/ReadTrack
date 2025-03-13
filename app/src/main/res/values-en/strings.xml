@@ -51,6 +51,9 @@
     <string name="search_unknown">Unknown</string>
     <string name="setting_character_size">Change font size</string>
     <string name="setting_theme_color">Change theme color</string>
+    <string name="setting_theme_color_red">Red</string>
+    <string name="setting_theme_color_blue">Blue</string>
+    <string name="setting_theme_color_green">Green</string>
     <string name="setting_switch_dark_light">Switch Dark/Light mode</string>
     <string name="setting_how_to_use">How to use this app</string>
     <string name="setting_logout">Logout</string>
@@ -79,6 +82,8 @@
     <string name="setting_explain_back">Back</string>
     <string name="setting_explain_next">Next</string>
     <string name="setting_explain_finish">Close</string>
+    <string name="setting_save">Save this setting</string>
+    <string name="setting_save_complete">Setting saved</string>
     <string name="drawer_home">Home</string>
     <string name="drawer_library">Library</string>
     <string name="drawer_setting">Settings</string>

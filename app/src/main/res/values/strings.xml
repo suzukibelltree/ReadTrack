@@ -50,6 +50,9 @@
     <string name="search_unknown">不明</string>
     <string name="setting_character_size">文字サイズの変更</string>
     <string name="setting_theme_color">テーマカラーの変更</string>
+    <string name="setting_theme_color_red">赤</string>
+    <string name="setting_theme_color_blue">青</string>
+    <string name="setting_theme_color_green">緑</string>
     <string name="setting_how_to_use">このアプリの使い方</string>
     <string name="setting_logout">ログアウト</string>
     <string name="setting_switch_dark_light">ダークモード/ライトモード切替</string>
@@ -76,6 +79,8 @@
     <string name="setting_explain_back">戻る</string>
     <string name="setting_explain_next">次へ</string>
     <string name="setting_explain_finish">閉じる</string>
+    <string name="setting_save">この設定を保存する</string>
+    <string name="setting_save_complete">設定を保存しました</string>
     <string name="drawer_home">ホーム</string>
     <string name="drawer_library">ライブラリ</string>
     <string name="drawer_setting">設定</string>

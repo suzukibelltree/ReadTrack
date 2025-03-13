@@ -70,7 +70,8 @@ fun ReadTrackApp() {
             DrawerContent(
                 drawerState = drawerState,
                 navController = navController,
-                currentRouteName = currentRoute ?: ""
+                currentRouteName = currentRoute ?: "",
+                selectedThemeColor = themeColor
             )
         },
         scrimColor = Color.White.copy(alpha = 0.9f)
@@ -101,9 +102,9 @@ fun ReadTrackApp() {
                         },
                         colors = TopAppBarDefaults.topAppBarColors(
                             containerColor = when (themeColor) {
-                                "青" -> PastelBlue
-                                "緑" -> PastelGreen
-                                "赤" -> PastelRed
+                                stringResource(R.string.setting_theme_color_blue) -> PastelBlue
+                                stringResource(R.string.setting_theme_color_green) -> PastelGreen
+                                stringResource(R.string.setting_theme_color_red) -> PastelRed
                                 else -> Color.Gray
                             }
                         )
@@ -137,7 +138,8 @@ fun ReadTrackApp() {
 fun DrawerContent(
     drawerState: DrawerState,
     navController: NavController,
-    currentRouteName: String
+    currentRouteName: String,
+    selectedThemeColor: String = ""
 ) {
     val scope = rememberCoroutineScope()
     val menuItems = listOf(
@@ -162,7 +164,14 @@ fun DrawerContent(
                 headlineContent = {
                     Text(
                         text = title,
-                        color = if (currentRouteName == route.toString()) Color.Blue else Color.Black
+                        color = if (currentRouteName == route.toString()) {
+                            when (selectedThemeColor) {
+                                stringResource(R.string.setting_theme_color_blue) -> PastelBlue
+                                stringResource(R.string.setting_theme_color_green) -> PastelGreen
+                                stringResource(R.string.setting_theme_color_red) -> PastelRed
+                                else -> Color.Black
+                            }
+                        } else Color.Black
                     )
                 },
             )
@@ -181,7 +190,7 @@ fun getTopBarTitle(currentRoute: String?): String {
         Route.Setting.toString() -> context.getString(TopTextList.Setting.resId)
         Route.Search.toString() -> context.getString(TopTextList.Search.resId)
         Route.BookDetail.toString() -> context.getString(TopTextList.BookDetail.resId)
-        else -> context.getString(TopTextList.MyBook.resId) // 文字列リソースを適用
+        else -> context.getString(TopTextList.MyBook.resId)
     }
 }
 

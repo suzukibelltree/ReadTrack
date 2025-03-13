@@ -32,10 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.readtrack.R
-import com.example.readtrack.Route
 import com.example.readtrack.datastore.getValue
 import com.example.readtrack.datastore.saveValue
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -67,7 +65,11 @@ fun SettingScreen(
                     .clickable { themeMenuExpand = !themeMenuExpand }
             )
             AnimatedVisibility(themeMenuExpand) {
-                val colorOptions = listOf("青", "赤", "緑")
+                val colorOptions = listOf(
+                    stringResource(id = R.string.setting_theme_color_red),
+                    stringResource(id = R.string.setting_theme_color_blue),
+                    stringResource(id = R.string.setting_theme_color_green)
+                )
                 val (selectedOption, onOptionSelected) = remember {
                     mutableStateOf(
                         selectedThemeColor
@@ -121,20 +123,6 @@ fun SettingScreen(
                 }
         )
         HorizontalDivider()
-        Text(
-            text = stringResource(id = R.string.setting_logout),
-            fontSize = 20.sp,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .clickable {
-                    FirebaseAuth
-                        .getInstance()
-                        .signOut()
-                    navController.navigate(Route.Login)
-                }
-        )
-        HorizontalDivider()
         Spacer(modifier = Modifier.weight(1f))
         Button(
             onClick = {
@@ -145,10 +133,10 @@ fun SettingScreen(
                         value = selectedThemeColor
                     )
                 }
-                Toast.makeText(context, "設定を保存しました", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.setting_save_complete, Toast.LENGTH_SHORT).show()
             }
         ) {
-            Text(text = "この設定を保存する")
+            Text(text = stringResource(id = R.string.setting_save))
         }
         Spacer(modifier = Modifier.weight(1f))
     }
