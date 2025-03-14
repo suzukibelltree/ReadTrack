@@ -61,15 +61,7 @@ fun ReadTrackApp() {
     val scope = rememberCoroutineScope()
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route?.substringAfter("Route.")
-    val topBarTitle = when (currentRoute) {
-        Route.Home.toString() -> TopTextList.Home.value
-        Route.Library.toString() -> TopTextList.Library.value
-        Route.RegisterProcess.toString() -> TopTextList.RegisterProcess.value
-        Route.Setting.toString() -> TopTextList.Setting.value
-        Route.Search.toString() -> TopTextList.Search.value
-        Route.BookDetail.toString() -> TopTextList.BookDetail.value
-        else -> "MyBook"
-    }
+    val topBarTitle = getTopBarTitle(currentRoute)
     val context = LocalContext.current
     val themeColor by getValue(context, "theme_color").collectAsState(initial = "")
     ModalNavigationDrawer(
@@ -78,10 +70,11 @@ fun ReadTrackApp() {
             DrawerContent(
                 drawerState = drawerState,
                 navController = navController,
-                currentRouteName = currentRoute ?: ""
+                currentRouteName = currentRoute ?: "",
+                selectedThemeColor = themeColor
             )
         },
-        scrimColor = Color.White
+        scrimColor = Color.White.copy(alpha = 0.9f)
     ) {
         Scaffold(
             topBar = {
@@ -109,10 +102,9 @@ fun ReadTrackApp() {
                         },
                         colors = TopAppBarDefaults.topAppBarColors(
                             containerColor = when (themeColor) {
-                                "青" -> PastelBlue
-                                "緑" -> PastelGreen
-                                "赤" -> PastelRed
-                                else -> Color.Gray
+                                stringResource(R.string.setting_theme_color_green) -> PastelGreen
+                                stringResource(R.string.setting_theme_color_red) -> PastelRed
+                                else -> PastelBlue
                             }
                         )
                     )
@@ -145,7 +137,8 @@ fun ReadTrackApp() {
 fun DrawerContent(
     drawerState: DrawerState,
     navController: NavController,
-    currentRouteName: String
+    currentRouteName: String,
+    selectedThemeColor: String = ""
 ) {
     val scope = rememberCoroutineScope()
     val menuItems = listOf(
@@ -170,7 +163,13 @@ fun DrawerContent(
                 headlineContent = {
                     Text(
                         text = title,
-                        color = if (currentRouteName == route.toString()) Color.Blue else Color.Black
+                        color = if (currentRouteName == route.toString()) {
+                            when (selectedThemeColor) {
+                                stringResource(R.string.setting_theme_color_green) -> PastelGreen
+                                stringResource(R.string.setting_theme_color_red) -> PastelRed
+                                else -> PastelBlue
+                            }
+                        } else Color.Black
                     )
                 },
             )
@@ -179,4 +178,17 @@ fun DrawerContent(
     }
 }
 
+@Composable
+fun getTopBarTitle(currentRoute: String?): String {
+    val context = LocalContext.current
+    return when (currentRoute) {
+        Route.Home.toString() -> context.getString(TopTextList.Home.resId)
+        Route.Library.toString() -> context.getString(TopTextList.Library.resId)
+        Route.RegisterProcess.toString() -> context.getString(TopTextList.RegisterProcess.resId)
+        Route.Setting.toString() -> context.getString(TopTextList.Setting.resId)
+        Route.Search.toString() -> context.getString(TopTextList.Search.resId)
+        Route.BookDetail.toString() -> context.getString(TopTextList.BookDetail.resId)
+        else -> context.getString(TopTextList.MyBook.resId)
+    }
+}
 

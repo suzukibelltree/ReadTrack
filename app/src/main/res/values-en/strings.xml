@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ReadTrack</string>
+    <string name="app_topBar_home">Home</string>
+    <string name="app_topBar_library">Library</string>
+    <string name="app_topBar_setting">Setting</string>
+    <string name="app_topBar_register_process">Register Process</string>
+    <string name="app_topBar_search">Search</string>
+    <string name="app_topBar_detail">Detail of Book</string>
+    <string name="app_topBar_myBook">MyBook</string>
     <string name="read_state_unread">Unread</string>
     <string name="read_state_reading">Reading</string>
-    <string name="read_state_read">Finished Reading</string>
+    <string name="read_state_read">Finished</string>
     <string name="screen_home">Home</string>
     <string name="screen_library">Library</string>
     <string name="screen_setting">Settings</string>
@@ -18,11 +25,12 @@
     <string name="bookDetail_publisher">Publisher</string>
     <string name="bookDetail_added">Added to library</string>
     <string name="bookDetail_addButton">Add to library</string>
+    <string name="home_greeting">Hello, %s !</string>
     <string name="home_number_of_FinishedBooks">Books finished: %s</string>
     <string name="home_last_updatedBook">Last updated book</string>
     <string name="home_last_updatedDate">Last access: %s</string>
     <string name="home_new_addedBook">Newly registered book</string>
-    <string name="home_new_addedDate">Date added</string>
+    <string name="home_new_addedDate">Date added: %s</string>
     <string name="home_readLog">Reading log</string>
     <string name="home_pageCount">Page count</string>
     <string name="home_yearMonth">Year/Month</string>
@@ -34,7 +42,7 @@
     <string name="myBook_Save_complete">Changes saved</string>
     <string name="myBook_delete">Remove from library</string>
     <string name="myBook_book_not_found">Book not found</string>
-    <string name="myBook_memo">Memo</string>
+    <string name="myBook_comment">Comment</string>
     <string name="myBook_pageCount">/ %s pages</string>
     <string name="register_process">Please select a registration method</string>
     <string name="register_title">Search by title to register</string>
@@ -43,8 +51,42 @@
     <string name="search_unknown">Unknown</string>
     <string name="setting_character_size">Change font size</string>
     <string name="setting_theme_color">Change theme color</string>
+    <string name="setting_theme_color_red">Red</string>
+    <string name="setting_theme_color_blue">Blue</string>
+    <string name="setting_theme_color_green">Green</string>
     <string name="setting_switch_dark_light">Switch Dark/Light mode</string>
+    <string name="setting_how_to_use">How to use this app</string>
+    <string name="setting_logout">Logout</string>
+    <string name="setting_explain_first_title">1.🔍 Search for a book and add it to your library</string>
+    <string name="setting_explain_second_title">2.📚 Record your reading status and pages</string>
+    <string name="setting_explain_third_title">3.📊 Check your monthly reading statistics</string>
+
+    <string name="setting_explain_first">
+        Search for a book title and tap the "Add to Library" button on the details page to save its information.\n
+        You can check the books you\'\ve added anytime from your library.
+    </string>
+
+    <string name="setting_explain_second">
+        Books in your library can have the following reading statuses:\n
+        \n
+        Unread 📘 (Not yet read)\n
+        Reading 📖 (Currently reading)\n
+        Finished ✅ (Finished reading)\n
+        \n
+        You can also enter the number of pages you\'\ve read to track your progress.
+    </string>
+    <string name="setting_explain_third">
+        The number of pages you\'\ve read is recorded monthly and displayed as a graph.\n
+        Look back at your reading progress and plan your next book!
+    </string>
+    <string name="setting_explain_back">Back</string>
+    <string name="setting_explain_next">Next</string>
+    <string name="setting_explain_finish">Close</string>
+    <string name="setting_save">Save this setting</string>
+    <string name="setting_save_complete">Setting saved</string>
     <string name="drawer_home">Home</string>
     <string name="drawer_library">Library</string>
     <string name="drawer_setting">Settings</string>
+    <string name="app_notification_title">Let\'\s clear your reading backlog!</string>
+    <string name="app_notification_content">A week has passed since your last update!</string>
 </resources>

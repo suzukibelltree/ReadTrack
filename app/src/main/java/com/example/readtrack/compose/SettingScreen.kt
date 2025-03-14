@@ -11,12 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -36,10 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.readtrack.R
-import com.example.readtrack.Route
 import com.example.readtrack.datastore.getValue
 import com.example.readtrack.datastore.saveValue
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -48,6 +42,7 @@ fun SettingScreen(
     navController: NavController
 ) {
     val scope = rememberCoroutineScope()
+    var showExplainDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -61,24 +56,20 @@ fun SettingScreen(
         }
         Column {
             var themeMenuExpand by remember { mutableStateOf(false) }
-            Row {
-                Icon(
-                    imageVector = if (themeMenuExpand) Icons.Default.Remove else Icons.Default.Add,
-                    contentDescription = "Open Menu",
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .clickable { themeMenuExpand = !themeMenuExpand }
-                )
-                Text(
-                    text = stringResource(R.string.setting_theme_color),
-                    fontSize = 20.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                )
-            }
+            Text(
+                text = stringResource(R.string.setting_theme_color),
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .clickable { themeMenuExpand = !themeMenuExpand }
+            )
             AnimatedVisibility(themeMenuExpand) {
-                val radiooptions2 = listOf("青", "赤", "緑")
+                val colorOptions = listOf(
+                    stringResource(id = R.string.setting_theme_color_red),
+                    stringResource(id = R.string.setting_theme_color_blue),
+                    stringResource(id = R.string.setting_theme_color_green)
+                )
                 val (selectedOption, onOptionSelected) = remember {
                     mutableStateOf(
                         selectedThemeColor
@@ -88,10 +79,10 @@ fun SettingScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp), // 選択肢の間にスペースを追加
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    radiooptions2.forEach { text ->
+                    colorOptions.forEach { text ->
                         Row(
                             Modifier
                                 .selectable(
@@ -122,16 +113,13 @@ fun SettingScreen(
         }
         HorizontalDivider()
         Text(
-            text = "ログアウト",
+            text = stringResource(id = R.string.setting_how_to_use),
             fontSize = 20.sp,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
                 .clickable {
-                    FirebaseAuth
-                        .getInstance()
-                        .signOut()
-                    navController.navigate(Route.Login)
+                    showExplainDialog = true
                 }
         )
         HorizontalDivider()
@@ -145,11 +133,14 @@ fun SettingScreen(
                         value = selectedThemeColor
                     )
                 }
-                Toast.makeText(context, "設定を保存しました", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.setting_save_complete, Toast.LENGTH_SHORT).show()
             }
         ) {
-            Text(text = "この設定を保存する")
+            Text(text = stringResource(id = R.string.setting_save))
         }
         Spacer(modifier = Modifier.weight(1f))
+    }
+    if (showExplainDialog) {
+        HowToUseDialog { showExplainDialog = false }
     }
 }

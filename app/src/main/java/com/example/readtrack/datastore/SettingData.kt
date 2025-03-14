@@ -1,10 +1,12 @@
 package com.example.readtrack.datastore
 
 import android.content.Context
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.readtrack.datastore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 // character_size
@@ -22,4 +24,18 @@ fun getValue(context: Context, key: String): Flow<String> {
     return context.datastore.data.map { preferences ->
         preferences[stringPreferencesKey(key)] ?: "unknown"
     }
+}
+
+suspend fun isFirstLaunch(context: Context): Boolean {
+    val isFirstLaunchKey = booleanPreferencesKey("is_first_launch")
+    val preferences = context.datastore.data.first()
+    val isFirstLaunch = preferences[isFirstLaunchKey] ?: true
+
+    if (isFirstLaunch) {
+        context.datastore.edit { preferences ->
+            preferences[isFirstLaunchKey] = false
+        }
+    }
+
+    return isFirstLaunch
 }

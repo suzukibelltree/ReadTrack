@@ -16,7 +16,7 @@ import com.example.readtrack.R
  * 通知チャンネルを作成する
  * @param context コンテキスト
  */
-private fun createNotificationChannel(context: Context) {
+fun createNotificationChannel(context: Context) {
     val channelId = "example_channel"
     val channelName = "Example Channel"
     val importance = NotificationManager.IMPORTANCE_DEFAULT
@@ -36,9 +36,9 @@ fun showNotification(context: Context) {
     val notificationId = 1
 
     val builder = NotificationCompat.Builder(context, channelId)
-        .setSmallIcon(R.drawable.reading) // アイコン
-        .setContentTitle("通知のタイトル") // 通知のタイトル
-        .setContentText("通知の内容") // 通知の内容
+        .setSmallIcon(R.drawable.frame) // アイコン
+        .setContentTitle(context.getString(R.string.app_notification_title)) // 通知のタイトル
+        .setContentText(context.getString(R.string.app_notification_content)) // 通知の内容
         .setPriority(NotificationCompat.PRIORITY_DEFAULT) // 優先度
 
     val notificationManager = NotificationManagerCompat.from(context)

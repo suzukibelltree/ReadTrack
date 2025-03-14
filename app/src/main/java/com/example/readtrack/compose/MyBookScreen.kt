@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
@@ -24,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,10 +42,12 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.readtrack.R
 import com.example.readtrack.Route
+import com.example.readtrack.datastore.saveValue
 import com.example.readtrack.getCurrentFormattedTime
 import com.example.readtrack.getCurrentYearMonthAsInt
 import com.example.readtrack.room.MyBooksViewModel
 import com.example.readtrack.room.ReadLog
+import kotlinx.coroutines.launch
 
 /**
  * 自分が登録した本の詳細を表示する画面
@@ -61,6 +66,8 @@ fun MyBookScreen(
     }
     val selectedBook by myBooksViewModel.selectedBook.collectAsState()
     val readLogs = myBooksViewModel.allLogs.collectAsState()
+    val scrollState = rememberScrollState()
+    val scope = rememberCoroutineScope()
     var showDialog by remember { mutableStateOf(false) }
     val currentYearMonthId = getCurrentYearMonthAsInt()
     val formattedDate = getCurrentFormattedTime()
@@ -77,7 +84,9 @@ fun MyBookScreen(
             )
         }
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // ユーザーのページ数入力を受け付ける
@@ -86,15 +95,23 @@ fun MyBookScreen(
             val context = LocalContext.current
             // ページ数の差分(変更前後)を保持
             var pagesReadDiff by remember { mutableIntStateOf(0) }
-            Row {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
+                    .padding(16.dp)
+            ) {
                 AsyncImage(
                     model = book.thumbnail,
                     contentDescription = null,
                     modifier = Modifier
-                        .fillMaxWidth(0.4f)
-                        .padding(16.dp)
+                        .size(100.dp)
                 )
-                Column {
+                Column(
+                    modifier = Modifier
+                        .weight(1f) // 余ったスペースを利用する
+                        .padding(start = 16.dp) // 画像との間隔をあける
+                ) {
                     Text(
                         text = book.title,
                         fontSize = 20.sp,
@@ -178,6 +195,7 @@ fun MyBookScreen(
                                 // 読了ページ数がページ数を超える場合はページ数に合わせる
                                 if (newValue.toInt() > book.pageCount!!) {
                                     readPagesCount = book.pageCount.toString()
+                                    selectedOption = R.string.read_state_read
                                 }
                             }
                         },
@@ -197,7 +215,7 @@ fun MyBookScreen(
                 }
                 //TODO: 保存する情報を感想ではなくメモにするか検討
                 Text(
-                    text = stringResource(R.string.myBook_memo),
+                    text = stringResource(R.string.myBook_comment),
                     modifier = Modifier.align(Alignment.Start)
                 )
                 OutlinedTextField(
@@ -233,6 +251,13 @@ fun MyBookScreen(
                                 readPages = pagesReadDiff
                             )
                         )
+                        scope.launch {
+                            saveValue(
+                                context = context,
+                                key = "lastUpdatedDate",
+                                value = formattedDate
+                            )
+                        }
                         navController.navigate(Route.Library)
                     },
                     modifier = Modifier

@@ -1,11 +1,18 @@
 package com.example.readtrack.compose
 
-enum class TopTextList(val value: String) {
-    Home("ホーム"),
-    Library("ライブラリ"),
-    Setting("設定"),
-    RegisterProcess("登録方法の選択"),
-    Search("検索"),
-    BookDetail("本の詳細"),
-    MyBook("登録した本"),
+import android.content.Context
+import com.example.readtrack.R
+
+enum class TopTextList(val resId: Int) {
+    Home(R.string.app_topBar_home),
+    Library(R.string.app_topBar_library),
+    Setting(R.string.app_topBar_setting),
+    RegisterProcess(R.string.app_topBar_register_process),
+    Search(R.string.app_topBar_search),
+    BookDetail(R.string.app_topBar_detail),
+    MyBook(R.string.app_topBar_myBook);
+
+    fun getValue(context: Context): String {
+        return context.getString(resId)
+    }
 }
