@@ -26,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,10 +42,12 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.readtrack.R
 import com.example.readtrack.Route
+import com.example.readtrack.datastore.saveValue
 import com.example.readtrack.getCurrentFormattedTime
 import com.example.readtrack.getCurrentYearMonthAsInt
 import com.example.readtrack.room.MyBooksViewModel
 import com.example.readtrack.room.ReadLog
+import kotlinx.coroutines.launch
 
 /**
  * 自分が登録した本の詳細を表示する画面
@@ -64,6 +67,7 @@ fun MyBookScreen(
     val selectedBook by myBooksViewModel.selectedBook.collectAsState()
     val readLogs = myBooksViewModel.allLogs.collectAsState()
     val scrollState = rememberScrollState()
+    val scope = rememberCoroutineScope()
     var showDialog by remember { mutableStateOf(false) }
     val currentYearMonthId = getCurrentYearMonthAsInt()
     val formattedDate = getCurrentFormattedTime()
@@ -247,6 +251,13 @@ fun MyBookScreen(
                                 readPages = pagesReadDiff
                             )
                         )
+                        scope.launch {
+                            saveValue(
+                                context = context,
+                                key = "lastUpdatedDate",
+                                value = formattedDate
+                            )
+                        }
                         navController.navigate(Route.Library)
                     },
                     modifier = Modifier

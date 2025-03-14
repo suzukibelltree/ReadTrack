@@ -1,5 +1,6 @@
 package com.example.readtrack.compose
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,7 +15,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -51,6 +51,10 @@ fun HomeScreen(
     navController: NavController,
     homeViewModel: HomeViewModel,
 ) {
+    Log.d(
+        "huga",
+        getValue(LocalContext.current, "lastUpdatedDate").collectAsState(initial = "").value
+    )
     val savedBooks = homeViewModel.allBooks.collectAsState()
     val finishedBooks = savedBooks.value.filter { it.progress == 2 }
     // もっとも最近に更新された本のインスタンスを取得
@@ -173,10 +177,9 @@ fun ReadLogGraph(
                 listOf(
                     lineComponent(
                         color = when (themeColor) {
-                            stringResource(R.string.setting_theme_color_blue) -> PastelBlue
                             stringResource(R.string.setting_theme_color_red) -> PastelRed
                             stringResource(R.string.setting_theme_color_green) -> PastelGreen
-                            else -> Color.LightGray
+                            else -> PastelBlue
                         },
                         thickness = 8.dp
                     )

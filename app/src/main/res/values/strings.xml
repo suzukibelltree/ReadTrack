@@ -84,4 +84,6 @@
     <string name="drawer_home">ホーム</string>
     <string name="drawer_library">ライブラリ</string>
     <string name="drawer_setting">設定</string>
+    <string name="app_notification_title">積読を解消しましょう！</string>
+    <string name="app_notification_content">最後の更新から1週間が経過しました！</string>
 </resources>

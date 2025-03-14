@@ -81,6 +81,7 @@ dependencies {
     // Coil
     implementation(libs.coil.compose)
 
+    // Compose Material Icons
     implementation(libs.androidx.material.icons.extended)
 
     // material3
@@ -95,8 +96,10 @@ dependencies {
     implementation(libs.vico.compose.m3)
     implementation(libs.vico.core)
 
+    // Dagger Hilt
     implementation("com.google.dagger:hilt-android:2.51.1")
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+
     // Jetpack Compose Hilt Extensions
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
@@ -108,6 +111,8 @@ dependencies {
     // datastore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
+    // WorkManager
+    implementation("androidx.work:work-runtime-ktx:2.10.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

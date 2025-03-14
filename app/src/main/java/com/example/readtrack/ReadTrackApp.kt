@@ -102,10 +102,9 @@ fun ReadTrackApp() {
                         },
                         colors = TopAppBarDefaults.topAppBarColors(
                             containerColor = when (themeColor) {
-                                stringResource(R.string.setting_theme_color_blue) -> PastelBlue
                                 stringResource(R.string.setting_theme_color_green) -> PastelGreen
                                 stringResource(R.string.setting_theme_color_red) -> PastelRed
-                                else -> Color.Gray
+                                else -> PastelBlue
                             }
                         )
                     )
@@ -166,10 +165,9 @@ fun DrawerContent(
                         text = title,
                         color = if (currentRouteName == route.toString()) {
                             when (selectedThemeColor) {
-                                stringResource(R.string.setting_theme_color_blue) -> PastelBlue
                                 stringResource(R.string.setting_theme_color_green) -> PastelGreen
                                 stringResource(R.string.setting_theme_color_red) -> PastelRed
-                                else -> Color.Black
+                                else -> PastelBlue
                             }
                         } else Color.Black
                     )
