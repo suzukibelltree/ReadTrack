@@ -24,6 +24,7 @@
     <string name="bookDetail_page">Page</string>
     <string name="bookDetail_publisher">Publisher</string>
     <string name="bookDetail_added">Added to library</string>
+    <string name="bookDetail_null_description">No description available for this book.</string>
     <string name="bookDetail_addButton">Add to library</string>
     <string name="home_greeting">Hello, %s !</string>
     <string name="home_number_of_FinishedBooks">Books finished: %s</string>
@@ -48,6 +49,7 @@
     <string name="register_title">Search by title to register</string>
     <string name="search_title">Enter title</string>
     <string name="search_button">Search</string>
+    <string name="search_failed">Search failed.</string>
     <string name="search_unknown">Unknown</string>
     <string name="setting_character_size">Change font size</string>
     <string name="setting_theme_color">Change theme color</string>
