@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.readtrack"
-        minSdk = 31
+        minSdk = 30
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -59,6 +59,7 @@ dependencies {
 
     // Room
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.appcompat)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 

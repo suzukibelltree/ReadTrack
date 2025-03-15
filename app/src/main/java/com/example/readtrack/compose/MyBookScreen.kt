@@ -208,10 +208,12 @@ fun MyBookScreen(
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
 
-                    Text(
-                        text = stringResource(R.string.myBook_pageCount, book.pageCount!!),
-                        modifier = Modifier.align(Alignment.CenterVertically)
-                    )
+                    if (book.pageCount != null) {
+                        Text(
+                            text = stringResource(R.string.myBook_pageCount, book.pageCount),
+                            modifier = Modifier.align(Alignment.CenterVertically)
+                        )
+                    }
                 }
                 //TODO: 保存する情報を感想ではなくメモにするか検討
                 Text(

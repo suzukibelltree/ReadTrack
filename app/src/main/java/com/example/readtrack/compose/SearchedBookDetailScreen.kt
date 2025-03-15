@@ -87,28 +87,33 @@ fun BookDetail(
         Card(
             modifier = Modifier.fillMaxWidth()
         ) {
-            if (bookItem.volumeInfo.description.toString().length <= 100) {
-                Text(text = bookItem.volumeInfo.description.toString())
+            if (bookItem.volumeInfo.description == null) {
+                Text(text = stringResource(R.string.bookDetail_null_description))
             } else {
-                var isExpanded by remember { mutableStateOf(false) }
-                Column {
-                    Text(
-                        text = if (isExpanded) bookItem.volumeInfo.description.toString()
-                        else bookItem.volumeInfo.description.toString().substring(0, 100) + "...",
-                    )
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) {
+                if (bookItem.volumeInfo.description.toString().length <= 100) {
+                    Text(text = bookItem.volumeInfo.description.toString())
+                } else {
+                    var isExpanded by remember { mutableStateOf(false) }
+                    Column {
                         Text(
-                            text = if (isExpanded) stringResource(R.string.bookDetail_collapse) else stringResource(
-                                R.string.bookDetail_expand
-                            ),
-                            fontWeight = FontWeight.ExtraBold,
-                            modifier = Modifier
-                                .clickable { isExpanded = !isExpanded }
-                                .padding(end = 16.dp)
+                            text = if (isExpanded) bookItem.volumeInfo.description.toString()
+                            else bookItem.volumeInfo.description.toString()
+                                .substring(0, 100) + "...",
                         )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            Text(
+                                text = if (isExpanded) stringResource(R.string.bookDetail_collapse) else stringResource(
+                                    R.string.bookDetail_expand
+                                ),
+                                fontWeight = FontWeight.ExtraBold,
+                                modifier = Modifier
+                                    .clickable { isExpanded = !isExpanded }
+                                    .padding(end = 16.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -127,7 +132,11 @@ fun BookDetail(
                     contentDescription = null,
                     modifier = Modifier.padding(8.dp)
                 )
-                Text(text = bookItem.volumeInfo.pageCount.toString() + stringResource(R.string.bookDetail_page))
+                if (bookItem.volumeInfo.pageCount == null) {
+                    Text(text = "Unknown")
+                } else {
+                    Text(text = bookItem.volumeInfo.pageCount.toString() + stringResource(R.string.bookDetail_page))
+                }
             }
             Spacer(modifier = Modifier.weight(1f))
             Column(
@@ -139,7 +148,9 @@ fun BookDetail(
                     contentDescription = null,
                     modifier = Modifier.padding(8.dp)
                 )
-                if (bookItem.volumeInfo.publisher.toString().length > 5) {
+                if (bookItem.volumeInfo.publisher == null) {
+                    Text(text = "Unknown")
+                } else if (bookItem.volumeInfo.publisher.toString().length > 5) {
                     Text(text = bookItem.volumeInfo.publisher.toString().substring(0, 5) + "...")
                 } else {
                     Text(text = bookItem.volumeInfo.publisher.toString())

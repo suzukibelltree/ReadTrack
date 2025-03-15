@@ -88,12 +88,14 @@ fun LibraryScreen(
                                 navController.navigate("${Route.MyBook}/${book.id}")
                             }
                     )
-                    LinearProgressIndicator(
-                        progress = { book.readpage!!.toFloat() / book.pageCount!!.toFloat() },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                    )
+                    if (book.pageCount != null) {
+                        LinearProgressIndicator(
+                            progress = { book.readpage!!.toFloat() / book.pageCount.toFloat() },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                        )
+                    }
                 }
             }
         }

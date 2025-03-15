@@ -67,7 +67,7 @@ fun SearchScreen(
 
         when {
             viewModel.isLoading -> CircularProgressIndicator()
-            viewModel.errorMessage != null -> Text("Error: ${viewModel.errorMessage}")
+            viewModel.errorMessage != null -> Text(text = stringResource(R.string.search_failed))
             else -> BooksCardList(
                 books = viewModel.books,
                 navController = navController
