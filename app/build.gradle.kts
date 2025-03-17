@@ -11,11 +11,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.readtrack"
+    namespace = "com.belltree.readtrack"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.readtrack"
+        applicationId = "com.belltree.readtrack"
         minSdk = 30
         targetSdk = 34
         versionCode = 1

@@ -8,8 +8,8 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="com.example.readtrack" />
-                  <option name="mobileSdkAppId" value="1:1076655061904:android:4fbbf152c9eeeb41d75115" />
+                  <option name="appId" value="com.belltree.readtrack" />
+                  <option name="mobileSdkAppId" value="1:1076655061904:android:0006ac464a767b57d75115" />
                   <option name="projectId" value="readtrack-1fae7" />
                   <option name="projectNumber" value="1076655061904" />
                 </ConnectionSetting>
