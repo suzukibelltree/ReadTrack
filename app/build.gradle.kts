@@ -16,10 +16,10 @@ android {
 
     defaultConfig {
         applicationId = "com.belltree.readtrack"
-        minSdk = 30
+        minSdk = 31
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 7
+        versionName = "1.0.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -106,8 +106,6 @@ dependencies {
 
     // Firebase
     implementation(libs.firebase.bom)
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.ui.auth)
 
     // datastore
     implementation(libs.androidx.datastore.preferences)
