@@ -6,15 +6,19 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.belltree.readtrack.R
 
+/**
+ * アプリの使用方法を説明するダイアログ
+ * @param onDismiss ダイアログを閉じるための関数
+ */
 @Composable
 fun HowToUseDialog(onDismiss: () -> Unit) {
-    var currentPage by remember { mutableStateOf(0) }
+    var currentPage by remember { mutableIntStateOf(0) }
 
     AlertDialog(
         onDismissRequest = onDismiss,

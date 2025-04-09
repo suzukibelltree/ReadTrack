@@ -1,8 +1,10 @@
 package com.belltree.readtrack
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +21,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
@@ -31,7 +34,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -43,9 +45,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.belltree.readtrack.compose.TopTextList
 import com.belltree.readtrack.datastore.getValue
-import com.belltree.readtrack.ui.theme.PastelBlue
-import com.belltree.readtrack.ui.theme.PastelGreen
-import com.belltree.readtrack.ui.theme.PastelRed
+import com.belltree.readtrack.themecolor.AppColors
+import com.belltree.readtrack.themecolor.getPrimaryColor
 import kotlinx.coroutines.launch
 
 val Context.datastore: DataStore<Preferences> by preferencesDataStore(name = "character_size")
@@ -64,17 +65,18 @@ fun ReadTrackApp() {
     val topBarTitle = getTopBarTitle(currentRoute)
     val context = LocalContext.current
     val themeColor by getValue(context, "theme_color").collectAsState(initial = "")
+    val primaryColor = getPrimaryColor(isSystemInDarkTheme(), themeColor)
+    Log.d("primaryColor", primaryColor.toString())
+    val scrimColor = AppColors.scrimColor
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
             DrawerContent(
                 drawerState = drawerState,
                 navController = navController,
-                currentRouteName = currentRoute ?: "",
-                selectedThemeColor = themeColor
             )
         },
-        scrimColor = Color.White.copy(alpha = 0.9f)
+        scrimColor = scrimColor
     ) {
         Scaffold(
             topBar = {
@@ -101,11 +103,7 @@ fun ReadTrackApp() {
                             )
                         },
                         colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = when (themeColor) {
-                                stringResource(R.string.setting_theme_color_green) -> PastelGreen
-                                stringResource(R.string.setting_theme_color_red) -> PastelRed
-                                else -> PastelBlue
-                            }
+                            containerColor = getPrimaryColor(isSystemInDarkTheme(), themeColor),
                         )
                     )
                 }
@@ -137,8 +135,6 @@ fun ReadTrackApp() {
 fun DrawerContent(
     drawerState: DrawerState,
     navController: NavController,
-    currentRouteName: String,
-    selectedThemeColor: String = ""
 ) {
     val scope = rememberCoroutineScope()
     val menuItems = listOf(
@@ -160,16 +156,12 @@ fun DrawerContent(
                         navController.navigate(route)
                     }
                     .padding(8.dp),
+                colors = ListItemDefaults.colors(
+                    containerColor = AppColors.containerColor
+                ),
                 headlineContent = {
                     Text(
                         text = title,
-                        color = if (currentRouteName == route.toString()) {
-                            when (selectedThemeColor) {
-                                stringResource(R.string.setting_theme_color_green) -> PastelGreen
-                                stringResource(R.string.setting_theme_color_red) -> PastelRed
-                                else -> PastelBlue
-                            }
-                        } else Color.Black
                     )
                 },
             )

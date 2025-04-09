@@ -1,6 +1,6 @@
 package com.belltree.readtrack.compose
 
-import android.util.Log
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,9 +29,7 @@ import com.belltree.readtrack.datastore.getValue
 import com.belltree.readtrack.network.BookData
 import com.belltree.readtrack.room.HomeViewModel
 import com.belltree.readtrack.room.ReadLog
-import com.belltree.readtrack.ui.theme.PastelBlue
-import com.belltree.readtrack.ui.theme.PastelGreen
-import com.belltree.readtrack.ui.theme.PastelRed
+import com.belltree.readtrack.themecolor.getPrimaryColor
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
@@ -51,10 +49,6 @@ fun HomeScreen(
     navController: NavController,
     homeViewModel: HomeViewModel,
 ) {
-    Log.d(
-        "huga",
-        getValue(LocalContext.current, "lastUpdatedDate").collectAsState(initial = "").value
-    )
     val savedBooks = homeViewModel.allBooks.collectAsState()
     val finishedBooks = savedBooks.value.filter { it.progress == 2 }
     // もっとも最近に更新された本のインスタンスを取得
@@ -176,11 +170,7 @@ fun ReadLogGraph(
             chart = ColumnChart(
                 listOf(
                     lineComponent(
-                        color = when (themeColor) {
-                            stringResource(R.string.setting_theme_color_red) -> PastelRed
-                            stringResource(R.string.setting_theme_color_green) -> PastelGreen
-                            else -> PastelBlue
-                        },
+                        color = getPrimaryColor(isSystemInDarkTheme(), themeColor),
                         thickness = 8.dp
                     )
                 ),

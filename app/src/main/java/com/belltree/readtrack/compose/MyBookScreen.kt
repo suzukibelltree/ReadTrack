@@ -47,6 +47,7 @@ import com.belltree.readtrack.getCurrentFormattedTime
 import com.belltree.readtrack.getCurrentYearMonthAsInt
 import com.belltree.readtrack.room.MyBooksViewModel
 import com.belltree.readtrack.room.ReadLog
+import com.belltree.readtrack.ui.theme.SaveButtonColor
 import kotlinx.coroutines.launch
 
 /**
@@ -265,7 +266,8 @@ fun MyBookScreen(
                     modifier = Modifier
                         .padding(8.dp)
                         .fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(SaveButtonColor)
                 ) {
                     Text(text = stringResource(R.string.myBook_Save))
                 }
@@ -277,7 +279,7 @@ fun MyBookScreen(
                         .padding(8.dp)
                         .fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(Color.Black)
+                    colors = ButtonDefaults.buttonColors(Color.Red)
                 ) {
                     Text(text = stringResource(R.string.myBook_delete))
                 }

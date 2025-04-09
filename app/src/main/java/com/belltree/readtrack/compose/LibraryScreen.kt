@@ -28,6 +28,7 @@ import coil.compose.AsyncImage
 import com.belltree.readtrack.R
 import com.belltree.readtrack.Route
 import com.belltree.readtrack.room.MyBooksViewModel
+import com.belltree.readtrack.themecolor.AppColors
 
 /**
  * ライブラリ画面
@@ -44,6 +45,7 @@ fun LibraryScreen(
     val screenWidthDp = configuration.screenWidthDp.dp
     val savedBooks by myBooksViewModel.savedBooks.collectAsState()
     var selectedTabIndex by remember { mutableIntStateOf(0) }
+    val textColor = AppColors.textColor
     Column {
         TabRow(
             selectedTabIndex = selectedTabIndex,
@@ -53,17 +55,32 @@ fun LibraryScreen(
             Tab(
                 selected = selectedTabIndex == 0,
                 onClick = { selectedTabIndex = 0 },
-                text = { Text(text = stringResource(R.string.read_state_unread)) }
+                text = {
+                    Text(
+                        text = stringResource(R.string.read_state_unread),
+                        color = textColor
+                    )
+                }
             )
             Tab(
                 selected = selectedTabIndex == 1,
                 onClick = { selectedTabIndex = 1 },
-                text = { Text(text = stringResource(R.string.read_state_reading)) }
+                text = {
+                    Text(
+                        text = stringResource(R.string.read_state_reading),
+                        color = textColor
+                    )
+                }
             )
             Tab(
                 selected = selectedTabIndex == 2,
                 onClick = { selectedTabIndex = 2 },
-                text = { Text(text = stringResource(R.string.read_state_read)) }
+                text = {
+                    Text(
+                        text = stringResource(R.string.read_state_read),
+                        color = textColor
+                    )
+                }
             )
         }
         LazyVerticalGrid(columns = GridCells.Adaptive(screenWidthDp / 3)) {
