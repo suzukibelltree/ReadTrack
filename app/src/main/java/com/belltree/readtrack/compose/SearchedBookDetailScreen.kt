@@ -1,6 +1,7 @@
 package com.belltree.readtrack.compose
 
 import android.widget.Toast
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -99,7 +100,11 @@ fun BookDetail(
                     Text(text = bookItem.volumeInfo.description.toString())
                 } else {
                     var isExpanded by remember { mutableStateOf(false) }
-                    Column {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .animateContentSize()
+                    ) {
                         Text(
                             text = if (isExpanded) bookItem.volumeInfo.description.toString()
                             else bookItem.volumeInfo.description.toString()
