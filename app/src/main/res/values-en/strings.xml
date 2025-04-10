@@ -39,7 +39,8 @@
     <string name="home_yearMonth">Year/Month</string>
     <string name="home_initialBookCard">Book not registered yet</string>
     <string name="myBook_publishedDate">Publication date: %s</string>
-    <string name="myBook_addedDate">Date added to library: %s</string>
+    <string name="myBook_addedDate">Date added to library \n %s</string>
+    <string name="myBook_updatedDate">Last Updated Date \n %s</string>
     <string name="myBook_readState">Reading status</string>
     <string name="myBook_pagesRead">Pages read</string>
     <string name="myBook_Save">Save changes</string>

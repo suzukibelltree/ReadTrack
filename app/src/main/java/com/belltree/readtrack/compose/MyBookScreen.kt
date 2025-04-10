@@ -122,11 +122,13 @@ fun MyBookScreen(
                         text = book.author,
                     )
                     Text(
-                        text = stringResource(R.string.myBook_publishedDate, book.publishedDate!!),
-                    )
-                    Text(
                         text = stringResource(R.string.myBook_addedDate, book.registeredDate),
                     )
+                    if (book.progress != 0) {
+                        Text(
+                            text = stringResource(R.string.myBook_updatedDate, book.updatedDate),
+                        )
+                    }
                 }
             }
             Column(
