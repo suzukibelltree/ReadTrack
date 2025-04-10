@@ -16,10 +16,10 @@ android {
 
     defaultConfig {
         applicationId = "com.belltree.readtrack"
-        minSdk = 31
-        targetSdk = 34
-        versionCode = 7
-        versionName = "1.0.6"
+        minSdk = 26
+        targetSdk = 35
+        versionCode = 8
+        versionName = "1.0.7"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

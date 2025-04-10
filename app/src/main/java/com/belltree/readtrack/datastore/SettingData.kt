@@ -26,6 +26,9 @@ fun getValue(context: Context, key: String): Flow<String> {
     }
 }
 
+/**
+ * アプリが初回起動かどうかを判定する
+ */
 suspend fun isFirstLaunch(context: Context): Boolean {
     val isFirstLaunchKey = booleanPreferencesKey("is_first_launch")
     val preferences = context.datastore.data.first()

@@ -1,6 +1,6 @@
 package com.belltree.readtrack.compose
 
-import android.util.Log
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,9 +29,7 @@ import com.belltree.readtrack.datastore.getValue
 import com.belltree.readtrack.network.BookData
 import com.belltree.readtrack.room.HomeViewModel
 import com.belltree.readtrack.room.ReadLog
-import com.belltree.readtrack.ui.theme.PastelBlue
-import com.belltree.readtrack.ui.theme.PastelGreen
-import com.belltree.readtrack.ui.theme.PastelRed
+import com.belltree.readtrack.themecolor.getPrimaryColor
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
@@ -51,10 +49,6 @@ fun HomeScreen(
     navController: NavController,
     homeViewModel: HomeViewModel,
 ) {
-    Log.d(
-        "huga",
-        getValue(LocalContext.current, "lastUpdatedDate").collectAsState(initial = "").value
-    )
     val savedBooks = homeViewModel.allBooks.collectAsState()
     val finishedBooks = savedBooks.value.filter { it.progress == 2 }
     // もっとも最近に更新された本のインスタンスを取得
@@ -86,12 +80,14 @@ fun HomeScreen(
                 .fillMaxWidth()
                 .padding(8.dp)
         )
-        updatedBook?.let {
+        if (updatedBook != null) {
             MiniBookCard(
-                book = it,
+                book = updatedBook!!,
                 navController = navController,
                 message = stringResource(R.string.home_last_updatedDate, updatedBook!!.updatedDate)
             )
+        } else {
+            InitialMiniBookCard()
         }
         Text(
             text = stringResource(R.string.home_new_addedBook),
@@ -101,12 +97,14 @@ fun HomeScreen(
                 .fillMaxWidth()
                 .padding(8.dp)
         )
-        newBook?.let {
+        if (newBook != null) {
             MiniBookCard(
-                book = it,
+                book = newBook!!,
                 navController = navController,
                 message = stringResource(R.string.home_new_addedDate, newBook!!.registeredDate)
             )
+        } else {
+            InitialMiniBookCard()
         }
         ReadLogGraph(readLogs = recentReadLogs)
     }
@@ -149,6 +147,26 @@ fun MiniBookCard(
 }
 
 /**
+ * 本がまだ登録されていないときに表示するBookCard
+ */
+@Composable
+fun InitialMiniBookCard() {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Text(
+            text = stringResource(R.string.home_initialBookCard),
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+        )
+    }
+}
+
+/**
  * 読書ログをグラフで表示するコンポーザブル関数
  * @param readLogs 読書ログのリスト
  */
@@ -176,11 +194,7 @@ fun ReadLogGraph(
             chart = ColumnChart(
                 listOf(
                     lineComponent(
-                        color = when (themeColor) {
-                            stringResource(R.string.setting_theme_color_red) -> PastelRed
-                            stringResource(R.string.setting_theme_color_green) -> PastelGreen
-                            else -> PastelBlue
-                        },
+                        color = getPrimaryColor(isSystemInDarkTheme(), themeColor),
                         thickness = 8.dp
                     )
                 ),

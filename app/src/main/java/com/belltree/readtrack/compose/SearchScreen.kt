@@ -18,6 +18,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,6 +48,10 @@ fun SearchScreen(
 ) {
     var query by remember { mutableStateOf("") }
     val apiKey = BuildConfig.API_KEY
+
+    LaunchedEffect(Unit) {
+        viewModel.clearSearchResults()
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()

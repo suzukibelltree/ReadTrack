@@ -1,6 +1,7 @@
 package com.belltree.readtrack.compose
 
 import android.widget.Toast
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,6 +57,10 @@ fun BookDetail(
     val context = LocalContext.current
     val app = context.applicationContext as ReadTrackApplication
     val db = app.appContainer.booksRepository
+    var registeredIdList by remember { mutableStateOf<List<String>>(emptyList()) }
+    LaunchedEffect(Unit) {
+        registeredIdList = db.getAllBookIds()
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -94,7 +100,11 @@ fun BookDetail(
                     Text(text = bookItem.volumeInfo.description.toString())
                 } else {
                     var isExpanded by remember { mutableStateOf(false) }
-                    Column {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .animateContentSize()
+                    ) {
                         Text(
                             text = if (isExpanded) bookItem.volumeInfo.description.toString()
                             else bookItem.volumeInfo.description.toString()
@@ -158,17 +168,39 @@ fun BookDetail(
             }
             Spacer(modifier = Modifier.weight(1f))
         }
-        Button(
-            onClick = {
-                val book = ConvertBookItemToBookData(bookItem)
-                coroutineScope.launch {
-                    db.insert(book)
+        if (bookItem.id in registeredIdList) {
+            Text(
+                text = stringResource(R.string.bookDetail_alreadyAdded),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(16.dp)
+            )
+            Button(
+                onClick = {
+                    navController.navigate("${Route.MyBook}/${bookItem.id}") {
+                        popUpTo(Route.Library) {
+                            inclusive = true
+                        }
+                    }
                 }
-                Toast.makeText(context, R.string.bookDetail_added, Toast.LENGTH_SHORT).show()
-                navController.navigate(Route.Library)
-            }, modifier = Modifier.padding(16.dp)
-        ) {
-            Text(text = stringResource(R.string.bookDetail_addButton))
+            ) {
+                Text(
+                    text = stringResource(R.string.bookDetail_gotoLibrary)
+                )
+            }
+        } else {
+            Button(
+                onClick = {
+                    val book = ConvertBookItemToBookData(bookItem)
+                    coroutineScope.launch {
+                        db.insert(book)
+                    }
+                    Toast.makeText(context, R.string.bookDetail_added, Toast.LENGTH_SHORT).show()
+                    navController.navigate(Route.Library)
+                }, modifier = Modifier.padding(16.dp)
+            ) {
+                Text(text = stringResource(R.string.bookDetail_addButton))
+            }
         }
     }
 }

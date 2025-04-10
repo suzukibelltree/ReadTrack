@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
@@ -28,6 +29,7 @@ import coil.compose.AsyncImage
 import com.belltree.readtrack.R
 import com.belltree.readtrack.Route
 import com.belltree.readtrack.room.MyBooksViewModel
+import com.belltree.readtrack.themecolor.AppColors
 
 /**
  * ライブラリ画面
@@ -44,6 +46,7 @@ fun LibraryScreen(
     val screenWidthDp = configuration.screenWidthDp.dp
     val savedBooks by myBooksViewModel.savedBooks.collectAsState()
     var selectedTabIndex by remember { mutableIntStateOf(0) }
+    val textColor = AppColors.textColor
     Column {
         TabRow(
             selectedTabIndex = selectedTabIndex,
@@ -53,17 +56,32 @@ fun LibraryScreen(
             Tab(
                 selected = selectedTabIndex == 0,
                 onClick = { selectedTabIndex = 0 },
-                text = { Text(text = stringResource(R.string.read_state_unread)) }
+                text = {
+                    Text(
+                        text = stringResource(R.string.read_state_unread),
+                        color = textColor
+                    )
+                }
             )
             Tab(
                 selected = selectedTabIndex == 1,
                 onClick = { selectedTabIndex = 1 },
-                text = { Text(text = stringResource(R.string.read_state_reading)) }
+                text = {
+                    Text(
+                        text = stringResource(R.string.read_state_reading),
+                        color = textColor
+                    )
+                }
             )
             Tab(
                 selected = selectedTabIndex == 2,
                 onClick = { selectedTabIndex = 2 },
-                text = { Text(text = stringResource(R.string.read_state_read)) }
+                text = {
+                    Text(
+                        text = stringResource(R.string.read_state_read),
+                        color = textColor
+                    )
+                }
             )
         }
         LazyVerticalGrid(columns = GridCells.Adaptive(screenWidthDp / 3)) {
@@ -88,12 +106,20 @@ fun LibraryScreen(
                                 navController.navigate("${Route.MyBook}/${book.id}")
                             }
                     )
+                    Text(
+                        text = if (selectedTabIndex == 0) {
+                            book.registeredDate.substring(0, 10)
+                        } else {
+                            book.updatedDate.substring(0, 10)
+                        },
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
                     if (book.pageCount != null) {
                         LinearProgressIndicator(
                             progress = { book.readpage!!.toFloat() / book.pageCount.toFloat() },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(16.dp),
+                                .padding(8.dp),
                         )
                     }
                 }

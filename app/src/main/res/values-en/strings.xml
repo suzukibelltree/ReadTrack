@@ -26,6 +26,8 @@
     <string name="bookDetail_added">Added to library</string>
     <string name="bookDetail_null_description">No description available for this book.</string>
     <string name="bookDetail_addButton">Add to library</string>
+    <string name="bookDetail_gotoLibrary">Check in library</string>
+    <string name="bookDetail_alreadyAdded">This book is already registered</string>
     <string name="home_greeting">Hello, %s !</string>
     <string name="home_number_of_FinishedBooks">Books finished: %s</string>
     <string name="home_last_updatedBook">Last updated book</string>
@@ -35,8 +37,10 @@
     <string name="home_readLog">Reading log</string>
     <string name="home_pageCount">Page count</string>
     <string name="home_yearMonth">Year/Month</string>
+    <string name="home_initialBookCard">Book not registered yet</string>
     <string name="myBook_publishedDate">Publication date: %s</string>
-    <string name="myBook_addedDate">Date added to library: %s</string>
+    <string name="myBook_addedDate">Date added to library \n %s</string>
+    <string name="myBook_updatedDate">Last Updated Date \n %s</string>
     <string name="myBook_readState">Reading status</string>
     <string name="myBook_pagesRead">Pages read</string>
     <string name="myBook_Save">Save changes</string>
