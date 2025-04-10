@@ -35,6 +35,7 @@
     <string name="home_readLog">Reading log</string>
     <string name="home_pageCount">Page count</string>
     <string name="home_yearMonth">Year/Month</string>
+    <string name="home_initialBookCard">Book not registered yet</string>
     <string name="myBook_publishedDate">Publication date: %s</string>
     <string name="myBook_addedDate">Date added to library: %s</string>
     <string name="myBook_readState">Reading status</string>

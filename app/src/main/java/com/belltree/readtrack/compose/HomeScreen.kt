@@ -80,12 +80,14 @@ fun HomeScreen(
                 .fillMaxWidth()
                 .padding(8.dp)
         )
-        updatedBook?.let {
+        if (updatedBook != null) {
             MiniBookCard(
-                book = it,
+                book = updatedBook!!,
                 navController = navController,
                 message = stringResource(R.string.home_last_updatedDate, updatedBook!!.updatedDate)
             )
+        } else {
+            InitialMiniBookCard()
         }
         Text(
             text = stringResource(R.string.home_new_addedBook),
@@ -95,12 +97,14 @@ fun HomeScreen(
                 .fillMaxWidth()
                 .padding(8.dp)
         )
-        newBook?.let {
+        if (newBook != null) {
             MiniBookCard(
-                book = it,
+                book = newBook!!,
                 navController = navController,
                 message = stringResource(R.string.home_new_addedDate, newBook!!.registeredDate)
             )
+        } else {
+            InitialMiniBookCard()
         }
         ReadLogGraph(readLogs = recentReadLogs)
     }
@@ -139,6 +143,26 @@ fun MiniBookCard(
                 Text(text = message)
             }
         }
+    }
+}
+
+/**
+ * 本がまだ登録されていないときに表示するBookCard
+ */
+@Composable
+fun InitialMiniBookCard() {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Text(
+            text = stringResource(R.string.home_initialBookCard),
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+        )
     }
 }
 
