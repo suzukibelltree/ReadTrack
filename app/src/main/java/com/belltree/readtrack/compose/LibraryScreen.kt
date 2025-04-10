@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
@@ -105,12 +106,20 @@ fun LibraryScreen(
                                 navController.navigate("${Route.MyBook}/${book.id}")
                             }
                     )
+                    Text(
+                        text = if (selectedTabIndex == 0) {
+                            book.registeredDate.substring(0, 10)
+                        } else {
+                            book.updatedDate.substring(0, 10)
+                        },
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
                     if (book.pageCount != null) {
                         LinearProgressIndicator(
                             progress = { book.readpage!!.toFloat() / book.pageCount.toFloat() },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(16.dp),
+                                .padding(8.dp),
                         )
                     }
                 }
