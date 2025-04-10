@@ -43,5 +43,12 @@ class BookListViewModel @Inject constructor(private val apiService: GoogleBooksA
     fun fetchBookById(bookId: String): BookItem? {
         return _books.find { it.id == bookId }
     }
+
+    // 本の検索結果を破棄する
+    fun clearSearchResults() {
+        _books.clear()
+        isLoading = false
+        errorMessage = null
+    }
 }
 

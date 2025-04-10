@@ -12,4 +12,5 @@ class DatabaseBooksRepository @Inject constructor(private val bookDao: BookDao) 
     override suspend fun deleteBook(book: BookData) = bookDao.deleteBook(book)
     override fun getAllBooksFlow(): Flow<List<BookData>> = bookDao.getAllBooksFlow()
     override suspend fun getBookById(bookId: String): BookData? = bookDao.getBookById(bookId)
+    override suspend fun getAllBookIds(): List<String> = bookDao.getAllBookIds()
 }
