@@ -1,5 +1,6 @@
 package com.belltree.readtrack.compose
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -130,11 +132,19 @@ fun MiniBookCard(
         onClick = { navController.navigate("${Route.MyBook}/${book.id}") }
     ) {
         Row {
-            AsyncImage(
-                model = book.thumbnail,
-                contentDescription = null,
-                modifier = Modifier.size(100.dp)
-            )
+            if (book.thumbnail != null) {
+                AsyncImage(
+                    model = book.thumbnail,
+                    contentDescription = null,
+                    modifier = Modifier.size(100.dp)
+                )
+            } else {
+                Image(
+                    painter = painterResource(R.drawable.unknown),
+                    contentDescription = "thumbnail not found",
+                    modifier = Modifier.size(100.dp)
+                )
+            }
             Column {
                 Text(
                     text = book.title,

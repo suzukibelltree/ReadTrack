@@ -40,7 +40,7 @@ data class VolumeInfo(
     val publisher: String?,
     val publishedDate: String?,
     val description: String?,
-    val imageLinks: ImageLinks = ImageLinks("", ""),
+    val imageLinks: ImageLinks?,
     val pageCount: Int?,
     val categories: List<String>?,
 )
@@ -80,7 +80,7 @@ data class BookData(
     val publisher: String?,
     val publishedDate: String?,
     val description: String?,
-    val thumbnail: String,
+    val thumbnail: String?,
     val pageCount: Int?,
     val readpage: Int? = 0, //読んだページ数
     val comment: String? = "", //本に対するコメント、感想

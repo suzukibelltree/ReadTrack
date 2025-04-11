@@ -102,12 +102,20 @@ fun MyBookScreen(
                     .align(Alignment.CenterHorizontally)
                     .padding(16.dp)
             ) {
-                AsyncImage(
-                    model = book.thumbnail,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(100.dp)
-                )
+                if (book.thumbnail != null) {
+                    AsyncImage(
+                        model = book.thumbnail,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(100.dp)
+                    )
+                } else {
+                    Image(
+                        painter = painterResource(R.drawable.unknown),
+                        contentDescription = "thumbnail not found",
+                        modifier = Modifier.size(100.dp)
+                    )
+                }
                 Column(
                     modifier = Modifier
                         .weight(1f) // 余ったスペースを利用する

@@ -1,5 +1,6 @@
 package com.belltree.readtrack.compose
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -94,18 +96,33 @@ fun LibraryScreen(
             }
             items(filteredBooks) { book ->
                 Column {
-                    AsyncImage(
-                        model = book.thumbnail,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(120.dp)
-                            .padding(16.dp)
-                            .clickable {
-                                myBooksViewModel.selectBook(book.id)
-                                navController.navigate("${Route.MyBook}/${book.id}")
-                            }
-                    )
+                    if (book.thumbnail != null) {
+                        AsyncImage(
+                            model = book.thumbnail,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(120.dp)
+                                .padding(16.dp)
+                                .clickable {
+                                    myBooksViewModel.selectBook(book.id)
+                                    navController.navigate("${Route.MyBook}/${book.id}")
+                                }
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(R.drawable.unknown),
+                            contentDescription = "thumbnail not found",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(120.dp)
+                                .padding(16.dp)
+                                .clickable {
+                                    myBooksViewModel.selectBook(book.id)
+                                    navController.navigate("${Route.MyBook}/${book.id}")
+                                }
+                        )
+                    }
                     Text(
                         text = if (selectedTabIndex == 0) {
                             book.registeredDate.substring(0, 10)
