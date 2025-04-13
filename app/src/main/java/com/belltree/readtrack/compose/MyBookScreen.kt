@@ -39,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.times
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.belltree.readtrack.R
@@ -236,22 +237,27 @@ fun MyBookScreen(
                 }
             }
             item {
+                val itemCount = selectedBookReadLog.value.size
+                val itemHeight = 40.dp  // 1つのログアイテムのだいたいの高さ
+                val maxHeight = 200.dp  // 表示高さの上限
+
+                val calculatedHeight = (itemCount * itemHeight).coerceAtMost(maxHeight)
                 LazyColumn(
                     modifier = Modifier
-                        .height(200.dp)
+                        .height(calculatedHeight)
                         .fillMaxWidth()
                         .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
                         .padding(8.dp)
                 ) {
-                    items(selectedBookReadLog.value.size) { index ->
+
+                    items(itemCount) { index ->
                         Box(
                             modifier = Modifier.fillMaxWidth(),
                             contentAlignment = Alignment.Center
                         ) {
                             val log = selectedBookReadLog.value[index]
                             Row(
-                                modifier = Modifier
-                                    .padding(vertical = 4.dp)
+                                modifier = Modifier.padding(vertical = 4.dp)
                             ) {
                                 Text(
                                     text = stringResource(
@@ -273,6 +279,7 @@ fun MyBookScreen(
                         }
                     }
                 }
+
             }
             item {
                 Column(
@@ -354,9 +361,11 @@ fun MyBookScreen(
         }
         if (showDialog) {
             DeleteBookDialog(
-                navController = navController,
                 myBooksViewModel = myBooksViewModel,
-                book = book
+                book = book,
+                onDismiss = {
+                    showDialog = false
+                },
             )
         }
     }
@@ -365,8 +374,10 @@ fun MyBookScreen(
 /**
  * 本の読書状況(3状態)を表示するカード
  * @param progress 本の読書状況
- * @param icon アイコン
+ * @param selectedOption 選択された状態
+ * @param icon アイコンのリソースID
  * @param contentDescription アイコンの説明
+ * @param onProgressChange 状態変更時の処理
  */
 @Composable
 fun ReadStateCard(

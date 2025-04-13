@@ -30,7 +30,7 @@ import com.belltree.readtrack.convertYearMonthId
 import com.belltree.readtrack.datastore.getValue
 import com.belltree.readtrack.network.BookData
 import com.belltree.readtrack.room.HomeViewModel
-import com.belltree.readtrack.room.ReadLog
+import com.belltree.readtrack.room.ReadLogByMonth
 import com.belltree.readtrack.themecolor.getPrimaryColor
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
@@ -60,9 +60,8 @@ fun HomeScreen(
     val newBook by remember(savedBooks.value) {
         derivedStateOf { savedBooks.value.maxByOrNull { it.registeredDate } }
     }
-    val readLogs = homeViewModel.allLogs.collectAsState()
-    // 直近4か月分の読書ログを取得
-    val recentReadLogs = readLogs.value.sortedByDescending { it.yearMonthId }.take(4).reversed()
+    val recentReadLogSummary =
+        homeViewModel.recentMonthlySummary.collectAsState(initial = emptyList())
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -108,7 +107,7 @@ fun HomeScreen(
         } else {
             InitialMiniBookCard()
         }
-        ReadLogGraph(readLogs = recentReadLogs)
+        ReadLogGraph(readLogs = recentReadLogSummary.value)
     }
 }
 
@@ -182,7 +181,7 @@ fun InitialMiniBookCard() {
  */
 @Composable
 fun ReadLogGraph(
-    readLogs: List<ReadLog>
+    readLogs: List<ReadLogByMonth>
 ) {
     val context = LocalContext.current
     val themeColor by getValue(context, "theme_color").collectAsState(initial = "")
@@ -197,7 +196,7 @@ fun ReadLogGraph(
         )
         val chartEntryModel = entryModelOf(
             *readLogs.mapIndexed { index, log ->
-                index to log.readPages.toFloat()
+                index to log.totalReadPages
             }.toTypedArray()
         )
         Chart(

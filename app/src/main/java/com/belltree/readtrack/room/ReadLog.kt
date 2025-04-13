@@ -17,3 +17,8 @@ data class ReadLog(
     val recordedAt: String,
     val yearMonthId: Int
 )
+
+data class ReadLogByMonth(
+    val yearMonthId: Int,
+    val totalReadPages: Int
+)

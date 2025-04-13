@@ -9,9 +9,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.window.Dialog
-import androidx.navigation.NavController
 import com.belltree.readtrack.R
-import com.belltree.readtrack.Route
 import com.belltree.readtrack.network.BookData
 import com.belltree.readtrack.room.MyBooksViewModel
 
@@ -23,18 +21,20 @@ import com.belltree.readtrack.room.MyBooksViewModel
  */
 @Composable
 fun DeleteBookDialog(
-    navController: NavController,
     myBooksViewModel: MyBooksViewModel,
-    book: BookData
+    book: BookData,
+    onDismiss: () -> Unit,
 ) {
     val context = LocalContext.current
     Dialog(
         onDismissRequest = {
-            navController.popBackStack()
+            onDismiss()
         }
     ) {
         AlertDialog(
-            onDismissRequest = { },
+            onDismissRequest = {
+                onDismiss()
+            },
             title = {
                 Text(text = stringResource(R.string.deleteDialog_question))
             },
@@ -48,7 +48,6 @@ fun DeleteBookDialog(
                 Button(
                     onClick = {
                         myBooksViewModel.deleteBook(book)
-                        navController.navigate(Route.Library)
                         Toast.makeText(context, R.string.deleteDialog_deleted, Toast.LENGTH_SHORT)
                             .show()
                     }
@@ -59,7 +58,7 @@ fun DeleteBookDialog(
             dismissButton = {
                 Button(
                     onClick = {
-                        navController.popBackStack()
+                        onDismiss()
                     }
                 ) {
                     Text(text = stringResource(R.string.deleteDialog_cancel))
