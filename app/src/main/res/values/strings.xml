@@ -48,6 +48,8 @@
     <string name="myBook_book_not_found">本が見つかりません</string>
     <string name="myBook_comment">感想</string>
     <string name="myBook_pageCount">/ %s ページ</string>
+    <string name="myBook_readLogDate">日付： %s</string>
+    <string name="myBook_readLogPages">ページ数： %2s</string>
     <string name="register_process">登録方法を選択してください</string>
     <string name="register_title">タイトルを検索して登録</string>
     <string name="search_title">タイトルを入力</string>

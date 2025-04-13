@@ -25,7 +25,6 @@ class MyBooksViewModel @Inject constructor(
     private val readLogRepository: ReadLogRepository
 ) : ViewModel() {
     // ローカルに保存されている本の情報
-    private val _savedBooks = MutableStateFlow<BookData?>(null)
     val savedBooks: StateFlow<List<BookData>> = booksRepository.allBooks
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
@@ -33,9 +32,13 @@ class MyBooksViewModel @Inject constructor(
     val selectedBook: StateFlow<BookData?> = _selectedBook
 
     // ローカルに保存されている読書ログの情報
-    private val _allLogs = MutableStateFlow<ReadLog?>(null)
     val allLogs: StateFlow<List<ReadLog>> = readLogRepository.allLogs
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
+    // 選択された本専用の読書ログ
+    private val _selectedBookLogs = MutableStateFlow<List<ReadLog>>(emptyList())
+    val selectedBookLogs: StateFlow<List<ReadLog>> = _selectedBookLogs
+
 
     /**
      * IDから本の情報を取得する
@@ -80,11 +83,22 @@ class MyBooksViewModel @Inject constructor(
     }
 
     /**
-     * 読書ログの更新
+     * 特定のbookIdを持つ本の読書ログを取得する
+     * @param bookId 本のID
      */
-    fun upsertLog(readLog: ReadLog) {
+    fun getLogByBookId(bookId: String) {
         viewModelScope.launch {
-            readLogRepository.upsertLog(readLog)
+            _selectedBookLogs.value = readLogRepository.getLogByBookId(bookId)
+        }
+    }
+
+    /**
+     * 読書ログの保存
+     * @param readLog 読書ログ
+     */
+    fun insertLog(readLog: ReadLog) {
+        viewModelScope.launch {
+            readLogRepository.insertLog(readLog)
         }
     }
 }

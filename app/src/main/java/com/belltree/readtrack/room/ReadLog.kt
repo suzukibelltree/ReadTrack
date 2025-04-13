@@ -10,7 +10,10 @@ import androidx.room.PrimaryKey
  */
 @Entity(tableName = "ReadLog")
 data class ReadLog(
-    @PrimaryKey
-    val yearMonthId: Int = 0,
+    @PrimaryKey(autoGenerate = true)
+    val logId: Int = 0,
+    val bookId: String = "",
     val readPages: Int,
+    val recordedAt: String,
+    val yearMonthId: Int
 )

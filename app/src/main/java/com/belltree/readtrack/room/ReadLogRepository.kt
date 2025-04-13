@@ -9,4 +9,5 @@ interface ReadLogRepository {
     fun getAllLogsFlow(): Flow<List<ReadLog>>
     suspend fun getLogByMonthId(monthId: Int): ReadLog?
     suspend fun upsertLog(readLog: ReadLog)
+    suspend fun getLogByBookId(bookId: String): List<ReadLog>
 }

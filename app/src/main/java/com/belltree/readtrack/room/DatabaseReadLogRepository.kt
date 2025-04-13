@@ -13,4 +13,6 @@ class DatabaseReadLogRepository @Inject constructor(private val readLogDao: Read
 
     override fun getAllLogsFlow(): Flow<List<ReadLog>> = readLogDao.getAllLogs()
     override suspend fun upsertLog(readLog: ReadLog) = readLogDao.upsertLog(readLog)
+    override suspend fun getLogByBookId(bookId: String): List<ReadLog> =
+        readLogDao.getLogByBookId(bookId)
 }
