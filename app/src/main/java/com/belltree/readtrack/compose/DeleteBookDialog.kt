@@ -15,9 +15,9 @@ import com.belltree.readtrack.room.MyBooksViewModel
 
 /**
  * 本を削除する際に表示するダイアログ
- * @param navController ナビゲーションコントローラー
- * @param myBooksViewModel 保存された本のViewModel
+ * @param myBooksViewModel 本の情報を取得するためのViewModel
  * @param book 削除する本の情報
+ * @param onDismiss ダイアログを閉じるための関数
  */
 @Composable
 fun DeleteBookDialog(

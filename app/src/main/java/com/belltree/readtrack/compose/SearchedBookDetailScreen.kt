@@ -73,7 +73,7 @@ fun BookDetail(
         Row {
             if (bookItem.volumeInfo.imageLinks != null) {
                 AsyncImage(
-                    model = bookItem.volumeInfo.imageLinks?.thumbnail,
+                    model = bookItem.volumeInfo.imageLinks.thumbnail,
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth(0.4f)
