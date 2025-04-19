@@ -49,12 +49,15 @@
     <string name="myBook_book_not_found">Book not found</string>
     <string name="myBook_comment">Comment</string>
     <string name="myBook_pageCount">/ %s pages</string>
+    <string name="myBook_readLogDate">Date: %s</string>
+    <string name="myBook_readLogPages">Page count: %2s</string>
     <string name="register_process">Please select a registration method</string>
     <string name="register_title">Search by title to register</string>
     <string name="search_title">Enter title</string>
     <string name="search_button">Search</string>
     <string name="search_failed">Search failed.</string>
     <string name="search_unknown">Unknown</string>
+    <string name="search_no_result">No books found with that keyword.</string>
     <string name="setting_character_size">Change font size</string>
     <string name="setting_theme_color">Change theme color</string>
     <string name="setting_theme_color_red">Red</string>

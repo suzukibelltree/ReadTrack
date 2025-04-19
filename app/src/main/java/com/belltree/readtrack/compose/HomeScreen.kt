@@ -1,5 +1,6 @@
 package com.belltree.readtrack.compose
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -28,7 +30,7 @@ import com.belltree.readtrack.convertYearMonthId
 import com.belltree.readtrack.datastore.getValue
 import com.belltree.readtrack.network.BookData
 import com.belltree.readtrack.room.HomeViewModel
-import com.belltree.readtrack.room.ReadLog
+import com.belltree.readtrack.room.ReadLogByMonth
 import com.belltree.readtrack.themecolor.getPrimaryColor
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
@@ -58,9 +60,8 @@ fun HomeScreen(
     val newBook by remember(savedBooks.value) {
         derivedStateOf { savedBooks.value.maxByOrNull { it.registeredDate } }
     }
-    val readLogs = homeViewModel.allLogs.collectAsState()
-    // 直近4か月分の読書ログを取得
-    val recentReadLogs = readLogs.value.sortedByDescending { it.yearMonthId }.take(4).reversed()
+    val recentReadLogSummary =
+        homeViewModel.recentMonthlySummary.collectAsState(initial = emptyList())
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -106,7 +107,7 @@ fun HomeScreen(
         } else {
             InitialMiniBookCard()
         }
-        ReadLogGraph(readLogs = recentReadLogs)
+        ReadLogGraph(readLogs = recentReadLogSummary.value)
     }
 }
 
@@ -130,11 +131,19 @@ fun MiniBookCard(
         onClick = { navController.navigate("${Route.MyBook}/${book.id}") }
     ) {
         Row {
-            AsyncImage(
-                model = book.thumbnail,
-                contentDescription = null,
-                modifier = Modifier.size(100.dp)
-            )
+            if (book.thumbnail != null) {
+                AsyncImage(
+                    model = book.thumbnail,
+                    contentDescription = null,
+                    modifier = Modifier.size(100.dp)
+                )
+            } else {
+                Image(
+                    painter = painterResource(R.drawable.unknown),
+                    contentDescription = "thumbnail not found",
+                    modifier = Modifier.size(100.dp)
+                )
+            }
             Column {
                 Text(
                     text = book.title,
@@ -172,7 +181,7 @@ fun InitialMiniBookCard() {
  */
 @Composable
 fun ReadLogGraph(
-    readLogs: List<ReadLog>
+    readLogs: List<ReadLogByMonth>
 ) {
     val context = LocalContext.current
     val themeColor by getValue(context, "theme_color").collectAsState(initial = "")
@@ -187,7 +196,7 @@ fun ReadLogGraph(
         )
         val chartEntryModel = entryModelOf(
             *readLogs.mapIndexed { index, log ->
-                index to log.readPages.toFloat()
+                index to log.totalReadPages
             }.toTypedArray()
         )
         Chart(

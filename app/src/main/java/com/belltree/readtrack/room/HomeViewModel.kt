@@ -2,12 +2,13 @@ package com.belltree.readtrack.room
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.belltree.readtrack.getRecentFourMonthsAsIntList
 import com.belltree.readtrack.network.BookData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -16,20 +17,28 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val savedBooksRepository: BooksRepository,
-    private val readLogRepository: ReadLogRepository
+    savedBooksRepository: BooksRepository,
+    readLogRepository: ReadLogRepository
 ) : ViewModel() {
     // ローカルに保存されている本の情報
-    private val _allBooks = MutableStateFlow<BookData?>(null)
     val allBooks: StateFlow<List<BookData>> = savedBooksRepository.allBooks
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
-    // ローカルに保存されている読書ログの情報
-    private val _allLogs = MutableStateFlow<ReadLog?>(null)
-    val allLogs: StateFlow<List<ReadLog>> = readLogRepository.allLogs
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val recent4MonthsId: List<Int> = getRecentFourMonthsAsIntList()
 
-    fun getAllLogs(): Flow<List<ReadLog>> {
-        return readLogRepository.allLogs
-    }
+    private val recent4ReadLogs: Flow<List<ReadLog>> =
+        readLogRepository.getReadLogsForMonths(recent4MonthsId)
+
+    val recentMonthlySummary: Flow<List<ReadLogByMonth>> =
+        recent4ReadLogs.map { logs ->
+            logs.groupBy { it.yearMonthId }
+                .map { (yearMonthId, logsForMonth) ->
+                    ReadLogByMonth(
+                        yearMonthId = yearMonthId,
+                        totalReadPages = logsForMonth.sumOf { it.readPages }
+                    )
+                }
+                .sortedBy { it.yearMonthId }
+        }
+
 }

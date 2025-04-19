@@ -19,7 +19,9 @@ abstract class BookDatabase : RoomDatabase() {
             return INSTANCE ?: synchronized(this) {
                 Room.databaseBuilder(
                     context, BookDatabase::class.java, "books_database"
-                ).build().also { INSTANCE = it }
+                )
+                    .build()
+                    .also { INSTANCE = it }
             }
         }
     }

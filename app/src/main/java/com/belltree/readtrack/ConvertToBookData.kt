@@ -11,7 +11,7 @@ fun ConvertBookItemToBookData(bookItem: BookItem): BookData {
         publisher = bookItem.volumeInfo.publisher,
         publishedDate = bookItem.volumeInfo.publishedDate,
         description = bookItem.volumeInfo.description,
-        thumbnail = bookItem.volumeInfo.imageLinks.thumbnail,
+        thumbnail = bookItem.volumeInfo.imageLinks?.thumbnail,
         pageCount = bookItem.volumeInfo.pageCount,
         registeredDate = getCurrentFormattedTime(),
         updatedDate = getCurrentFormattedTime()

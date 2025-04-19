@@ -6,15 +6,16 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
@@ -38,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.times
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.belltree.readtrack.R
@@ -64,16 +66,14 @@ fun MyBookScreen(
 ) {
     LaunchedEffect(bookId) {
         myBooksViewModel.fetchBookDetails(bookId)
+        myBooksViewModel.getLogByBookId(bookId)
     }
     val selectedBook by myBooksViewModel.selectedBook.collectAsState()
-    val readLogs = myBooksViewModel.allLogs.collectAsState()
-    val scrollState = rememberScrollState()
+    val selectedBookReadLog = myBooksViewModel.selectedBookLogs.collectAsState()
     val scope = rememberCoroutineScope()
     var showDialog by remember { mutableStateOf(false) }
     val currentYearMonthId = getCurrentYearMonthAsInt()
     val formattedDate = getCurrentFormattedTime()
-    // 現在の月に一致するReadLogのインスタンスのみを取得
-    val currentMonthLog = readLogs.value.find { it.yearMonthId == currentYearMonthId }
     selectedBook?.let { book ->
         var selectedOption by remember {
             mutableIntStateOf(
@@ -84,102 +84,119 @@ fun MyBookScreen(
                 }
             )
         }
-        Column(
+        // ユーザーのページ数入力を受け付ける
+        var readPagesCount by remember { mutableStateOf(book.readpage.toString()) }
+        var comment by remember { mutableStateOf(book.comment) }
+        val context = LocalContext.current
+        // ページ数の差分(変更前後)を保持
+        var pagesReadDiff by remember { mutableIntStateOf(0) }
+        LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .verticalScroll(scrollState),
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // ユーザーのページ数入力を受け付ける
-            var readPagesCount by remember { mutableStateOf(book.readpage.toString()) }
-            var comment by remember { mutableStateOf(book.comment) }
-            val context = LocalContext.current
-            // ページ数の差分(変更前後)を保持
-            var pagesReadDiff by remember { mutableIntStateOf(0) }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally)
-                    .padding(16.dp)
-            ) {
-                AsyncImage(
-                    model = book.thumbnail,
-                    contentDescription = null,
+            item {
+                Row(
                     modifier = Modifier
-                        .size(100.dp)
-                )
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    if (book.thumbnail != null) {
+                        AsyncImage(
+                            model = book.thumbnail,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(100.dp)
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(R.drawable.unknown),
+                            contentDescription = "thumbnail not found",
+                            modifier = Modifier.size(100.dp)
+                        )
+                    }
+                    Column(
+                        modifier = Modifier
+                            .weight(1f) // 余ったスペースを利用する
+                            .padding(start = 16.dp) // 画像との間隔をあける
+                    ) {
+                        Text(
+                            text = book.title,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
+                        Text(
+                            text = book.author,
+                        )
+                        Text(
+                            text = stringResource(R.string.myBook_addedDate, book.registeredDate),
+                        )
+                        if (book.progress != 0) {
+                            Text(
+                                text = stringResource(
+                                    R.string.myBook_updatedDate,
+                                    book.updatedDate
+                                ),
+                            )
+                        }
+                    }
+                }
+            }
+            item {
                 Column(
                     modifier = Modifier
-                        .weight(1f) // 余ったスペースを利用する
-                        .padding(start = 16.dp) // 画像との間隔をあける
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = book.title,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
+                        text = stringResource(R.string.myBook_readState),
+                        fontSize = 16.sp,
+                        modifier = Modifier.align(Alignment.Start)
                     )
-                    Text(
-                        text = book.author,
-                    )
-                    Text(
-                        text = stringResource(R.string.myBook_addedDate, book.registeredDate),
-                    )
-                    if (book.progress != 0) {
-                        Text(
-                            text = stringResource(R.string.myBook_updatedDate, book.updatedDate),
+                    //状態の変更、読了ページ数の変更、メモの記入をここで行う
+                    Row(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth()
+                            .align(Alignment.CenterHorizontally),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        ReadStateCard(
+                            progress = 0,
+                            icon = R.drawable.frame,
+                            contentDescription = stringResource(R.string.read_state_unread),
+                            selectedOption = selectedOption,
+                            onProgressChange = {
+                                selectedOption = R.string.read_state_unread
+                                readPagesCount = "0"
+                            })
+                        ReadStateCard(
+                            progress = 1,
+                            icon = R.drawable.reading,
+                            contentDescription = stringResource(R.string.read_state_reading),
+                            selectedOption = selectedOption,
+                            onProgressChange = {
+                                selectedOption = R.string.read_state_reading
+                            }
+                        )
+                        ReadStateCard(
+                            progress = 2,
+                            icon = R.drawable.finished,
+                            contentDescription = stringResource(R.string.read_state_read),
+                            selectedOption = selectedOption,
+                            onProgressChange = {
+                                selectedOption = R.string.read_state_read
+                                readPagesCount = book.pageCount.toString()
+                            }
                         )
                     }
                 }
             }
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = stringResource(R.string.myBook_readState),
-                    fontSize = 16.sp,
-                    modifier = Modifier.align(Alignment.Start)
-                )
-                //状態の変更、読了ページ数の変更、メモの記入をここで行う
+            item {
                 Row(
                     modifier = Modifier
-                        .padding(8.dp)
-                        .fillMaxWidth()
-                        .align(Alignment.CenterHorizontally),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    ReadStateCard(
-                        progress = 0,
-                        icon = R.drawable.frame,
-                        contentDescription = stringResource(R.string.read_state_unread),
-                        selectedOption = selectedOption,
-                        onProgressChange = {
-                            selectedOption = R.string.read_state_unread
-                            readPagesCount = "0"
-                        })
-                    ReadStateCard(
-                        progress = 1,
-                        icon = R.drawable.reading,
-                        contentDescription = stringResource(R.string.read_state_reading),
-                        selectedOption = selectedOption,
-                        onProgressChange = {
-                            selectedOption = R.string.read_state_reading
-                        }
-                    )
-                    ReadStateCard(
-                        progress = 2,
-                        icon = R.drawable.finished,
-                        contentDescription = stringResource(R.string.read_state_read),
-                        selectedOption = selectedOption,
-                        onProgressChange = {
-                            selectedOption = R.string.read_state_read
-                            readPagesCount = book.pageCount.toString()
-                        }
-                    )
-                }
-                Row(
+                        .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(text = stringResource(R.string.myBook_pagesRead))
@@ -218,91 +235,149 @@ fun MyBookScreen(
                         )
                     }
                 }
-                //TODO: 保存する情報を感想ではなくメモにするか検討
-                Text(
-                    text = stringResource(R.string.myBook_comment),
-                    modifier = Modifier.align(Alignment.Start)
-                )
-                OutlinedTextField(
-                    value = comment.toString(),
-                    onValueChange = { comment = it },
-                    modifier = Modifier.padding(8.dp)
-                )
-                Button(
-                    onClick = {
-                        // 保存ボタンが押されたときにトーストで通知
-                        Toast.makeText(context, R.string.myBook_Save_complete, Toast.LENGTH_SHORT)
-                            .show()
-                        //ここで変更された本の情報を保存
-                        myBooksViewModel.updateBook(
-                            book.copy(
-                                progress = when (selectedOption) {
-                                    R.string.read_state_unread -> 0
-                                    R.string.read_state_reading -> 1
-                                    else -> 2
-                                },
-                                readpage = readPagesCount.toInt(),
-                                comment = comment,
-                                updatedDate = formattedDate
-                            )
-                        )
-                        // 読了ページ数の差分がある場合は読書記録を更新
-                        myBooksViewModel.upsertLog(
-                            currentMonthLog?.copy(
-                                yearMonthId = currentYearMonthId,
-                                readPages = currentMonthLog.readPages + pagesReadDiff
-                            ) ?: ReadLog(
-                                yearMonthId = currentYearMonthId,
-                                readPages = pagesReadDiff
-                            )
-                        )
-                        scope.launch {
-                            saveValue(
-                                context = context,
-                                key = "lastUpdatedDate",
-                                value = formattedDate
-                            )
+            }
+            item {
+                val itemCount = selectedBookReadLog.value.size
+                val itemHeight = 40.dp  // 1つのログアイテムのだいたいの高さ
+                val maxHeight = 200.dp  // 表示高さの上限
+
+                val calculatedHeight = (itemCount * itemHeight).coerceAtMost(maxHeight)
+                LazyColumn(
+                    modifier = Modifier
+                        .height(calculatedHeight)
+                        .fillMaxWidth()
+                        .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
+                        .padding(8.dp)
+                ) {
+
+                    items(itemCount) { index ->
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            val log = selectedBookReadLog.value[index]
+                            Row(
+                                modifier = Modifier.padding(vertical = 4.dp)
+                            ) {
+                                Text(
+                                    text = stringResource(
+                                        R.string.myBook_readLogDate,
+                                        log.recordedAt
+                                    ),
+                                    fontSize = 16.sp,
+                                    modifier = Modifier.padding(horizontal = 8.dp)
+                                )
+                                Text(
+                                    text = stringResource(
+                                        R.string.myBook_readLogPages,
+                                        log.readPages
+                                    ),
+                                    fontSize = 16.sp,
+                                    modifier = Modifier.padding(horizontal = 8.dp)
+                                )
+                            }
                         }
-                        navController.navigate(Route.Library)
-                    },
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(SaveButtonColor)
-                ) {
-                    Text(text = stringResource(R.string.myBook_Save))
+                    }
                 }
-                Button(
-                    onClick = {
-                        showDialog = true
-                    },
+
+            }
+            item {
+                Column(
                     modifier = Modifier
-                        .padding(8.dp)
                         .fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(Color.Red)
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = stringResource(R.string.myBook_delete))
+                    Text(
+                        text = stringResource(R.string.myBook_comment),
+                        modifier = Modifier.align(Alignment.Start)
+                    )
+                    OutlinedTextField(
+                        value = comment.toString(),
+                        onValueChange = { comment = it },
+                        modifier = Modifier.padding(8.dp)
+                    )
+                    Button(
+                        onClick = {
+                            // 保存ボタンが押されたときにトーストで通知
+                            Toast.makeText(
+                                context,
+                                R.string.myBook_Save_complete,
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                            //ここで変更された本の情報を保存
+                            myBooksViewModel.updateBook(
+                                book.copy(
+                                    progress = when (selectedOption) {
+                                        R.string.read_state_unread -> 0
+                                        R.string.read_state_reading -> 1
+                                        else -> 2
+                                    },
+                                    readpage = readPagesCount.toInt(),
+                                    comment = comment,
+                                    updatedDate = formattedDate
+                                )
+                            )
+                            // 読了ページ数の差分がある場合は読書記録を更新
+                            myBooksViewModel.insertLog(
+                                ReadLog(
+                                    yearMonthId = currentYearMonthId,
+                                    bookId = bookId,
+                                    readPages = pagesReadDiff,
+                                    recordedAt = formattedDate
+                                )
+                            )
+                            scope.launch {
+                                saveValue(
+                                    context = context,
+                                    key = "lastUpdatedDate",
+                                    value = formattedDate
+                                )
+                            }
+                            navController.navigate(Route.Library)
+                        },
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(SaveButtonColor)
+                    ) {
+                        Text(text = stringResource(R.string.myBook_Save))
+                    }
+                    Button(
+                        onClick = {
+                            showDialog = true
+                        },
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(Color.Red)
+                    ) {
+                        Text(text = stringResource(R.string.myBook_delete))
+                    }
                 }
             }
-
         }
         if (showDialog) {
             DeleteBookDialog(
-                navController = navController,
                 myBooksViewModel = myBooksViewModel,
-                book = book
+                book = book,
+                onDismiss = {
+                    showDialog = false
+                },
             )
         }
-    } ?: Text(text = stringResource(R.string.myBook_book_not_found))
+    }
 }
 
 /**
  * 本の読書状況(3状態)を表示するカード
  * @param progress 本の読書状況
- * @param icon アイコン
+ * @param selectedOption 選択された状態
+ * @param icon アイコンのリソースID
  * @param contentDescription アイコンの説明
+ * @param onProgressChange 状態変更時の処理
  */
 @Composable
 fun ReadStateCard(

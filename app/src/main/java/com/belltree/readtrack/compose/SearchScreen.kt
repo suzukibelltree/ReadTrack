@@ -1,5 +1,6 @@
 package com.belltree.readtrack.compose
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -25,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -47,6 +50,7 @@ fun SearchScreen(
     navController: NavController
 ) {
     var query by remember { mutableStateOf("") }
+    var hasSearched by remember { mutableStateOf(false) }
     val apiKey = BuildConfig.API_KEY
 
     LaunchedEffect(Unit) {
@@ -65,7 +69,10 @@ fun SearchScreen(
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = { viewModel.searchBooks(query, apiKey) }) {
+        Button(onClick = {
+            viewModel.searchBooks(query, apiKey)
+            hasSearched = true
+        }) {
             Text(text = stringResource(R.string.search_button))
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -75,7 +82,8 @@ fun SearchScreen(
             viewModel.errorMessage != null -> Text(text = stringResource(R.string.search_failed))
             else -> BooksCardList(
                 books = viewModel.books,
-                navController = navController
+                navController = navController,
+                hasSearched = hasSearched
             )
         }
     }
@@ -89,12 +97,19 @@ fun SearchScreen(
 @Composable
 fun BooksCardList(
     books: List<BookItem>,
-    navController: NavController
+    navController: NavController,
+    hasSearched: Boolean
 ) {
-    LazyColumn {
-        items(books) { book ->
-            BookCard(book, navController)
-            HorizontalDivider()
+    if (books.isEmpty() && hasSearched) {
+        Text(
+            text = stringResource(R.string.search_no_result),
+        )
+    } else {
+        LazyColumn {
+            items(books) { book ->
+                BookCard(book, navController)
+                HorizontalDivider()
+            }
         }
     }
 }
@@ -118,10 +133,21 @@ fun BookCard(
             }
     ) {
         Row {
-            AsyncImage(
-                model = book.volumeInfo.imageLinks.thumbnail,
-                contentDescription = null,
-            )
+            if (book.volumeInfo.imageLinks?.thumbnail != null) {
+                AsyncImage(
+                    model = book.volumeInfo.imageLinks.thumbnail,
+                    contentDescription = "book thumbnail",
+                    modifier = Modifier
+                        .size(60.dp)
+                )
+            } else {
+                Image(
+                    painter = painterResource(R.drawable.unknown),
+                    contentDescription = "thumbnail not found",
+                    modifier = Modifier
+                        .size(60.dp)
+                )
+            }
             Column {
                 Spacer(modifier = Modifier.width(8.dp))
                 Column {
