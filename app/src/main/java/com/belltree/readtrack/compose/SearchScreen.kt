@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -32,8 +31,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
-import com.belltree.readtrack.BuildConfig
 import com.belltree.readtrack.R
 import com.belltree.readtrack.Route
 import com.belltree.readtrack.network.BookItem
@@ -51,8 +52,8 @@ fun SearchScreen(
 ) {
     var query by remember { mutableStateOf("") }
     var hasSearched by remember { mutableStateOf(false) }
-    val apiKey = BuildConfig.API_KEY
-
+    val books = viewModel.bookPagingData.collectAsLazyPagingItems()
+    val loadState = books.loadState
     LaunchedEffect(Unit) {
         viewModel.clearSearchResults()
     }
@@ -66,11 +67,12 @@ fun SearchScreen(
             value = query,
             onValueChange = { query = it },
             label = { Text(text = stringResource(R.string.search_title)) },
+            singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
         Button(onClick = {
-            viewModel.searchBooks(query, apiKey)
+            viewModel.updateQuery(query)
             hasSearched = true
         }) {
             Text(text = stringResource(R.string.search_button))
@@ -78,10 +80,10 @@ fun SearchScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         when {
-            viewModel.isLoading -> CircularProgressIndicator()
-            viewModel.errorMessage != null -> Text(text = stringResource(R.string.search_failed))
+            loadState.refresh is LoadState.Loading && hasSearched -> CircularProgressIndicator()
+            loadState.refresh is LoadState.Error -> Text(text = stringResource(R.string.search_failed))
             else -> BooksCardList(
-                books = viewModel.books,
+                books = books,
                 navController = navController,
                 hasSearched = hasSearched
             )
@@ -93,22 +95,49 @@ fun SearchScreen(
  * 検索された本のリストを表示する
  * @param books 本のリスト
  * @param navController ナビゲーションコントローラー
+ * @param hasSearched 一度検索されたかどうか
  */
 @Composable
 fun BooksCardList(
-    books: List<BookItem>,
+    books: LazyPagingItems<BookItem>,
     navController: NavController,
     hasSearched: Boolean
 ) {
-    if (books.isEmpty() && hasSearched) {
+    // 検索結果がない場合はメッセージを表示
+    if (books.itemCount == 0 && hasSearched) {
         Text(
-            text = stringResource(R.string.search_no_result),
+            text = stringResource(R.string.search_no_result)
         )
     } else {
         LazyColumn {
-            items(books) { book ->
-                BookCard(book, navController)
-                HorizontalDivider()
+            items(books.itemCount) { index ->
+                books[index]?.let { book ->
+                    BookCard(book, navController)
+                    HorizontalDivider()
+                }
+            }
+            // 次のページを読み込み中のインジケーターを表示
+            item {
+                when (books.loadState.append) {
+                    is LoadState.Loading -> {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+
+                    is LoadState.Error -> {
+                        Text(
+                            text = stringResource(R.string.search_failed_next_page),
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+
+                    else -> {}
+                }
             }
         }
     }

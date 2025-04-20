@@ -57,6 +57,7 @@
     <string name="search_failed">検索に失敗しました</string>
     <string name="search_unknown">不明</string>
     <string name="search_no_result">そのキーワードが含まれる書籍は見つかりませんでした。</string>
+    <string name="search_failed_next_page">次ページの読み込みに失敗しました。</string>
     <string name="setting_character_size">文字サイズの変更</string>
     <string name="setting_theme_color">テーマカラーの変更</string>
     <string name="setting_theme_color_red">赤</string>

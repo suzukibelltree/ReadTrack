@@ -58,6 +58,7 @@
     <string name="search_failed">Search failed.</string>
     <string name="search_unknown">Unknown</string>
     <string name="search_no_result">No books found with that keyword.</string>
+    <string name="search_failed_next_page">Failed to load next page.</string>
     <string name="setting_character_size">Change font size</string>
     <string name="setting_theme_color">Change theme color</string>
     <string name="setting_theme_color_red">Red</string>
