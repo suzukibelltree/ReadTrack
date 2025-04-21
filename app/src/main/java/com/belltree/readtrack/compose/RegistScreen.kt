@@ -44,6 +44,11 @@ fun RegisterProcessScreen(
         ) {
             Text(text = stringResource(R.string.register_title))
         }
-        //TODO: バーコードから登録する機能を追加
+        Button(
+            onClick = { navController.navigate(Route.BarcodeScanner) },
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(text = "バーコードをスキャンして登録")
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.belltree.readtrack
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -8,6 +9,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.belltree.readtrack.compose.BarcodeScannerScreen
 import com.belltree.readtrack.compose.BookDetail
 import com.belltree.readtrack.compose.HomeScreen
 import com.belltree.readtrack.compose.LibraryScreen
@@ -52,6 +54,9 @@ fun ReadTrackNavHost(
         composable<Route.RegisterProcess> {
             RegisterProcessScreen(navController = navController)
         }
+        composable<Route.BarcodeScanner> {
+            BarcodeScannerScreen(navController = navController)
+        }
         composable<Route.Search> {
             SearchScreen(navController = navController, viewModel = bookListViewModel)
         }
@@ -59,8 +64,7 @@ fun ReadTrackNavHost(
             route = "${Route.BookDetail}/{bookId}",
             arguments = listOf(navArgument("bookId") { type = NavType.StringType })
         ) { backStackEntry ->
-            val bookId = backStackEntry.arguments?.getString("bookId") ?: ""
-            val bookItem = bookListViewModel.fetchBookById(bookId)
+            val bookItem = bookListViewModel.selectedBookItem.collectAsState().value
             if (bookItem != null) {
                 BookDetail(navController = navController, bookItem = bookItem)
             } else {

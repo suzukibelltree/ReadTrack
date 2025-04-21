@@ -32,6 +32,9 @@ class BookListViewModel @Inject constructor(private val apiService: GoogleBooksA
     private val _books = mutableStateListOf<BookItem>()
     val books: List<BookItem> get() = _books
 
+    private val _selectedBookItem = MutableStateFlow<BookItem?>(null)
+    val selectedBookItem: StateFlow<BookItem?> get() = _selectedBookItem
+
     private val _query = MutableStateFlow("")
     val query: StateFlow<String> = _query
 
@@ -67,6 +70,11 @@ class BookListViewModel @Inject constructor(private val apiService: GoogleBooksA
 
     fun updateQuery(newQuery: String) {
         _query.value = newQuery
+    }
+
+
+    fun selectBookItem(bookItem: BookItem) {
+        _selectedBookItem.value = bookItem
     }
 }
 

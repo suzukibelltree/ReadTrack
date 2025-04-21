@@ -84,8 +84,11 @@ fun SearchScreen(
             loadState.refresh is LoadState.Error -> Text(text = stringResource(R.string.search_failed))
             else -> BooksCardList(
                 books = books,
-                navController = navController,
-                hasSearched = hasSearched
+                hasSearched = hasSearched,
+                onBookClick = { book ->
+                    viewModel.selectBookItem(book)
+                    navController.navigate("${Route.BookDetail}/${book.id}")
+                }
             )
         }
     }
@@ -94,14 +97,14 @@ fun SearchScreen(
 /**
  * 検索された本のリストを表示する
  * @param books 本のリスト
- * @param navController ナビゲーションコントローラー
  * @param hasSearched 一度検索されたかどうか
+ * @param onBookClick 本がクリックされたときの処理
  */
 @Composable
 fun BooksCardList(
     books: LazyPagingItems<BookItem>,
-    navController: NavController,
-    hasSearched: Boolean
+    hasSearched: Boolean,
+    onBookClick: (BookItem) -> Unit = {}
 ) {
     // 検索結果がない場合はメッセージを表示
     if (books.itemCount == 0 && hasSearched) {
@@ -112,7 +115,7 @@ fun BooksCardList(
         LazyColumn {
             items(books.itemCount) { index ->
                 books[index]?.let { book ->
-                    BookCard(book, navController)
+                    BookCard(book = book, onClick = { onBookClick(book) })
                     HorizontalDivider()
                 }
             }
@@ -146,19 +149,19 @@ fun BooksCardList(
 /**
  * 検索された本一冊の情報を表示するカード
  * @param book 本の情報
- * @param navController ナビゲーションコントローラー
+ * @param onClick カードがクリックされたときの処理
  */
 @Composable
 fun BookCard(
     book: BookItem,
-    navController: NavController
+    onClick: () -> Unit = {}
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
             .clickable {
-                navController.navigate("${Route.BookDetail}/${book.id}")
+                onClick()
             }
     ) {
         Row {
