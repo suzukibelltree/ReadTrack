@@ -1,9 +1,12 @@
-package com.belltree.readtrack.room
+package com.belltree.readtrack.compose.myBooks
 
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.belltree.readtrack.network.BookData
+import com.belltree.readtrack.room.BooksRepository
+import com.belltree.readtrack.room.ReadLog
+import com.belltree.readtrack.room.ReadLogRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

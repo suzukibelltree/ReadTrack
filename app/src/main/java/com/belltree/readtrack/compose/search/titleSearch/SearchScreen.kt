@@ -1,4 +1,4 @@
-package com.belltree.readtrack.compose
+package com.belltree.readtrack.compose.search.titleSearch
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -38,7 +38,6 @@ import coil.compose.AsyncImage
 import com.belltree.readtrack.R
 import com.belltree.readtrack.Route
 import com.belltree.readtrack.network.BookItem
-import com.belltree.readtrack.network.BookListViewModel
 
 /**
  * 本を検索する画面
@@ -47,7 +46,7 @@ import com.belltree.readtrack.network.BookListViewModel
  */
 @Composable
 fun SearchScreen(
-    viewModel: BookListViewModel,
+    viewModel: TitleSearchViewModel,
     navController: NavController
 ) {
     var query by remember { mutableStateOf("") }

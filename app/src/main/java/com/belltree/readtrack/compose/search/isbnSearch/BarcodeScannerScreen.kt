@@ -1,4 +1,4 @@
-package com.belltree.readtrack.compose
+package com.belltree.readtrack.compose.search.isbnSearch
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

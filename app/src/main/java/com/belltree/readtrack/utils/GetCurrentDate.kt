@@ -1,4 +1,4 @@
-package com.belltree.readtrack
+package com.belltree.readtrack.utils
 
 import android.annotation.SuppressLint
 import java.text.SimpleDateFormat

@@ -1,4 +1,4 @@
-package com.belltree.readtrack.compose
+package com.belltree.readtrack.compose.myBooks
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -30,7 +30,6 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.belltree.readtrack.R
 import com.belltree.readtrack.Route
-import com.belltree.readtrack.room.MyBooksViewModel
 import com.belltree.readtrack.themecolor.AppColors
 
 /**

@@ -1,4 +1,4 @@
-package com.belltree.readtrack.compose
+package com.belltree.readtrack.compose.setting
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility

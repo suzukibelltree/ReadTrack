@@ -1,9 +1,13 @@
-package com.belltree.readtrack.room
+package com.belltree.readtrack.compose.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.belltree.readtrack.getRecentFourMonthsAsIntList
 import com.belltree.readtrack.network.BookData
+import com.belltree.readtrack.room.BooksRepository
+import com.belltree.readtrack.room.ReadLog
+import com.belltree.readtrack.room.ReadLogByMonth
+import com.belltree.readtrack.room.ReadLogRepository
+import com.belltree.readtrack.utils.getRecentFourMonthsAsIntList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted

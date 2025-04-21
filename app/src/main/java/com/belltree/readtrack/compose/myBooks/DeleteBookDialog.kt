@@ -1,4 +1,4 @@
-package com.belltree.readtrack.compose
+package com.belltree.readtrack.compose.myBooks
 
 import android.widget.Toast
 import androidx.compose.material3.AlertDialog
@@ -11,7 +11,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.window.Dialog
 import com.belltree.readtrack.R
 import com.belltree.readtrack.network.BookData
-import com.belltree.readtrack.room.MyBooksViewModel
 
 /**
  * 本を削除する際に表示するダイアログ

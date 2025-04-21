@@ -1,4 +1,4 @@
-package com.belltree.readtrack.compose
+package com.belltree.readtrack.compose.search.isbnSearch
 
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis

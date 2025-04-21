@@ -1,4 +1,4 @@
-package com.belltree.readtrack.compose
+package com.belltree.readtrack.compose.myBooks
 
 import android.widget.Toast
 import androidx.annotation.DrawableRes
@@ -45,11 +45,10 @@ import coil.compose.AsyncImage
 import com.belltree.readtrack.R
 import com.belltree.readtrack.Route
 import com.belltree.readtrack.datastore.saveValue
-import com.belltree.readtrack.getCurrentFormattedTime
-import com.belltree.readtrack.getCurrentYearMonthAsInt
-import com.belltree.readtrack.room.MyBooksViewModel
 import com.belltree.readtrack.room.ReadLog
 import com.belltree.readtrack.ui.theme.SaveButtonColor
+import com.belltree.readtrack.utils.getCurrentFormattedTime
+import com.belltree.readtrack.utils.getCurrentYearMonthAsInt
 import kotlinx.coroutines.launch
 
 /**

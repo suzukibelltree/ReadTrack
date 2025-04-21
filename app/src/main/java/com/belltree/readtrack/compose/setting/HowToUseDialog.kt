@@ -1,4 +1,4 @@
-package com.belltree.readtrack.compose
+package com.belltree.readtrack.compose.setting
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.AlertDialog

@@ -9,17 +9,17 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.belltree.readtrack.compose.BarcodeScannerScreen
-import com.belltree.readtrack.compose.BookDetail
-import com.belltree.readtrack.compose.HomeScreen
-import com.belltree.readtrack.compose.LibraryScreen
-import com.belltree.readtrack.compose.MyBookScreen
-import com.belltree.readtrack.compose.RegisterProcessScreen
-import com.belltree.readtrack.compose.SearchScreen
-import com.belltree.readtrack.compose.SettingScreen
-import com.belltree.readtrack.network.BookListViewModel
-import com.belltree.readtrack.room.HomeViewModel
-import com.belltree.readtrack.room.MyBooksViewModel
+import com.belltree.readtrack.compose.home.HomeScreen
+import com.belltree.readtrack.compose.home.HomeViewModel
+import com.belltree.readtrack.compose.myBooks.LibraryScreen
+import com.belltree.readtrack.compose.myBooks.MyBookScreen
+import com.belltree.readtrack.compose.myBooks.MyBooksViewModel
+import com.belltree.readtrack.compose.search.BookDetail
+import com.belltree.readtrack.compose.search.RegisterProcessScreen
+import com.belltree.readtrack.compose.search.isbnSearch.BarcodeScannerScreen
+import com.belltree.readtrack.compose.search.titleSearch.SearchScreen
+import com.belltree.readtrack.compose.search.titleSearch.TitleSearchViewModel
+import com.belltree.readtrack.compose.setting.SettingScreen
 
 /**
  * アプリの画面遷移を管理する
@@ -31,7 +31,7 @@ fun ReadTrackNavHost(
     navController: NavHostController,
     modifier: Modifier
 ) {
-    val bookListViewModel: BookListViewModel = hiltViewModel()
+    val bookListViewModel: TitleSearchViewModel = hiltViewModel()
     val myBooksViewModel: MyBooksViewModel = hiltViewModel()
     val homeViewModel: HomeViewModel = hiltViewModel()
     NavHost(

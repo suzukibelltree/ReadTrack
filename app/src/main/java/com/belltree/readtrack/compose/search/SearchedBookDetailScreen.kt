@@ -1,4 +1,4 @@
-package com.belltree.readtrack.compose
+package com.belltree.readtrack.compose.search
 
 import android.widget.Toast
 import androidx.compose.animation.animateContentSize
@@ -37,11 +37,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.belltree.readtrack.ConvertBookItemToBookData
 import com.belltree.readtrack.R
 import com.belltree.readtrack.ReadTrackApplication
 import com.belltree.readtrack.Route
 import com.belltree.readtrack.network.BookItem
+import com.belltree.readtrack.utils.ConvertBookItemToBookData
 import kotlinx.coroutines.launch
 
 /**

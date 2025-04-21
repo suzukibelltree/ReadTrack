@@ -1,4 +1,4 @@
-package com.belltree.readtrack.network
+package com.belltree.readtrack.compose.search.titleSearch
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -11,6 +11,9 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.belltree.readtrack.BuildConfig
+import com.belltree.readtrack.network.BookItem
+import com.belltree.readtrack.network.BookPagingSource
+import com.belltree.readtrack.network.GoogleBooksApiService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -27,7 +30,7 @@ import javax.inject.Inject
  * @param apiService Google Books APIを利用するためのインターフェース
  */
 @HiltViewModel
-class BookListViewModel @Inject constructor(private val apiService: GoogleBooksApiService) :
+class TitleSearchViewModel @Inject constructor(private val apiService: GoogleBooksApiService) :
     ViewModel() {
     private val _books = mutableStateListOf<BookItem>()
     val books: List<BookItem> get() = _books
