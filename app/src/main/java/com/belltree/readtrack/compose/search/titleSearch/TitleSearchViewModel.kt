@@ -1,7 +1,6 @@
 package com.belltree.readtrack.compose.search.titleSearch
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -10,10 +9,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.belltree.readtrack.BuildConfig
 import com.belltree.readtrack.network.BookItem
-import com.belltree.readtrack.network.BookPagingSource
-import com.belltree.readtrack.network.GoogleBooksApiService
+import com.belltree.readtrack.network.BooksRemoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -26,17 +23,20 @@ import javax.inject.Inject
 
 /**
  * Google Books APIから取得した本の情報を保持するViewModel
- * 検索画面で使用する
- * @param apiService Google Books APIを利用するためのインターフェース
+ * タイトル検索画面で使用する
+ * @param repository Google Books APIから本の情報を取得するリポジトリ
  */
 @HiltViewModel
-class TitleSearchViewModel @Inject constructor(private val apiService: GoogleBooksApiService) :
+class TitleSearchViewModel @Inject constructor(
+    private val repository: BooksRemoteRepository
+) :
     ViewModel() {
-    private val _books = mutableStateListOf<BookItem>()
-    val books: List<BookItem> get() = _books
 
     private val _selectedBookItem = MutableStateFlow<BookItem?>(null)
-    val selectedBookItem: StateFlow<BookItem?> get() = _selectedBookItem
+    val selectedBookItem: StateFlow<BookItem?> = _selectedBookItem
+
+    private val _books = mutableListOf<BookItem>()
+    val books: List<BookItem> = _books
 
     private val _query = MutableStateFlow("")
     val query: StateFlow<String> = _query
@@ -47,22 +47,14 @@ class TitleSearchViewModel @Inject constructor(private val apiService: GoogleBoo
     @OptIn(ExperimentalCoroutinesApi::class)
     val bookPagingData: Flow<PagingData<BookItem>> = query
         .filter { it.isNotBlank() }
-        .distinctUntilChanged() // 同じクエリなら再検索しない
+        .distinctUntilChanged()
         .flatMapLatest { query ->
             Pager(PagingConfig(pageSize = 10)) {
-                BookPagingSource(
-                    bookApiService = apiService,
-                    query = query,
-                    apiKey = BuildConfig.API_KEY
-                )
+                repository.getBookPagingSource(query)
             }.flow
         }
         .cachedIn(viewModelScope)
 
-    // 本のIDから本を取得する
-    fun fetchBookById(bookId: String): BookItem? {
-        return _books.find { it.id == bookId }
-    }
 
     // 本の検索結果を破棄する
     fun clearSearchResults() {

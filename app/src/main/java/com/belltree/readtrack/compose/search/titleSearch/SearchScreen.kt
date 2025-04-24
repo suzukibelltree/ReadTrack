@@ -37,24 +37,27 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.belltree.readtrack.R
 import com.belltree.readtrack.Route
+import com.belltree.readtrack.compose.search.SearchedBookDetailViewModel
 import com.belltree.readtrack.network.BookItem
 
 /**
  * 本を検索する画面
- * @param viewModel 本のリストのViewModel
+ * @param titleSearchViewModel 本のリストのViewModel
+ * @param searchedBookDetailViewModel 検索結果の詳細を表示するViewModel
  * @param navController ナビゲーションコントローラー
  */
 @Composable
 fun SearchScreen(
-    viewModel: TitleSearchViewModel,
+    titleSearchViewModel: TitleSearchViewModel,
+    searchedBookDetailViewModel: SearchedBookDetailViewModel,
     navController: NavController
 ) {
     var query by remember { mutableStateOf("") }
     var hasSearched by remember { mutableStateOf(false) }
-    val books = viewModel.bookPagingData.collectAsLazyPagingItems()
+    val books = titleSearchViewModel.bookPagingData.collectAsLazyPagingItems()
     val loadState = books.loadState
     LaunchedEffect(Unit) {
-        viewModel.clearSearchResults()
+        titleSearchViewModel.clearSearchResults()
     }
     Column(
         modifier = Modifier
@@ -71,7 +74,7 @@ fun SearchScreen(
         )
         Spacer(modifier = Modifier.height(8.dp))
         Button(onClick = {
-            viewModel.updateQuery(query)
+            titleSearchViewModel.updateQuery(query)
             hasSearched = true
         }) {
             Text(text = stringResource(R.string.search_button))
@@ -85,7 +88,11 @@ fun SearchScreen(
                 books = books,
                 hasSearched = hasSearched,
                 onBookClick = { book ->
-                    viewModel.selectBookItem(book)
+                    titleSearchViewModel.selectBookItem(book)
+                    searchedBookDetailViewModel.loadBookById(
+                        bookId = book.id,
+                        sourceBookItem = book
+                    )
                     navController.navigate("${Route.BookDetail}/${book.id}")
                 }
             )

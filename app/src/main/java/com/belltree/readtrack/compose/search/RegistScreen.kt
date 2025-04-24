@@ -48,7 +48,7 @@ fun RegisterProcessScreen(
             onClick = { navController.navigate(Route.BarcodeScanner) },
             modifier = Modifier.padding(16.dp)
         ) {
-            Text(text = "バーコードをスキャンして登録")
+            Text(text = stringResource(R.string.register_barcode))
         }
     }
 }

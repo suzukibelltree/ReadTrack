@@ -21,7 +21,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,30 +37,26 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.belltree.readtrack.R
-import com.belltree.readtrack.ReadTrackApplication
 import com.belltree.readtrack.Route
-import com.belltree.readtrack.network.BookItem
-import com.belltree.readtrack.utils.ConvertBookItemToBookData
 import kotlinx.coroutines.launch
 
 /**
  * 本の詳細画面
  * SearchScreenで選択した本の詳細を表示する
  * @param navController ナビゲーションコントローラー
- * @param bookItem 選択された本の情報
+ * @param viewmodel 本の詳細を取得するViewModel
  */
 @Composable
 fun BookDetail(
+    viewmodel: SearchedBookDetailViewModel,
     navController: NavController,
-    bookItem: BookItem,
 ) {
+    val bookItem = viewmodel.bookItem.value
+    val isRegistered = viewmodel.isRegistered.value
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
-    val app = context.applicationContext as ReadTrackApplication
-    val db = app.appContainer.booksRepository
-    var registeredIdList by remember { mutableStateOf<List<String>>(emptyList()) }
-    LaunchedEffect(Unit) {
-        registeredIdList = db.getAllBookIds()
+    if (bookItem == null) {
+        return
     }
     Column(
         modifier = Modifier
@@ -180,7 +175,7 @@ fun BookDetail(
             }
             Spacer(modifier = Modifier.weight(1f))
         }
-        if (bookItem.id in registeredIdList) {
+        if (isRegistered) {
             Text(
                 text = stringResource(R.string.bookDetail_alreadyAdded),
                 fontSize = 20.sp,
@@ -190,26 +185,23 @@ fun BookDetail(
             Button(
                 onClick = {
                     navController.navigate("${Route.MyBook}/${bookItem.id}") {
-                        popUpTo(Route.Library) {
-                            inclusive = true
-                        }
+                        popUpTo(Route.Library) { inclusive = true }
                     }
                 }
             ) {
-                Text(
-                    text = stringResource(R.string.bookDetail_gotoLibrary)
-                )
+                Text(text = stringResource(R.string.bookDetail_gotoLibrary))
             }
         } else {
             Button(
                 onClick = {
-                    val book = ConvertBookItemToBookData(bookItem)
                     coroutineScope.launch {
-                        db.insert(book)
+                        viewmodel.addBook(bookItem)
+                        Toast.makeText(context, R.string.bookDetail_added, Toast.LENGTH_SHORT)
+                            .show()
+                        navController.navigate(Route.Library)
                     }
-                    Toast.makeText(context, R.string.bookDetail_added, Toast.LENGTH_SHORT).show()
-                    navController.navigate(Route.Library)
-                }, modifier = Modifier.padding(16.dp)
+                },
+                modifier = Modifier.padding(16.dp)
             ) {
                 Text(text = stringResource(R.string.bookDetail_addButton))
             }

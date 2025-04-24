@@ -1,7 +1,8 @@
 package com.belltree.readtrack
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -16,7 +17,9 @@ import com.belltree.readtrack.compose.myBooks.MyBookScreen
 import com.belltree.readtrack.compose.myBooks.MyBooksViewModel
 import com.belltree.readtrack.compose.search.BookDetail
 import com.belltree.readtrack.compose.search.RegisterProcessScreen
+import com.belltree.readtrack.compose.search.SearchedBookDetailViewModel
 import com.belltree.readtrack.compose.search.isbnSearch.BarcodeScannerScreen
+import com.belltree.readtrack.compose.search.isbnSearch.ISBNSearchViewModel
 import com.belltree.readtrack.compose.search.titleSearch.SearchScreen
 import com.belltree.readtrack.compose.search.titleSearch.TitleSearchViewModel
 import com.belltree.readtrack.compose.setting.SettingScreen
@@ -31,9 +34,11 @@ fun ReadTrackNavHost(
     navController: NavHostController,
     modifier: Modifier
 ) {
-    val bookListViewModel: TitleSearchViewModel = hiltViewModel()
+    val titleSearchViewModel: TitleSearchViewModel = hiltViewModel()
+    val isbnSearchViewModel: ISBNSearchViewModel = hiltViewModel()
     val myBooksViewModel: MyBooksViewModel = hiltViewModel()
     val homeViewModel: HomeViewModel = hiltViewModel()
+    val searchedBookDetailViewModel: SearchedBookDetailViewModel = hiltViewModel()
     NavHost(
         navController = navController,
         startDestination = Route.Home,
@@ -55,21 +60,36 @@ fun ReadTrackNavHost(
             RegisterProcessScreen(navController = navController)
         }
         composable<Route.BarcodeScanner> {
-            BarcodeScannerScreen(navController = navController)
+            BarcodeScannerScreen(
+                isbnSearchViewModel = isbnSearchViewModel,
+                searchedBookDetailViewModel = searchedBookDetailViewModel,
+                navController = navController
+            )
         }
         composable<Route.Search> {
-            SearchScreen(navController = navController, viewModel = bookListViewModel)
+            SearchScreen(
+                navController = navController,
+                titleSearchViewModel = titleSearchViewModel,
+                searchedBookDetailViewModel = searchedBookDetailViewModel
+            )
         }
         composable(
             route = "${Route.BookDetail}/{bookId}",
             arguments = listOf(navArgument("bookId") { type = NavType.StringType })
         ) { backStackEntry ->
-            val bookItem = bookListViewModel.selectedBookItem.collectAsState().value
+            backStackEntry.arguments?.getString("bookId") ?: return@composable
+            val bookItem by searchedBookDetailViewModel.bookItem
+
             if (bookItem != null) {
-                BookDetail(navController = navController, bookItem = bookItem)
+                BookDetail(
+                    viewmodel = searchedBookDetailViewModel,
+                    navController = navController,
+                )
             } else {
-                // エラーハンドリング
+                // 読み込み中表示やエラー処理
+                Text("読み込み中...")
             }
+
         }
         composable(
             route = "${Route.MyBook}/{savedBookId}",

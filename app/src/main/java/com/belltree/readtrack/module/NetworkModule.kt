@@ -1,5 +1,6 @@
 package com.belltree.readtrack.module
 
+import com.belltree.readtrack.network.BooksRemoteRepository
 import com.belltree.readtrack.network.GoogleBooksApiService
 import dagger.Module
 import dagger.Provides
@@ -29,5 +30,13 @@ object NetworkModule {
     @Singleton
     fun provideGoogleBooksApiService(retrofit: Retrofit): GoogleBooksApiService {
         return retrofit.create(GoogleBooksApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideBooksRemoteRepository(
+        apiService: GoogleBooksApiService
+    ): BooksRemoteRepository {
+        return BooksRemoteRepository(apiService)
     }
 }
