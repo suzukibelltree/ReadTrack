@@ -1,5 +1,6 @@
 package com.belltree.readtrack.compose.search.isbnSearch
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -42,6 +44,7 @@ fun BarcodeScannerScreen(
 ) {
     val scope = rememberCoroutineScope()
     val cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA)
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         if (!cameraPermissionState.status.isGranted) {
@@ -74,16 +77,24 @@ fun BarcodeScannerScreen(
                             // ISBNが空でない場合に検索を実行
                             if (scannedValue != "") {
                                 val book = isbnSearchViewModel.searchBookByISBN()
-                                searchedBookDetailViewModel.loadBookById(
-                                    bookId = book.id,
-                                    sourceBookItem = book
-                                )
-                                // 本の詳細画面に遷移する
-                                navController.navigate(
-                                    "${Route.BookDetail}/${book.id}"
-                                ) {
-                                    popUpTo(Route.BarcodeScanner) {
-                                        inclusive = true
+                                if (book == null) {
+                                    Toast.makeText(
+                                        context,
+                                        R.string.barcode_scanner_nobook,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                } else {
+                                    searchedBookDetailViewModel.loadBookById(
+                                        bookId = book.id,
+                                        sourceBookItem = book
+                                    )
+                                    // 本の詳細画面に遷移する
+                                    navController.navigate(
+                                        "${Route.BookDetail}/${book.id}"
+                                    ) {
+                                        popUpTo(Route.BarcodeScanner) {
+                                            inclusive = true
+                                        }
                                     }
                                 }
                             }

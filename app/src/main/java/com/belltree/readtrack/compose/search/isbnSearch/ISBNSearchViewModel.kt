@@ -19,9 +19,9 @@ class ISBNSearchViewModel @Inject constructor(
         _isbn.value = isbn
     }
 
-    suspend fun searchBookByISBN(): BookItem {
+    suspend fun searchBookByISBN(): BookItem? {
         return repository.searchBooks(
             query = _isbn.value
-        ).items?.firstOrNull()!!
+        ).items?.firstOrNull()
     }
 }

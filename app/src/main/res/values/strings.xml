@@ -61,6 +61,7 @@
     <string name="search_failed_next_page">次ページの読み込みに失敗しました。</string>
     <string name="barcode_scan_result">スキャン結果: %s</string>
     <string name="barcode_scanner_button">検索</string>
+    <string name="barcode_scanner_nobook">お探しの本は見つかりませんでした。</string>
     <string name="setting_character_size">文字サイズの変更</string>
     <string name="setting_theme_color">テーマカラーの変更</string>
     <string name="setting_theme_color_red">赤</string>
