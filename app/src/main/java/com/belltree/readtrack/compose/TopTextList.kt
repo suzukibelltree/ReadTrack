@@ -10,7 +10,7 @@ enum class TopTextList(val resId: Int) {
     RegisterProcess(R.string.app_topBar_register_process),
     Search(R.string.app_topBar_search),
     BookDetail(R.string.app_topBar_detail),
-    MyBook(R.string.app_topBar_myBook);
+    BarcodeScanner(R.string.app_topBar_barcode_search);
 
     fun getValue(context: Context): String {
         return context.getString(resId)

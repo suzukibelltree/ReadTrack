@@ -5,7 +5,8 @@
     <string name="app_topBar_library">Library</string>
     <string name="app_topBar_setting">Setting</string>
     <string name="app_topBar_register_process">Register Process</string>
-    <string name="app_topBar_search">Search</string>
+    <string name="app_topBar_search">Title Search</string>
+    <string name="app_topBar_barcode_search">Barcode Search</string>
     <string name="app_topBar_detail">Detail of Book</string>
     <string name="app_topBar_myBook">MyBook</string>
     <string name="read_state_unread">Unread</string>
