@@ -6,7 +6,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.belltree.readtrack.datastore.getValue
 import com.belltree.readtrack.notification.showNotification
-import com.belltree.readtrack.parseDateToMillis
+import com.belltree.readtrack.utils.parseDateToMillis
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit

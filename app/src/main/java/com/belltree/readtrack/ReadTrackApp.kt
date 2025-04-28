@@ -180,6 +180,7 @@ fun getTopBarTitle(currentRoute: String?): String {
         Route.Setting.toString() -> context.getString(TopTextList.Setting.resId)
         Route.Search.toString() -> context.getString(TopTextList.Search.resId)
         Route.BookDetail.toString() -> context.getString(TopTextList.BookDetail.resId)
+        Route.BarcodeScanner.toString() -> context.getString(TopTextList.BarcodeScanner.resId)
         else -> stringResource(R.string.app_name)
     }
 }

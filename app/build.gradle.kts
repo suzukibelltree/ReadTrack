@@ -18,8 +18,8 @@ android {
         applicationId = "com.belltree.readtrack"
         minSdk = 26
         targetSdk = 35
-        versionCode = 9
-        versionName = "1.0.8"
+        versionCode = 10
+        versionName = "1.0.9"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -63,7 +63,7 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
-    //For navigation compose
+    // For navigation compose
     implementation(libs.androidx.navigation.compose)
 
     // ViewModel
@@ -73,7 +73,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.okhttp)
 
-    //Gson Converter
+    // Gson Converter
     implementation(libs.converter.gson)
 
     // Gson
@@ -112,6 +112,20 @@ dependencies {
 
     // WorkManager
     implementation(libs.androidx.work.runtime.ktx)
+
+    // Paging
+    implementation(libs.androidx.paging.runtime.ktx)
+    implementation(libs.androidx.paging.compose)
+
+    // ML Kit
+    implementation(libs.barcode.scanning)
+
+    // CameraX
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
+
+    implementation(libs.accompanist.permissions)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

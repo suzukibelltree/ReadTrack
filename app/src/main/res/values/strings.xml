@@ -4,7 +4,8 @@
     <string name="app_topBar_library">ライブラリ</string>
     <string name="app_topBar_setting">設定</string>
     <string name="app_topBar_register_process">登録方法の選択</string>
-    <string name="app_topBar_search">検索</string>
+    <string name="app_topBar_search">タイトル検索</string>
+    <string name="app_topBar_barcode_search">バーコード検索</string>
     <string name="app_topBar_detail">本の詳細</string>
     <string name="app_topBar_myBook">マイbook</string>
     <string name="read_state_unread">未読</string>
@@ -52,11 +53,16 @@
     <string name="myBook_readLogPages">ページ数： %2s</string>
     <string name="register_process">登録方法を選択してください</string>
     <string name="register_title">タイトルを検索して登録</string>
+    <string name="register_barcode">バーコードをスキャンして登録</string>
     <string name="search_title">タイトルを入力</string>
     <string name="search_button">検索</string>
     <string name="search_failed">検索に失敗しました</string>
     <string name="search_unknown">不明</string>
     <string name="search_no_result">そのキーワードが含まれる書籍は見つかりませんでした。</string>
+    <string name="search_failed_next_page">次ページの読み込みに失敗しました。</string>
+    <string name="barcode_scan_result">スキャン結果: %s</string>
+    <string name="barcode_scanner_button">検索</string>
+    <string name="barcode_scanner_nobook">お探しの本は見つかりませんでした。</string>
     <string name="setting_character_size">文字サイズの変更</string>
     <string name="setting_theme_color">テーマカラーの変更</string>
     <string name="setting_theme_color_red">赤</string>

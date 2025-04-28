@@ -18,7 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.belltree.readtrack.compose.HowToUseDialog
+import com.belltree.readtrack.compose.setting.HowToUseDialog
 import com.belltree.readtrack.datastore.isFirstLaunch
 import com.belltree.readtrack.ui.theme.ReadTrackTheme
 import dagger.hilt.android.AndroidEntryPoint

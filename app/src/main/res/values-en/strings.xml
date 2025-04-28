@@ -5,7 +5,8 @@
     <string name="app_topBar_library">Library</string>
     <string name="app_topBar_setting">Setting</string>
     <string name="app_topBar_register_process">Register Process</string>
-    <string name="app_topBar_search">Search</string>
+    <string name="app_topBar_search">Title Search</string>
+    <string name="app_topBar_barcode_search">Barcode Search</string>
     <string name="app_topBar_detail">Detail of Book</string>
     <string name="app_topBar_myBook">MyBook</string>
     <string name="read_state_unread">Unread</string>
@@ -53,11 +54,16 @@
     <string name="myBook_readLogPages">Page count: %2s</string>
     <string name="register_process">Please select a registration method</string>
     <string name="register_title">Search by title to register</string>
+    <string name="register_barcode">Register by scanning a barcode</string>
     <string name="search_title">Enter title</string>
     <string name="search_button">Search</string>
     <string name="search_failed">Search failed.</string>
     <string name="search_unknown">Unknown</string>
     <string name="search_no_result">No books found with that keyword.</string>
+    <string name="search_failed_next_page">Failed to load next page.</string>
+    <string name="barcode_scan_result">Scanned value: %s</string>
+    <string name="barcode_scanner_button">Search</string>
+    <string name="barcode_scanner_nobook">The book you were looking for was not found.</string>
     <string name="setting_character_size">Change font size</string>
     <string name="setting_theme_color">Change theme color</string>
     <string name="setting_theme_color_red">Red</string>
