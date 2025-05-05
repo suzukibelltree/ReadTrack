@@ -1,5 +1,6 @@
 package com.belltree.readtrack.compose.home
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
@@ -81,6 +82,7 @@ fun HomeScreen(
                 .padding(8.dp)
         )
         if (updatedBook != null) {
+            Log.d("poke", updatedBook!!.readpage.toString())
             MiniBookCard(
                 book = updatedBook!!,
                 navController = navController,
