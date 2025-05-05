@@ -43,6 +43,18 @@ class MyBooksViewModel @Inject constructor(
     val selectedBookLogs: StateFlow<List<ReadLog>> = _selectedBookLogs
 
 
+    init {
+        viewModelScope.launch {
+            savedBooks.collect { books ->
+                _selectedBook.value?.let { selected ->
+                    val updated = books.find { it.id == selected.id }
+                    _selectedBook.value = updated
+                }
+            }
+        }
+    }
+
+
     /**
      * IDから本の情報を取得する
      * @param savedBookId 本のID
