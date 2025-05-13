@@ -51,6 +51,8 @@
     <string name="myBook_pageCount">/ %s ページ</string>
     <string name="myBook_readLogDate">日付： %s</string>
     <string name="myBook_readLogPages">ページ数： %2s</string>
+    <string name="myBook_page_isnull">ページ数を入力してください</string>
+    <string name="myBook_page_cannot_decrease">読了ページ数は減らせません</string>
     <string name="register_process">登録方法を選択してください</string>
     <string name="register_title">タイトルを検索して登録</string>
     <string name="register_barcode">バーコードをスキャンして登録</string>

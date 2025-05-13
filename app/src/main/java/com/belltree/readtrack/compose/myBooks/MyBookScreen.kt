@@ -151,7 +151,7 @@ fun MyBookScreen(
                         fontSize = 16.sp,
                         modifier = Modifier.align(Alignment.Start)
                     )
-                    //状態の変更、読了ページ数の変更、メモの記入をここで行う
+                    //状態の変更を行うアイコン3つ
                     Row(
                         modifier = Modifier
                             .padding(8.dp)
@@ -190,7 +190,9 @@ fun MyBookScreen(
                     }
                 }
             }
+            // APIがページ数の情報を持っている場合のみ表示
             if (book.pageCount != 0) {
+                // 読了ページ数の入力欄
                 item {
                     Row(
                         modifier = Modifier
@@ -207,9 +209,7 @@ fun MyBookScreen(
                                 } else if (newValue.all { it.isDigit() }) { //無効な数字が入力された場合は処理しない
                                     readPagesCount = newValue
                                     // 読了ページ数が増加したら差分を計算
-                                    if (newValue.toInt() > book.readpage!!) {
-                                        pagesReadDiff = newValue.toInt() - book.readpage
-                                    }
+                                    pagesReadDiff = newValue.toInt() - book.readpage!!
                                     // 読了ページ数がページ数を超える場合はページ数に合わせる
                                     if (newValue.toInt() > book.pageCount!!) {
                                         readPagesCount = book.pageCount.toString()
@@ -231,10 +231,11 @@ fun MyBookScreen(
                         )
                     }
                 }
+                // 読書記録(履歴)の表示
                 item {
                     val itemCount = selectedBookReadLog.value.size
                     val itemHeight = 40.dp  // 1つのログアイテムのだいたいの高さ
-                    val maxHeight = 200.dp  // 表示高さの上限
+                    val maxHeight = 160.dp  // 表示高さの上限
 
                     val calculatedHeight = (itemCount * itemHeight).coerceAtMost(maxHeight)
                     LazyColumn(
@@ -293,9 +294,19 @@ fun MyBookScreen(
                     )
                     Button(
                         onClick = {
+                            // 読了ページ数が空の場合はトーストで通知
                             if (readPagesCount == "") {
                                 Toast.makeText(
-                                    context, "読了ページ数を入力してください", Toast.LENGTH_SHORT
+                                    context,
+                                    R.string.myBook_page_isnull,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                // 保存されているものよりも少ない読了ページ数で保存することはできない(トーストで通知)
+                            } else if (pagesReadDiff < 0) {
+                                Toast.makeText(
+                                    context,
+                                    R.string.myBook_page_cannot_decrease,
+                                    Toast.LENGTH_SHORT
                                 ).show()
                             } else {
                                 // 保存ボタンが押されたときにトーストで通知
@@ -313,7 +324,7 @@ fun MyBookScreen(
                                             R.string.read_state_reading -> 1
                                             else -> 2
                                         },
-                                        readpage = readPagesCount.toInt(), //ここか
+                                        readpage = readPagesCount.toInt(),
                                         comment = comment,
                                         updatedDate = formattedDate
                                     )
@@ -323,7 +334,7 @@ fun MyBookScreen(
                                     ReadLog(
                                         yearMonthId = currentYearMonthId,
                                         bookId = bookId,
-                                        readPages = pagesReadDiff, // ここで問題が発生
+                                        readPages = pagesReadDiff,
                                         recordedAt = formattedDate
                                     )
                                 )
@@ -367,6 +378,7 @@ fun MyBookScreen(
                 onDismiss = {
                     showDialog = false
                 },
+                navController = navController
             )
         }
     }

@@ -52,6 +52,8 @@
     <string name="myBook_pageCount">/ %s pages</string>
     <string name="myBook_readLogDate">Date: %s</string>
     <string name="myBook_readLogPages">Page count: %2s</string>
+    <string name="myBook_page_isnull">Please enter the page count</string>
+    <string name="myBook_page_cannot_decrease">The number of pages read cannot be decreased</string>
     <string name="register_process">Please select a registration method</string>
     <string name="register_title">Search by title to register</string>
     <string name="register_barcode">Register by scanning a barcode</string>
