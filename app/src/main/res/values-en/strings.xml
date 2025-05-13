@@ -64,7 +64,10 @@
     <string name="search_no_result">No books found with that keyword.</string>
     <string name="search_failed_next_page">Failed to load next page.</string>
     <string name="barcode_scan_result">Scanned value: %s</string>
+    <string name="barcode_scanner_direction">Look at the back of the book\'\s barcode to scan.</string>
+    <string name="barcode_scanner_dialog_message">Do you want to search for the following number?</string>
     <string name="barcode_scanner_button">Search</string>
+    <string name="barcode_scanner_cancel">Cancel</string>
     <string name="barcode_scanner_nobook">The book you were looking for was not found.</string>
     <string name="setting_character_size">Change font size</string>
     <string name="setting_theme_color">Change theme color</string>

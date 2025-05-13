@@ -63,7 +63,10 @@
     <string name="search_no_result">そのキーワードが含まれる書籍は見つかりませんでした。</string>
     <string name="search_failed_next_page">次ページの読み込みに失敗しました。</string>
     <string name="barcode_scan_result">スキャン結果: %s</string>
+    <string name="barcode_scanner_direction">書籍背面のバーコードをスキャンしてください</string>
+    <string name="barcode_scanner_dialog_message">以下の番号を検索しますか？</string>
     <string name="barcode_scanner_button">検索</string>
+    <string name="barcode_scanner_cancel">キャンセル</string>
     <string name="barcode_scanner_nobook">お探しの本は見つかりませんでした。</string>
     <string name="setting_character_size">文字サイズの変更</string>
     <string name="setting_theme_color">テーマカラーの変更</string>
