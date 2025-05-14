@@ -7,19 +7,24 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.belltree.readtrack.R
 import com.belltree.readtrack.Route
@@ -53,60 +58,96 @@ fun BarcodeScannerScreen(
     }
 
     if (cameraPermissionState.status.isGranted) {
-        val scannedValue by isbnSearchViewModel.isbn.collectAsState(initial = "")
+        var showDialog by remember { mutableStateOf(false) }
+        val scannedIsbn by isbnSearchViewModel.isbn.collectAsState(initial = "")
+
 
         Box(modifier = Modifier.fillMaxSize()) {
             // カメラ映像（背面）
             BarcodeScannerView { value ->
-                isbnSearchViewModel.setIsbn(value)
+                // スキャンした値が空でない、かつ、スキャンした値が前回のスキャン結果と異なり、かつ97から始まる(ISBNの条件)場合
+                if (!showDialog && value != scannedIsbn && value.startsWith("97")) {
+                    isbnSearchViewModel.setIsbn(value)
+                    showDialog = true
+                }
             }
 
-            // 下部にスキャン結果と検索ボタンを表示
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
+                    .align(Alignment.TopCenter)
                     .background(Color.White)
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = stringResource(R.string.barcode_scan_result, scannedValue))
-                Button(
-                    onClick = {
+                Text(text = stringResource(R.string.barcode_scanner_direction))
+            }
+            if (showDialog) {
+                ScanResultDialog(
+                    isbn = scannedIsbn,
+                    onConfirm = {
+                        showDialog = false
                         scope.launch {
-                            // ISBNが空でない場合に検索を実行
-                            if (scannedValue != "") {
-                                val book = isbnSearchViewModel.searchBookByISBN()
-                                if (book == null) {
-                                    Toast.makeText(
-                                        context,
-                                        R.string.barcode_scanner_nobook,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                } else {
-                                    searchedBookDetailViewModel.loadBookById(
-                                        bookId = book.id,
-                                        sourceBookItem = book
-                                    )
-                                    // 本の詳細画面に遷移する
-                                    navController.navigate(
-                                        "${Route.BookDetail}/${book.id}"
-                                    ) {
-                                        popUpTo(Route.BarcodeScanner) {
-                                            inclusive = true
-                                        }
-                                    }
+                            val book = isbnSearchViewModel.searchBookByISBN()
+                            if (book == null) {
+                                Toast.makeText(
+                                    context,
+                                    R.string.barcode_scanner_nobook,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                searchedBookDetailViewModel.loadBookById(
+                                    bookId = book.id,
+                                    sourceBookItem = book
+                                )
+                                navController.navigate("${Route.BookDetail}/${book.id}") {
+                                    popUpTo(Route.BarcodeScanner) { inclusive = true }
                                 }
                             }
                         }
                     },
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                ) {
-                    Text(text = stringResource(R.string.barcode_scanner_button))
-                }
+                    onDismiss = {
+                        showDialog = false
+                    }
+                )
             }
         }
     }
 }
+
+/**
+ * スキャン結果のダイアログ
+ * @param isbn スキャンしたISBN
+ * @param onConfirm 確認ボタンが押されたときの処理
+ * @param onDismiss ダイアログが閉じられたときの処理
+ */
+@Composable
+fun ScanResultDialog(
+    isbn: String,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = stringResource(R.string.barcode_scanner_dialog_message),
+                fontSize = 20.sp
+            )
+        },
+        text = { Text("ISBN: $isbn") },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(text = stringResource(R.string.barcode_scanner_button))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = stringResource(R.string.barcode_scanner_cancel))
+            }
+        }
+    )
+}
+
+
 
