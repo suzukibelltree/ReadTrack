@@ -9,6 +9,7 @@
     <string name="app_topBar_barcode_search">Barcode Search</string>
     <string name="app_topBar_detail">Detail of Book</string>
     <string name="app_topBar_myBook">MyBook</string>
+    <string name="app_topBar_registerManually">Register Manually</string>
     <string name="read_state_unread">Unread</string>
     <string name="read_state_reading">Reading</string>
     <string name="read_state_read">Finished</string>

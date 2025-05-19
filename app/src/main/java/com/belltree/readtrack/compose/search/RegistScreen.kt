@@ -50,5 +50,11 @@ fun RegisterProcessScreen(
         ) {
             Text(text = stringResource(R.string.register_barcode))
         }
+        Button(
+            onClick = { navController.navigate(Route.RegisterManually) },
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(text = "書籍情報を手動で入力")
+        }
     }
 }

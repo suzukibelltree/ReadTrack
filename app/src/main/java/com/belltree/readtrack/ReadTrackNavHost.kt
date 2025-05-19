@@ -10,6 +10,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.belltree.readtrack.compose.RegisterManually.ManualBookEntryScreen
 import com.belltree.readtrack.compose.home.HomeScreen
 import com.belltree.readtrack.compose.home.HomeViewModel
 import com.belltree.readtrack.compose.myBooks.LibraryScreen
@@ -63,6 +64,11 @@ fun ReadTrackNavHost(
             BarcodeScannerScreen(
                 isbnSearchViewModel = isbnSearchViewModel,
                 searchedBookDetailViewModel = searchedBookDetailViewModel,
+                navController = navController
+            )
+        }
+        composable<Route.RegisterManually> {
+            ManualBookEntryScreen(
                 navController = navController
             )
         }

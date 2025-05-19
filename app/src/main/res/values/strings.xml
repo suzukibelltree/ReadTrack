@@ -8,6 +8,7 @@
     <string name="app_topBar_barcode_search">バーコード検索</string>
     <string name="app_topBar_detail">本の詳細</string>
     <string name="app_topBar_myBook">マイbook</string>
+    <string name="app_topBar_registerManually">手動登録</string>
     <string name="read_state_unread">未読</string>
     <string name="read_state_reading">読書中</string>
     <string name="read_state_read">読了</string>
