@@ -22,6 +22,9 @@ object Route {
     data object BarcodeScanner
 
     @Serializable
+    data object RegisterManually
+
+    @Serializable
     data object Search
 
     @Serializable

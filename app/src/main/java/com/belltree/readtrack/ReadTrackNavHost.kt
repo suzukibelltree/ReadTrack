@@ -15,6 +15,7 @@ import com.belltree.readtrack.compose.home.HomeViewModel
 import com.belltree.readtrack.compose.myBooks.LibraryScreen
 import com.belltree.readtrack.compose.myBooks.MyBookScreen
 import com.belltree.readtrack.compose.myBooks.MyBooksViewModel
+import com.belltree.readtrack.compose.registerManually.ManualBookEntryScreen
 import com.belltree.readtrack.compose.search.BookDetail
 import com.belltree.readtrack.compose.search.RegisterProcessScreen
 import com.belltree.readtrack.compose.search.SearchedBookDetailViewModel
@@ -63,6 +64,11 @@ fun ReadTrackNavHost(
             BarcodeScannerScreen(
                 isbnSearchViewModel = isbnSearchViewModel,
                 searchedBookDetailViewModel = searchedBookDetailViewModel,
+                navController = navController
+            )
+        }
+        composable<Route.RegisterManually> {
+            ManualBookEntryScreen(
                 navController = navController
             )
         }
