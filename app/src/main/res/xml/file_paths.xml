@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- 外部ファイルディレクトリ内のbook_imagesフォルダを共有可能にする -->
+    <external-files-path
+        name="book_images"
+        path="book_images/" />
+</paths>

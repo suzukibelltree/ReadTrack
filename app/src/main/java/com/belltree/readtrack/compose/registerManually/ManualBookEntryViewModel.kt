@@ -82,7 +82,7 @@ class ManualBookEntryViewModel @Inject constructor(
                 publishedDate = state.publishedDate.takeIf { it.isNotBlank() },
                 description = null,
                 thumbnail = state.thumbnail,
-                pageCount = state.pageCount.toIntOrNull(),
+                pageCount = state.pageCount.toIntOrNull() ?: 0,
                 registeredDate = getCurrentFormattedTime(),
                 updatedDate = getCurrentFormattedTime()
             )
