@@ -130,7 +130,7 @@ fun LibraryScreen(
                         },
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
-                    if (book.pageCount != null) {
+                    if (book.pageCount != null && book.pageCount != 0) {
                         LinearProgressIndicator(
                             progress = { book.readpage!!.toFloat() / book.pageCount.toFloat() },
                             modifier = Modifier

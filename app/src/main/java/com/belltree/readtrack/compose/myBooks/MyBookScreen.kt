@@ -191,7 +191,7 @@ fun MyBookScreen(
                 }
             }
             // APIがページ数の情報を持っている場合のみ表示
-            if (book.pageCount != 0) {
+            if (book.pageCount != 0 && book.pageCount != null) {
                 // 読了ページ数の入力欄
                 item {
                     Row(
@@ -211,9 +211,10 @@ fun MyBookScreen(
                                     // 読了ページ数が増加したら差分を計算
                                     pagesReadDiff = newValue.toInt() - book.readpage!!
                                     // 読了ページ数がページ数を超える場合はページ数に合わせる
-                                    if (newValue.toInt() > book.pageCount!!) {
+                                    if (newValue.toInt() > book.pageCount) {
                                         readPagesCount = book.pageCount.toString()
                                         selectedOption = R.string.read_state_read
+                                        pagesReadDiff = book.pageCount - book.readpage
                                     }
                                 }
                             },
@@ -226,7 +227,7 @@ fun MyBookScreen(
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                         )
                         Text(
-                            text = stringResource(R.string.myBook_pageCount, book.pageCount!!),
+                            text = stringResource(R.string.myBook_pageCount, book.pageCount),
                             modifier = Modifier.align(Alignment.CenterVertically)
                         )
                     }
