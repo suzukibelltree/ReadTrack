@@ -1,4 +1,4 @@
-package com.belltree.readtrack.compose.myBooks
+package com.belltree.readtrack.compose.myBookDetail
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
