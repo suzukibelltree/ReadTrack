@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.belltree.readtrack.R
@@ -49,7 +50,7 @@ import com.patrykandpatrick.vico.core.entry.entryModelOf
 @Composable
 fun HomeScreen(
     navController: NavController,
-    homeViewModel: HomeViewModel,
+    homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
     val savedBooks = homeViewModel.allBooks.collectAsState()
     val finishedBooks = savedBooks.value.filter { it.progress == 2 }

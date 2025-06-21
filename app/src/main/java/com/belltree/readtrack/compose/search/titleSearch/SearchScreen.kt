@@ -30,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -48,7 +49,7 @@ import com.belltree.readtrack.network.BookItem
  */
 @Composable
 fun SearchScreen(
-    titleSearchViewModel: TitleSearchViewModel,
+    titleSearchViewModel: TitleSearchViewModel = hiltViewModel(),
     searchedBookDetailViewModel: SearchedBookDetailViewModel,
     navController: NavController
 ) {
