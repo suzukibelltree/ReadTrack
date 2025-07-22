@@ -9,9 +9,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.window.Dialog
-import androidx.navigation.NavController
 import com.belltree.readtrack.R
-import com.belltree.readtrack.Route
 
 /**
  * 本を削除する際に表示するダイアログ
@@ -23,7 +21,7 @@ import com.belltree.readtrack.Route
 fun DeleteBookDialog(
     onDismiss: () -> Unit,
     onDelete: () -> Unit,
-    navController: NavController
+    onBack: () -> Unit,
 ) {
     val context = LocalContext.current
     Dialog(
@@ -50,7 +48,7 @@ fun DeleteBookDialog(
                         onDelete()
                         Toast.makeText(context, R.string.deleteDialog_deleted, Toast.LENGTH_SHORT)
                             .show()
-                        navController.navigate(Route.Library)
+                        onBack()
                     }
                 ) {
                     Text(text = stringResource(R.string.deleteDialog_positive))

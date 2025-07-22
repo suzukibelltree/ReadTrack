@@ -161,7 +161,7 @@ fun MyBookScreen(
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         ReadStateCard(
-                            progress = 0,
+                            progress = ReadProgress.UNREAD,
                             icon = R.drawable.frame,
                             contentDescription = stringResource(R.string.read_state_unread),
                             selectedOption = selectedOption,
@@ -170,7 +170,7 @@ fun MyBookScreen(
                                 readPagesCount = "0"
                             })
                         ReadStateCard(
-                            progress = 1,
+                            progress = ReadProgress.READING,
                             icon = R.drawable.reading,
                             contentDescription = stringResource(R.string.read_state_reading),
                             selectedOption = selectedOption,
@@ -179,7 +179,7 @@ fun MyBookScreen(
                             }
                         )
                         ReadStateCard(
-                            progress = 2,
+                            progress = ReadProgress.READ,
                             icon = R.drawable.finished,
                             contentDescription = stringResource(R.string.read_state_read),
                             selectedOption = selectedOption,
@@ -322,9 +322,9 @@ fun MyBookScreen(
                                 myBookDetailViewModel.updateBook(
                                     book.copy(
                                         progress = when (selectedOption) {
-                                            R.string.read_state_unread -> 0
-                                            R.string.read_state_reading -> 1
-                                            else -> 2
+                                            R.string.read_state_unread -> ReadProgress.UNREAD
+                                            R.string.read_state_reading -> ReadProgress.READING
+                                            else -> ReadProgress.READ
                                         },
                                         readpage = readPagesCount.toInt(),
                                         comment = comment,
@@ -379,7 +379,7 @@ fun MyBookScreen(
                     showDialog = false
                 },
                 onDelete = { myBookDetailViewModel.deleteBook(book) },
-                navController = navController
+                onBack = { navController.navigate(Route.Library) }
             )
         }
     }
