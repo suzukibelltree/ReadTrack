@@ -6,8 +6,10 @@ import com.belltree.readtrack.network.BookData
 import com.belltree.readtrack.room.BooksRepository
 import com.belltree.readtrack.utils.getCurrentFormattedTime
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -40,6 +42,9 @@ class ManualBookEntryViewModel @Inject constructor(
     private val _formState = MutableStateFlow(ManualBookFormState())
     val formState: StateFlow<ManualBookFormState> = _formState.asStateFlow()
 
+    private val _eventFlow = MutableSharedFlow<ManualBookUiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
+
     fun updateTitle(title: String) {
         _formState.update { it.copy(title = title) }
     }
@@ -62,6 +67,18 @@ class ManualBookEntryViewModel @Inject constructor(
 
     fun onThumbnailSelected(thumbnail: String?) {
         _formState.update { it.copy(thumbnail = thumbnail) }
+    }
+
+    fun onThumbnailSelectionCanceled() {
+        viewModelScope.launch {
+            _eventFlow.emit(ManualBookUiEvent.ThumbnailSelectionCanceled)
+        }
+    }
+
+    fun onCameraPermissionDenied() {
+        viewModelScope.launch {
+            _eventFlow.emit(ManualBookUiEvent.CameraPermissionDenied)
+        }
     }
 
     /**
@@ -88,6 +105,7 @@ class ManualBookEntryViewModel @Inject constructor(
             )
 
             booksRepository.insert(book)
+            _eventFlow.emit(ManualBookUiEvent.BookSaved)
             onSaved()
         }
     }
