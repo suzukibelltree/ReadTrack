@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.belltree.readtrack.R
 import com.belltree.readtrack.Route
@@ -43,7 +44,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun BarcodeScannerScreen(
-    isbnSearchViewModel: ISBNSearchViewModel,
+    isbnSearchViewModel: ISBNSearchViewModel = hiltViewModel(),
     searchedBookDetailViewModel: SearchedBookDetailViewModel,
     navController: NavController
 ) {

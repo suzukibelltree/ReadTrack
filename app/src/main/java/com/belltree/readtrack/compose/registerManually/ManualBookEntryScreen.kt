@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
@@ -17,13 +18,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
@@ -39,11 +38,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-/**
- * 書籍情報を手動で登録する画面
- * @param navController ナビゲーションコントローラー
- * @param viewModel 書籍情報を登録するViewModel
- */
 @Composable
 fun ManualBookEntryScreen(
     navController: NavController,
@@ -51,117 +45,121 @@ fun ManualBookEntryScreen(
 ) {
     val formState by viewModel.formState.collectAsState()
     val context = LocalContext.current
+    val eventFlow = viewModel.eventFlow
     val scrollState = rememberScrollState()
 
     // 撮影した書影画像の一時保存用URI
-    val imageUri = remember { createImageUri(context) }
+    var imageUri = remember { createImageUri(context) }
 
-    // カメラ権限の状態を管理する
-    var hasCameraPermission by remember {
-        mutableStateOf(
-            ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.CAMERA
-            ) == PackageManager.PERMISSION_GRANTED
-        )
+    LaunchedEffect(Unit) {
+        eventFlow.collect { event ->
+            when (event) {
+                is ManualBookUiEvent.CameraPermissionDenied -> {
+                    Toast.makeText(context, "カメラの使用が許可されていません", Toast.LENGTH_SHORT)
+                        .show()
+                }
+
+                is ManualBookUiEvent.ThumbnailSelectionCanceled -> {
+                    Toast.makeText(context, "撮影がキャンセルされました", Toast.LENGTH_SHORT).show()
+                }
+
+                is ManualBookUiEvent.BookSaved -> {
+                    navController.navigate(Route.Library) {
+                        popUpTo(Route.RegisterManually) { inclusive = true }
+                    }
+                }
+            }
+        }
     }
 
     // カメラランチャー
     val cameraLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.TakePicture(),
-        onResult = { success ->
-            if (success) {
-                viewModel.onThumbnailSelected(imageUri.toString())
-            }
+        contract = ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success) {
+            viewModel.onThumbnailSelected(imageUri.toString())
+        } else {
+            // 撮影キャンセル時の処理（例：Snackbarなどに変更可能）
+            viewModel.onThumbnailSelectionCanceled()
         }
-    )
+    }
 
-    // 権限要求
+    // 権限要求ランチャー
     val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-        onResult = { isGranted ->
-            hasCameraPermission = isGranted
-            if (isGranted) {
-                // 権限が許可されたらカメラを起動
-                cameraLauncher.launch(imageUri)
-            }
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            val uri = createImageUri(context)
+            imageUri = uri
+            cameraLauncher.launch(uri)
+        } else {
+            viewModel.onCameraPermissionDenied()
         }
-    )
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(horizontal = 16.dp)
             .verticalScroll(scrollState)
     ) {
         Text(
             text = "書籍情報を入力してください",
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier.padding(vertical = 16.dp)
         )
 
-        // タイトルの入力
-        TextField(
+        LabeledTextField(
             value = formState.title,
-            onValueChange = { viewModel.updateTitle(it) },
-            label = { Text("タイトル(入力必須)") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            isError = formState.title.isBlank(),
+            onValueChange = viewModel::updateTitle,
+            label = "タイトル(入力必須)",
+            isError = formState.title.isBlank()
         )
 
-        // 著者名の入力
-        OutlinedTextField(
+        LabeledTextField(
             value = formState.author,
-            onValueChange = { viewModel.updateAuthor(it) },
-            label = { Text("著者名") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+            onValueChange = viewModel::updateAuthor,
+            label = "著者名"
         )
 
-        // 出版社名の入力
-        OutlinedTextField(
+        LabeledTextField(
             value = formState.publisher,
-            onValueChange = { viewModel.updatePublisher(it) },
-            label = { Text("出版社") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+            onValueChange = viewModel::updatePublisher,
+            label = "出版社"
         )
 
-        OutlinedTextField(
+        LabeledTextField(
             value = formState.publishedDate,
-            onValueChange = { viewModel.updatePublishedDate(it) },
-            label = { Text("出版日") },
-            placeholder = { Text(text = "例:2024-10-01") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+            onValueChange = viewModel::updatePublishedDate,
+            label = "出版日",
+            placeholder = "例: 2024-10-01"
         )
 
-        OutlinedTextField(
+        LabeledTextField(
             value = formState.pageCount,
-            onValueChange = { viewModel.updatePageCount(it) },
-            label = { Text("ページ数(入力推奨)") },
-            placeholder = { Text(text = "例:300") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+            onValueChange = viewModel::updatePageCount,
+            label = "ページ数(入力推奨)",
+            placeholder = "例: 300",
+            isNumber = true
         )
 
-        Text(
-            text = "書影画像の撮影",
-            modifier = Modifier.padding(8.dp)
-        )
+        Text("書影画像の撮影", modifier = Modifier.padding(vertical = 8.dp))
 
         Button(
             onClick = {
-                if (hasCameraPermission) {
-                    cameraLauncher.launch(imageUri)
+                if (ContextCompat.checkSelfPermission(
+                        context, Manifest.permission.CAMERA
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    val uri = createImageUri(context)
+                    imageUri = uri
+                    cameraLauncher.launch(uri)
                 } else {
                     permissionLauncher.launch(Manifest.permission.CAMERA)
                 }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "書影画像を撮影する")
+            Text("書影画像を撮影する")
         }
 
         formState.thumbnail?.let { uri ->
@@ -171,14 +169,16 @@ fun ManualBookEntryScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
-                    .height(120.dp),
+                    .height(120.dp)
             )
         }
 
         Button(
             onClick = {
                 viewModel.saveBook {
-                    navController.navigate(Route.Library)
+                    navController.navigate(Route.Library) {
+                        popUpTo(Route.RegisterManually) { inclusive = true }
+                    }
                 }
             },
             enabled = formState.isSaveEnabled,
@@ -192,18 +192,45 @@ fun ManualBookEntryScreen(
 }
 
 /**
- * カメラで撮影した画像を保存するためのURIを作成する関数
+ * 再利用可能なテキスト入力フィールド
+ */
+@Composable
+fun LabeledTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    placeholder: String = "",
+    isNumber: Boolean = false,
+    isError: Boolean = false
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = { Text(label) },
+        placeholder = { if (placeholder.isNotEmpty()) Text(placeholder) },
+        singleLine = true,
+        isError = isError,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        keyboardOptions = if (isNumber) {
+            KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+        } else {
+            KeyboardOptions.Default
+        }
+    )
+}
+
+/**
+ * 書影画像を保存する一時URIを生成
  */
 private fun createImageUri(context: Context): Uri {
-    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-    val imageFileName = "book_image_$timeStamp.jpg"
-    val storageDir = File(context.getExternalFilesDir(null), "book_images")
-
-    if (!storageDir.exists()) {
-        storageDir.mkdirs()
+    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
+    val fileName = "book_image_$timeStamp.jpg"
+    val storageDir = File(context.getExternalFilesDir(null), "book_images").apply {
+        if (!exists()) mkdirs()
     }
-
-    val imageFile = File(storageDir, imageFileName)
+    val imageFile = File(storageDir, fileName)
 
     return FileProvider.getUriForFile(
         context,

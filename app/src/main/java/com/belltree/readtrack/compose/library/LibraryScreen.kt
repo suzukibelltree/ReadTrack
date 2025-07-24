@@ -1,4 +1,4 @@
-package com.belltree.readtrack.compose.myBooks
+package com.belltree.readtrack.compose.library
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.belltree.readtrack.R
@@ -36,16 +37,16 @@ import com.belltree.readtrack.themecolor.AppColors
  * ライブラリ画面
  * 登録した本の一覧をここで表示する
  * @param navController ナビゲーションコントローラー
- * @param myBooksViewModel 保存された本のViewModel
+ * @param libraryViewModel 保存された本のViewModel
  */
 @Composable
 fun LibraryScreen(
     navController: NavController,
-    myBooksViewModel: MyBooksViewModel,
+    libraryViewModel: LibraryViewModel = hiltViewModel(),
 ) {
     val configuration = LocalConfiguration.current
     val screenWidthDp = configuration.screenWidthDp.dp
-    val savedBooks by myBooksViewModel.savedBooks.collectAsState()
+    val savedBooks by libraryViewModel.savedBooks.collectAsState()
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val textColor = AppColors.textColor
     Column {
@@ -104,7 +105,6 @@ fun LibraryScreen(
                                 .height(120.dp)
                                 .padding(16.dp)
                                 .clickable {
-                                    myBooksViewModel.selectBook(book.id)
                                     navController.navigate("${Route.MyBook}/${book.id}")
                                 }
                         )
@@ -117,7 +117,6 @@ fun LibraryScreen(
                                 .height(120.dp)
                                 .padding(16.dp)
                                 .clickable {
-                                    myBooksViewModel.selectBook(book.id)
                                     navController.navigate("${Route.MyBook}/${book.id}")
                                 }
                         )

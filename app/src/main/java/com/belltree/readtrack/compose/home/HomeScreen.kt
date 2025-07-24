@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.belltree.readtrack.R
@@ -49,7 +50,7 @@ import com.patrykandpatrick.vico.core.entry.entryModelOf
 @Composable
 fun HomeScreen(
     navController: NavController,
-    homeViewModel: HomeViewModel,
+    homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
     val savedBooks = homeViewModel.allBooks.collectAsState()
     val finishedBooks = savedBooks.value.filter { it.progress == 2 }
@@ -85,7 +86,7 @@ fun HomeScreen(
             Log.d("poke", updatedBook!!.readpage.toString())
             MiniBookCard(
                 book = updatedBook!!,
-                navController = navController,
+                onClick = { bookId -> navController.navigate("${Route.MyBook}/$bookId") },
                 message = stringResource(R.string.home_last_updatedDate, updatedBook!!.updatedDate)
             )
         } else {
@@ -102,7 +103,7 @@ fun HomeScreen(
         if (newBook != null) {
             MiniBookCard(
                 book = newBook!!,
-                navController = navController,
+                onClick = { bookId -> navController.navigate("${Route.MyBook}/$bookId") },
                 message = stringResource(R.string.home_new_addedDate, newBook!!.registeredDate)
             )
         } else {
@@ -116,20 +117,20 @@ fun HomeScreen(
  * 本の簡単な情報を表示するカード
  * HomeScreenにて、最後に更新された本、新しく登録された本の情報を表示するのに使用
  * @param book 本の情報
- * @param navController ナビゲーションコントローラー
+ * @param onClick 本がクリックされたときの処理
  * @param message 表示するメッセージ
  */
 @Composable
 fun MiniBookCard(
     book: BookData,
-    navController: NavController,
+    onClick: (bookId: String) -> Unit,
     message: String
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        onClick = { navController.navigate("${Route.MyBook}/${book.id}") }
+        onClick = { onClick(book.id) }
     ) {
         Row {
             if (book.thumbnail != null) {

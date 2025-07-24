@@ -11,18 +11,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.belltree.readtrack.compose.home.HomeScreen
-import com.belltree.readtrack.compose.home.HomeViewModel
-import com.belltree.readtrack.compose.myBooks.LibraryScreen
-import com.belltree.readtrack.compose.myBooks.MyBookScreen
-import com.belltree.readtrack.compose.myBooks.MyBooksViewModel
+import com.belltree.readtrack.compose.library.LibraryScreen
+import com.belltree.readtrack.compose.myBookDetail.MyBookScreen
 import com.belltree.readtrack.compose.registerManually.ManualBookEntryScreen
 import com.belltree.readtrack.compose.search.BookDetail
 import com.belltree.readtrack.compose.search.RegisterProcessScreen
 import com.belltree.readtrack.compose.search.SearchedBookDetailViewModel
 import com.belltree.readtrack.compose.search.isbnSearch.BarcodeScannerScreen
-import com.belltree.readtrack.compose.search.isbnSearch.ISBNSearchViewModel
 import com.belltree.readtrack.compose.search.titleSearch.SearchScreen
-import com.belltree.readtrack.compose.search.titleSearch.TitleSearchViewModel
 import com.belltree.readtrack.compose.setting.SettingScreen
 
 /**
@@ -35,10 +31,6 @@ fun ReadTrackNavHost(
     navController: NavHostController,
     modifier: Modifier
 ) {
-    val titleSearchViewModel: TitleSearchViewModel = hiltViewModel()
-    val isbnSearchViewModel: ISBNSearchViewModel = hiltViewModel()
-    val myBooksViewModel: MyBooksViewModel = hiltViewModel()
-    val homeViewModel: HomeViewModel = hiltViewModel()
     val searchedBookDetailViewModel: SearchedBookDetailViewModel = hiltViewModel()
     NavHost(
         navController = navController,
@@ -48,11 +40,10 @@ fun ReadTrackNavHost(
         composable<Route.Home> {
             HomeScreen(
                 navController = navController,
-                homeViewModel = homeViewModel,
             )
         }
         composable<Route.Library> {
-            LibraryScreen(navController = navController, myBooksViewModel = myBooksViewModel)
+            LibraryScreen(navController = navController)
         }
         composable<Route.Setting> {
             SettingScreen(navController = navController)
@@ -62,7 +53,6 @@ fun ReadTrackNavHost(
         }
         composable<Route.BarcodeScanner> {
             BarcodeScannerScreen(
-                isbnSearchViewModel = isbnSearchViewModel,
                 searchedBookDetailViewModel = searchedBookDetailViewModel,
                 navController = navController
             )
@@ -75,7 +65,6 @@ fun ReadTrackNavHost(
         composable<Route.Search> {
             SearchScreen(
                 navController = navController,
-                titleSearchViewModel = titleSearchViewModel,
                 searchedBookDetailViewModel = searchedBookDetailViewModel
             )
         }
@@ -105,7 +94,6 @@ fun ReadTrackNavHost(
             MyBookScreen(
                 navController = navController,
                 bookId = savedBookId,
-                myBooksViewModel = myBooksViewModel
             )
         }
     }

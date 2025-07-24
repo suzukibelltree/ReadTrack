@@ -1,4 +1,4 @@
-package com.belltree.readtrack.compose.myBooks
+package com.belltree.readtrack.compose.myBookDetail
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -38,6 +38,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.belltree.readtrack.R
@@ -52,21 +53,21 @@ import kotlinx.coroutines.launch
 /**
  * 自分が登録した本の詳細を表示する画面
  * @param bookId 本のID
- * @param myBooksViewModel 保存された本のViewModel
+ * @param myBookDetailViewModel 保存された本のViewModel
  * @param navController ナビゲーションコントローラー
  */
 @Composable
 fun MyBookScreen(
     bookId: String,
-    myBooksViewModel: MyBooksViewModel,
+    myBookDetailViewModel: MyBookDetailViewModel = hiltViewModel(),
     navController: NavController
 ) {
     LaunchedEffect(bookId) {
-        myBooksViewModel.fetchBookDetails(bookId)
-        myBooksViewModel.getLogByBookId(bookId)
+        myBookDetailViewModel.fetchBookDetails(bookId)
+        myBookDetailViewModel.getLogByBookId(bookId)
     }
-    val selectedBook by myBooksViewModel.selectedBook.collectAsState()
-    val selectedBookReadLog = myBooksViewModel.selectedBookLogs.collectAsState()
+    val selectedBook by myBookDetailViewModel.selectedBook.collectAsState()
+    val selectedBookReadLog = myBookDetailViewModel.selectedBookLogs.collectAsState()
     val scope = rememberCoroutineScope()
     var showDialog by remember { mutableStateOf(false) }
     val currentYearMonthId = getCurrentYearMonthAsInt()
@@ -160,7 +161,7 @@ fun MyBookScreen(
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         ReadStateCard(
-                            progress = 0,
+                            progress = ReadProgress.UNREAD,
                             icon = R.drawable.frame,
                             contentDescription = stringResource(R.string.read_state_unread),
                             selectedOption = selectedOption,
@@ -169,7 +170,7 @@ fun MyBookScreen(
                                 readPagesCount = "0"
                             })
                         ReadStateCard(
-                            progress = 1,
+                            progress = ReadProgress.READING,
                             icon = R.drawable.reading,
                             contentDescription = stringResource(R.string.read_state_reading),
                             selectedOption = selectedOption,
@@ -178,7 +179,7 @@ fun MyBookScreen(
                             }
                         )
                         ReadStateCard(
-                            progress = 2,
+                            progress = ReadProgress.READ,
                             icon = R.drawable.finished,
                             contentDescription = stringResource(R.string.read_state_read),
                             selectedOption = selectedOption,
@@ -318,12 +319,12 @@ fun MyBookScreen(
                                 )
                                     .show()
                                 //ここで変更された本の情報を保存
-                                myBooksViewModel.updateBook(
+                                myBookDetailViewModel.updateBook(
                                     book.copy(
                                         progress = when (selectedOption) {
-                                            R.string.read_state_unread -> 0
-                                            R.string.read_state_reading -> 1
-                                            else -> 2
+                                            R.string.read_state_unread -> ReadProgress.UNREAD
+                                            R.string.read_state_reading -> ReadProgress.READING
+                                            else -> ReadProgress.READ
                                         },
                                         readpage = readPagesCount.toInt(),
                                         comment = comment,
@@ -331,7 +332,7 @@ fun MyBookScreen(
                                     )
                                 )
                                 // 読了ページ数の差分がある場合は読書記録を更新
-                                myBooksViewModel.insertLog(
+                                myBookDetailViewModel.insertLog(
                                     ReadLog(
                                         yearMonthId = currentYearMonthId,
                                         bookId = bookId,
@@ -374,12 +375,11 @@ fun MyBookScreen(
         }
         if (showDialog) {
             DeleteBookDialog(
-                myBooksViewModel = myBooksViewModel,
-                book = book,
                 onDismiss = {
                     showDialog = false
                 },
-                navController = navController
+                onDelete = { myBookDetailViewModel.deleteBook(book) },
+                onBack = { navController.navigate(Route.Library) }
             )
         }
     }
