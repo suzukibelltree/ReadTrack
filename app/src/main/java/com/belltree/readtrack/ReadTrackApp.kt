@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
@@ -73,6 +74,11 @@ fun ReadTrackApp() {
     val primaryColor = getPrimaryColor(isSystemInDarkTheme(), themeColor)
     Log.d("primaryColor", primaryColor.toString())
     val scrimColor = AppColors.scrimColor
+    val topLevelRoutes = setOf(
+        Route.Home.toString(),
+        Route.Library.toString(),
+        Route.Setting.toString()
+    )
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -88,15 +94,16 @@ fun ReadTrackApp() {
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
             topBar = {
-                if (currentRoute != Route.Login.toString()) {
-                    TopAppBar(
-                        title = {
-                            Text(
-                                text = topBarTitle,
-                                modifier = Modifier.padding(16.dp)
-                            )
-                        },
-                        navigationIcon = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = topBarTitle,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    },
+                    navigationIcon = {
+                        // ルートによって表示するアイコンを切り替える
+                        if (currentRoute in topLevelRoutes) {
                             Icon(
                                 imageVector = Icons.Default.Menu,
                                 contentDescription = "メニュー",
@@ -109,13 +116,24 @@ fun ReadTrackApp() {
                                         }
                                     }
                             )
-                        },
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = getPrimaryColor(isSystemInDarkTheme(), themeColor),
-                        ),
-                        windowInsets = WindowInsets.statusBars
-                    )
-                }
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "戻る",
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .size(32.dp)
+                                    .clickable {
+                                        navController.popBackStack()
+                                    }
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = getPrimaryColor(isSystemInDarkTheme(), themeColor),
+                    ),
+                    windowInsets = WindowInsets.statusBars
+                )
             },
             floatingActionButton = {
                 if (currentRoute != Route.Login.toString()) {

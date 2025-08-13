@@ -48,7 +48,7 @@
     <string name="myBook_Save_complete">変更を保存しました</string>
     <string name="myBook_delete">ライブラリから削除する</string>
     <string name="myBook_book_not_found">本が見つかりません</string>
-    <string name="myBook_comment">感想</string>
+    <string name="myBook_comment">メモ</string>
     <string name="myBook_pageCount">/ %s ページ</string>
     <string name="myBook_readLogDate">日付： %s</string>
     <string name="myBook_readLogPages">ページ数： %2s</string>
