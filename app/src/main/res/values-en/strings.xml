@@ -49,7 +49,7 @@
     <string name="myBook_Save_complete">Changes saved</string>
     <string name="myBook_delete">Remove from library</string>
     <string name="myBook_book_not_found">Book not found</string>
-    <string name="myBook_comment">Comment</string>
+    <string name="myBook_comment">Memo</string>
     <string name="myBook_pageCount">/ %s pages</string>
     <string name="myBook_readLogDate">Date: %s</string>
     <string name="myBook_readLogPages">Page count: %2s</string>
