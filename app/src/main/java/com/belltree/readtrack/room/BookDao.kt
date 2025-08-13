@@ -21,7 +21,7 @@ interface BookDao {
     suspend fun deleteBook(book: BookData)
 
     @Query("SELECT * FROM BookData")
-    fun getAllBooks(): List<BookData>
+    suspend fun getAllBooks(): List<BookData>
 
     @Query("SELECT * FROM BookData")
     fun getAllBooksFlow(): Flow<List<BookData>>

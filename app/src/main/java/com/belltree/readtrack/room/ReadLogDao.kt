@@ -28,5 +28,8 @@ interface ReadLogDao {
     suspend fun getLogByBookId(bookId: String): List<ReadLog>
 
     @Query("SELECT * FROM ReadLog WHERE yearMonthId IN (:yearMonthIds)")
-    fun getReadLogsForMonths(yearMonthIds: List<Int>): Flow<List<ReadLog>>
+    fun getReadLogsFlowForMonths(yearMonthIds: List<Int>): Flow<List<ReadLog>>
+
+    @Query("SELECT * FROM ReadLog WHERE yearMonthId IN (:yearMonthIds)")
+    suspend fun getReadLogsForMonths(yearMonthIds: List<Int>): List<ReadLog>
 }

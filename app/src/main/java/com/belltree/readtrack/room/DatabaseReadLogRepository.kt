@@ -16,6 +16,9 @@ class DatabaseReadLogRepository @Inject constructor(private val readLogDao: Read
     override suspend fun getLogByBookId(bookId: String): List<ReadLog> =
         readLogDao.getLogByBookId(bookId)
 
-    override fun getReadLogsForMonths(yearMonthIds: List<Int>): Flow<List<ReadLog>> =
+    override fun getReadLogsFlowForMonths(yearMonthIds: List<Int>): Flow<List<ReadLog>> =
+        readLogDao.getReadLogsFlowForMonths(yearMonthIds)
+
+    override suspend fun getReadLogsForMonths(yearMonthIds: List<Int>): List<ReadLog> =
         readLogDao.getReadLogsForMonths(yearMonthIds)
 }
