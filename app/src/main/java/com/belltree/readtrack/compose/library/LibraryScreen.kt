@@ -2,6 +2,7 @@ package com.belltree.readtrack.compose.library
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -46,7 +48,7 @@ fun LibraryScreen(
 ) {
     val configuration = LocalConfiguration.current
     val screenWidthDp = configuration.screenWidthDp.dp
-    val savedBooks by libraryViewModel.savedBooks.collectAsState()
+    val uiState = libraryViewModel.uiState.collectAsState()
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val textColor = AppColors.textColor
     Column {
@@ -86,57 +88,87 @@ fun LibraryScreen(
                 }
             )
         }
-        LazyVerticalGrid(columns = GridCells.Adaptive(screenWidthDp / 3)) {
-            // ここでselectedTabIndexに応じて表示する本のリストを変える
-            val filteredBooks = when (selectedTabIndex) {
-                0 -> savedBooks.filter { it.progress == 0 }
-                1 -> savedBooks.filter { it.progress == 1 }
-                2 -> savedBooks.filter { it.progress == 2 }
-                else -> savedBooks
+        when (val state = uiState.value) {
+            is LibraryUiState.Loading -> {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator()
+                }
             }
-            items(filteredBooks) { book ->
-                Column {
-                    if (book.thumbnail != null) {
-                        AsyncImage(
-                            model = book.thumbnail,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(120.dp)
-                                .padding(16.dp)
-                                .clickable {
-                                    navController.navigate("${Route.MyBook}/${book.id}")
-                                }
-                        )
-                    } else {
-                        Image(
-                            painter = painterResource(R.drawable.unknown),
-                            contentDescription = "thumbnail not found",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(120.dp)
-                                .padding(16.dp)
-                                .clickable {
-                                    navController.navigate("${Route.MyBook}/${book.id}")
-                                }
-                        )
+
+            is LibraryUiState.Success -> {
+                val savedBooks = state.bindingModel.libraryBookBindingModel
+                LazyVerticalGrid(columns = GridCells.Adaptive(screenWidthDp / 3)) {
+                    // ここでselectedTabIndexに応じて表示する本のリストを変える
+                    val filteredBooks = when (selectedTabIndex) {
+                        0 -> savedBooks.filter { it.progress == 0 }
+                        1 -> savedBooks.filter { it.progress == 1 }
+                        2 -> savedBooks.filter { it.progress == 2 }
+                        else -> savedBooks
                     }
+                    items(filteredBooks) { book ->
+                        Column {
+                            if (book.thumbnail != null) {
+                                AsyncImage(
+                                    model = book.thumbnail,
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(120.dp)
+                                        .padding(16.dp)
+                                        .clickable {
+                                            navController.navigate("${Route.MyBook}/${book.id}")
+                                        }
+                                )
+                            } else {
+                                Image(
+                                    painter = painterResource(R.drawable.unknown),
+                                    contentDescription = "thumbnail not found",
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(120.dp)
+                                        .padding(16.dp)
+                                        .clickable {
+                                            navController.navigate("${Route.MyBook}/${book.id}")
+                                        }
+                                )
+                            }
+                            Text(
+                                text = if (selectedTabIndex == 0) {
+                                    book.registeredDate.substring(0, 10)
+                                } else {
+                                    book.updatedDate.substring(0, 10)
+                                },
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                            )
+                            if (book.pageCount != null && book.pageCount != 0) {
+                                LinearProgressIndicator(
+                                    progress = { book.readPages!!.toFloat() / book.pageCount.toFloat() },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp),
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            is LibraryUiState.Error -> {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
                     Text(
-                        text = if (selectedTabIndex == 0) {
-                            book.registeredDate.substring(0, 10)
-                        } else {
-                            book.updatedDate.substring(0, 10)
-                        },
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                        text = "エラーが発生しました",
                     )
-                    if (book.pageCount != null && book.pageCount != 0) {
-                        LinearProgressIndicator(
-                            progress = { book.readpage!!.toFloat() / book.pageCount.toFloat() },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                        )
-                    }
                 }
             }
         }
