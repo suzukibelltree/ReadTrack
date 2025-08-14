@@ -1,5 +1,8 @@
 package com.belltree.readtrack.compose.library.bindingmodel
 
+/**
+ * ライブラリ画面で表示するデータのバインディングモデル
+ */
 data class LibraryBindingModel(
     val libraryBookBindingModel: List<LibraryBookBindingModel>
 )

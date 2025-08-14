@@ -2,6 +2,9 @@ package com.belltree.readtrack.compose.myBookDetail.bindingmodel
 
 import com.belltree.readtrack.room.ReadLog
 
+/**
+ * マイページの書籍詳細画面で表示するデータのバインディングモデル
+ */
 data class MyBookDetailBindingModel(
     val myBookDetailBookBindingModel: MyBookDetailBookBindingModel,
     val readLog: List<ReadLog>

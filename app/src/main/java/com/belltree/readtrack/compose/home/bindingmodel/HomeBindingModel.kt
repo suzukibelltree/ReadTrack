@@ -2,6 +2,9 @@ package com.belltree.readtrack.compose.home.bindingmodel
 
 import com.belltree.readtrack.room.ReadLogByMonth
 
+/**
+ * ホーム画面で表示するデータのバインディングモデル
+ */
 data class HomeBindingModel(
     val numOfReadBooks: Int,
     val newlyAddedBook: HomeBookBindingModel?,
