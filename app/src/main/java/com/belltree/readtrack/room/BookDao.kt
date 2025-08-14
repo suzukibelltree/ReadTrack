@@ -29,6 +29,9 @@ interface BookDao {
     @Query("SELECT * FROM BookData WHERE id = :bookId")
     suspend fun getBookById(bookId: String): BookData?
 
+    @Query("SELECT * FROM BookData WHERE id = :bookId LIMIT 1")
+    fun getBookByIdFlow(bookId: String): Flow<BookData?>
+
     @Query("SELECT id FROM BookData")
     suspend fun getAllBookIds(): List<String>
 }

@@ -2,97 +2,128 @@ package com.belltree.readtrack.compose.myBookDetail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.belltree.readtrack.compose.myBookDetail.bindingmodel.MyBookDetailBindingModel
+import com.belltree.readtrack.compose.myBookDetail.bindingmodel.MyBookDetailBindingModelConverter
 import com.belltree.readtrack.network.BookData
 import com.belltree.readtrack.room.BooksRepository
 import com.belltree.readtrack.room.ReadLog
 import com.belltree.readtrack.room.ReadLogRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * MyBookDetailViewModelのUI状態を表すsealed interface
+ * Loading, Success, Errorの3つの状態を持つ
+ */
+sealed interface MyBookDetailUiState {
+    data object Loading : MyBookDetailUiState
+    data class Success(val bindingModel: MyBookDetailBindingModel) : MyBookDetailUiState
+    data class Error(val message: String) : MyBookDetailUiState
+}
+
+/**
+ * 特定の本の詳細情報とその読書ログを管理するViewModel
+ * @param booksRepository 本の情報を取得するためのリポジトリ
+ * @param readLogRepository 読書ログの情報を取得するためのリポジトリ
+ */
 @HiltViewModel
 class MyBookDetailViewModel @Inject constructor(
     private val booksRepository: BooksRepository,
     private val readLogRepository: ReadLogRepository
 ) : ViewModel() {
-    // ローカルに保存されている本の情報
-    private val savedBooks: StateFlow<List<BookData>> = booksRepository.allBooks
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val _bookId = MutableStateFlow<String?>(null)
 
-    // 現在表示している本の情報
-    private val _selectedBook = MutableStateFlow<BookData?>(null)
-    val selectedBook: StateFlow<BookData?> = _selectedBook
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val selectedBookFlow: Flow<BookData?> =
+        _bookId.filterNotNull().flatMapLatest { bookId ->
+            booksRepository.getBookByIdFlow(bookId) // ここがFlow
+        }
 
-    // 選択された本専用の読書ログ
-    private val _selectedBookLogs = MutableStateFlow<List<ReadLog>>(emptyList())
-    val selectedBookLogs: StateFlow<List<ReadLog>> = _selectedBookLogs
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val selectedBookLogsFlow: Flow<List<ReadLog>> =
+        _bookId.filterNotNull().flatMapLatest { bookId ->
+            readLogRepository.getAllLogsFlow()
+                .map { logs -> logs.filter { it.bookId == bookId } }
+        }
 
-    init {
+    val uiState: StateFlow<MyBookDetailUiState> = combine(
+        selectedBookFlow,
+        selectedBookLogsFlow
+    ) { book, logs ->
+        when {
+            book == null -> MyBookDetailUiState.Loading
+            else -> MyBookDetailUiState.Success(
+                MyBookDetailBindingModelConverter.convertToMyBookDetailBindingModel(
+                    MyBookDetailBindingModelConverter.convertToMyBookDetailBookBindingModel(
+                        id = book.id,
+                        title = book.title,
+                        authors = book.author,
+                        thumbnail = book.thumbnail,
+                        progress = book.progress,
+                        pageCount = book.pageCount,
+                        readPages = book.readpage,
+                        comment = book.comment,
+                        registeredDate = book.registeredDate,
+                        updatedDate = book.updatedDate
+                    ),
+                    logs
+                )
+            )
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MyBookDetailUiState.Loading)
+
+    fun setBookId(bookId: String) {
+        _bookId.value = bookId
+    }
+
+    fun updateBook(
+        progress: Int,
+        readPages: Int,
+        comment: String?,
+        updatedDate: String
+    ) {
         viewModelScope.launch {
-            savedBooks.collect { books ->
-                _selectedBook.value?.let { selected ->
-                    val updated = books.find { it.id == selected.id }
-                    _selectedBook.value = updated
+            _bookId.value?.let { bookId ->
+                val currentBook = booksRepository.getBookById(bookId) // Flow ではなく suspend で取得
+                if (currentBook != null) {
+                    val updatedBook = currentBook.copy(
+                        progress = progress,
+                        readpage = readPages,
+                        comment = comment,
+                        updatedDate = updatedDate
+                    )
+                    booksRepository.updateBook(updatedBook)
                 }
             }
         }
     }
 
-    /**
-     * 本の情報を取得する
-     */
-    fun fetchBookDetails(bookId: String) {
-        viewModelScope.launch {
-            try {
-                val book = booksRepository.getBookById(bookId) // Fetch book from repository
-                _selectedBook.value = book
-            } catch (e: Exception) {
-                // Handle error
-            }
-        }
-    }
 
-    /**
-     * 本の情報を更新する
-     * @param book 本の情報
-     */
-    fun updateBook(book: BookData) {
-        viewModelScope.launch {
-            booksRepository.updateBook(book)
-        }
-    }
-
-    /**
-     * 本の情報を削除する
-     * @param book 本の情報
-     */
-    fun deleteBook(book: BookData) {
-        viewModelScope.launch {
-            booksRepository.deleteBook(book)
-        }
-    }
-
-    /**
-     * 読書ログの保存
-     * @param readLog 読書ログ
-     */
     fun insertLog(readLog: ReadLog) {
         viewModelScope.launch {
             readLogRepository.insertLog(readLog)
         }
     }
 
-    /**
-     * 特定のbookIdを持つ本の読書ログを取得する
-     * @param bookId 本のID
-     */
-    fun getLogByBookId(bookId: String) {
+    fun deleteBook() {
         viewModelScope.launch {
-            _selectedBookLogs.value = readLogRepository.getLogByBookId(bookId)
+            _bookId.value?.let { bookId ->
+                val book = booksRepository.getBookById(bookId)
+                if (book != null) {
+                    booksRepository.deleteBook(book)
+                }
+            }
         }
     }
 }

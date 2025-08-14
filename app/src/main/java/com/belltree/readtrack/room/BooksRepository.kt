@@ -11,5 +11,6 @@ interface BooksRepository {
     suspend fun deleteBook(book: BookData)
     fun getAllBooksFlow(): Flow<List<BookData>>
     suspend fun getBookById(bookId: String): BookData?
+    fun getBookByIdFlow(bookId: String): Flow<BookData?>
     suspend fun getAllBookIds(): List<String>
 }
