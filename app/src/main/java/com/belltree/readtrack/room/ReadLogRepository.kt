@@ -10,5 +10,6 @@ interface ReadLogRepository {
     suspend fun getLogByMonthId(monthId: Int): ReadLog?
     suspend fun upsertLog(readLog: ReadLog)
     suspend fun getLogByBookId(bookId: String): List<ReadLog>
-    fun getReadLogsForMonths(yearMonthIds: List<Int>): Flow<List<ReadLog>>
+    fun getReadLogsFlowForMonths(yearMonthIds: List<Int>): Flow<List<ReadLog>>
+    suspend fun getReadLogsForMonths(yearMonthIds: List<Int>): List<ReadLog>
 }

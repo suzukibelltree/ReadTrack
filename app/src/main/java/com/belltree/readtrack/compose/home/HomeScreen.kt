@@ -1,6 +1,5 @@
 package com.belltree.readtrack.compose.home
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
@@ -9,12 +8,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -24,12 +22,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.belltree.readtrack.R
 import com.belltree.readtrack.Route
+import com.belltree.readtrack.compose.home.bindingmodel.HomeBookBindingModel
 import com.belltree.readtrack.datastore.getValue
-import com.belltree.readtrack.network.BookData
 import com.belltree.readtrack.room.ReadLogByMonth
 import com.belltree.readtrack.themecolor.getPrimaryColor
 import com.belltree.readtrack.utils.convertYearMonthId
@@ -52,64 +51,90 @@ fun HomeScreen(
     navController: NavController,
     homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
-    val savedBooks = homeViewModel.allBooks.collectAsState()
-    val finishedBooks = savedBooks.value.filter { it.progress == 2 }
-    // もっとも最近に更新された本のインスタンスを取得
-    val updatedBook by remember(savedBooks.value) {
-        derivedStateOf { savedBooks.value.maxByOrNull { it.updatedDate } }
-    }
-    val newBook by remember(savedBooks.value) {
-        derivedStateOf { savedBooks.value.maxByOrNull { it.registeredDate } }
-    }
-    val recentReadLogSummary =
-        homeViewModel.recentMonthlySummary.collectAsState(initial = emptyList())
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = stringResource(R.string.home_number_of_FinishedBooks, finishedBooks.size),
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        )
-        Text(
-            text = stringResource(R.string.home_last_updatedBook),
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        )
-        if (updatedBook != null) {
-            Log.d("poke", updatedBook!!.readpage.toString())
-            MiniBookCard(
-                book = updatedBook!!,
-                onClick = { bookId -> navController.navigate("${Route.MyBook}/$bookId") },
-                message = stringResource(R.string.home_last_updatedDate, updatedBook!!.updatedDate)
-            )
-        } else {
-            InitialMiniBookCard()
+    val uiState = homeViewModel.uiState.collectAsStateWithLifecycle()
+    when (val state = uiState.value) {
+        is HomeUiState.Loading -> {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                CircularProgressIndicator()
+            }
         }
-        Text(
-            text = stringResource(R.string.home_new_addedBook),
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        )
-        if (newBook != null) {
-            MiniBookCard(
-                book = newBook!!,
-                onClick = { bookId -> navController.navigate("${Route.MyBook}/$bookId") },
-                message = stringResource(R.string.home_new_addedDate, newBook!!.registeredDate)
-            )
-        } else {
-            InitialMiniBookCard()
+
+        is HomeUiState.Success -> {
+            val bindingModel = state.bindingModel
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(
+                        R.string.home_number_of_FinishedBooks,
+                        bindingModel.numOfReadBooks
+                    ),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                )
+                Text(
+                    text = stringResource(R.string.home_last_updatedBook),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                )
+                if (bindingModel.recentlyReadBook != null) {
+                    MiniBookCard(
+                        book = bindingModel.recentlyReadBook,
+                        onClick = { bookId -> navController.navigate("${Route.MyBook}/$bookId") },
+                        message = stringResource(
+                            R.string.home_last_updatedDate,
+                            bindingModel.recentlyReadBook.updatedDate
+                        )
+                    )
+                } else {
+                    InitialMiniBookCard()
+                }
+                Text(
+                    text = stringResource(R.string.home_new_addedBook),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                )
+                if (bindingModel.newlyAddedBook != null) {
+                    MiniBookCard(
+                        book = bindingModel.newlyAddedBook,
+                        onClick = { bookId -> navController.navigate("${Route.MyBook}/$bookId") },
+                        message = stringResource(
+                            R.string.home_new_addedDate,
+                            bindingModel.newlyAddedBook.registeredDate
+                        )
+                    )
+                } else {
+                    InitialMiniBookCard()
+                }
+                ReadLogGraph(readLogs = bindingModel.readLogForGraph)
+            }
         }
-        ReadLogGraph(readLogs = recentReadLogSummary.value)
+
+        is HomeUiState.Error -> {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = "エラーが発生しました",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                )
+            }
+        }
     }
 }
 
@@ -122,7 +147,7 @@ fun HomeScreen(
  */
 @Composable
 fun MiniBookCard(
-    book: BookData,
+    book: HomeBookBindingModel,
     onClick: (bookId: String) -> Unit,
     message: String
 ) {
