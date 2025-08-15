@@ -42,6 +42,18 @@ class MyBookDetailViewModel @Inject constructor(
     private val booksRepository: BooksRepository,
     private val readLogRepository: ReadLogRepository
 ) : ViewModel() {
+    // --- 一時UI状態（ダイアログ表示用） ---
+    private val _showCompleteDialog = MutableStateFlow(false)
+    val showCompleteDialog: StateFlow<Boolean> = _showCompleteDialog
+
+    fun openCompleteDialog() {
+        _showCompleteDialog.value = true
+    }
+
+    fun closeCompleteDialog() {
+        _showCompleteDialog.value = false
+    }
+
     private val _bookId = MutableStateFlow<String?>(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)

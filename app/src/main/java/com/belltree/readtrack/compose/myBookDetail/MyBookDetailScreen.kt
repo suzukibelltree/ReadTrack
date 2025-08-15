@@ -67,6 +67,7 @@ fun MyBookScreen(
         myBookDetailViewModel.setBookId(bookId)
     }
     val uiState = myBookDetailViewModel.uiState.collectAsStateWithLifecycle()
+    val showCompleteDialog = myBookDetailViewModel.showCompleteDialog.collectAsStateWithLifecycle()
     when (val state = uiState.value) {
         is MyBookDetailUiState.Loading -> {
             Column(
@@ -84,7 +85,7 @@ fun MyBookScreen(
             val selectedBook = model.myBookDetailBookBindingModel
             val selectedBookReadLog = model.readLog
             val scope = rememberCoroutineScope()
-            var showDialog by remember { mutableStateOf(false) }
+            var showDeleteDialog by remember { mutableStateOf(false) }
             val currentYearMonthId = getCurrentYearMonthAsInt()
             val formattedDate = getCurrentFormattedTime()
             selectedBook.let { book ->
@@ -339,6 +340,7 @@ fun MyBookScreen(
                                             Toast.LENGTH_SHORT
                                         )
                                             .show()
+                                        myBookDetailViewModel.openCompleteDialog()
                                         //ここで変更された本の情報を保存
                                         myBookDetailViewModel.updateBook(
                                             progress = when (selectedOption) {
@@ -367,7 +369,7 @@ fun MyBookScreen(
                                                 value = formattedDate
                                             )
                                         }
-                                        navController.navigate(Route.Library)
+                                        //navController.navigate(Route.Library)
                                     }
                                 },
                                 modifier = Modifier
@@ -380,7 +382,7 @@ fun MyBookScreen(
                             }
                             Button(
                                 onClick = {
-                                    showDialog = true
+                                    showDeleteDialog = true
                                 },
                                 modifier = Modifier
                                     .padding(8.dp)
@@ -393,13 +395,25 @@ fun MyBookScreen(
                         }
                     }
                 }
-                if (showDialog) {
+                if (showDeleteDialog) {
                     DeleteBookDialog(
                         onDismiss = {
-                            showDialog = false
+                            showDeleteDialog = false
                         },
                         onDelete = { myBookDetailViewModel.deleteBook() },
                         onBack = { navController.navigate(Route.Library) }
+                    )
+                }
+                if (showCompleteDialog.value) {
+                    CompleteBookDialog(
+                        bookThumbnailUrl = book.thumbnail ?: "",
+                        onDismissRequest = {
+                            myBookDetailViewModel.closeCompleteDialog()
+                            navController.navigate(Route.Library)
+                        },
+                        onPostToX = {
+                            //TODO: Xに投稿する処理を実装
+                        }
                     )
                 }
             }

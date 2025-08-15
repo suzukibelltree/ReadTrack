@@ -15,7 +15,7 @@ import com.belltree.readtrack.R
  * 本を削除する際に表示するダイアログ
  * @param onDismiss ダイアログを閉じるための関数
  * @param onDelete 本を削除するための関数
- * @param navController ナビゲーションコントローラー
+ * @param onBack ダイアログを閉じた後に戻るための関数
  */
 @Composable
 fun DeleteBookDialog(
