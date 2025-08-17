@@ -12,6 +12,11 @@
         android:name="android.hardware.camera"
         android:required="false" />
 
+    <queries>
+        <!-- Twitter (X)アプリにシェアできるようにする -->
+        <package android:name="com.twitter.android" />
+    </queries>
+
     <application
         android:name=".ReadTrackApplication"
         android:usesCleartextTraffic="true"

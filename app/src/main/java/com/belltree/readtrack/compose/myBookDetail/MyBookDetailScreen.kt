@@ -369,7 +369,6 @@ fun MyBookScreen(
                                                 value = formattedDate
                                             )
                                         }
-                                        //navController.navigate(Route.Library)
                                     }
                                 },
                                 modifier = Modifier
@@ -412,7 +411,7 @@ fun MyBookScreen(
                             navController.navigate(Route.Library)
                         },
                         onPostToX = {
-                            //TODO: Xに投稿する処理を実装
+                            postToX(book.title, context)
                         }
                     )
                 }
@@ -433,3 +432,4 @@ fun MyBookScreen(
         }
     }
 }
+
