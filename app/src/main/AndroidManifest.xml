@@ -18,7 +18,7 @@
     </queries>
 
     <application
-        android:name=".ReadTrackApplication"
+        android:name=".app.ReadTrackApplication"
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
