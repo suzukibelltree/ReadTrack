@@ -2,11 +2,8 @@ package com.belltree.readtrack.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.belltree.readtrack.core.getRecentFourMonthsAsIntList
-import com.belltree.readtrack.domain.model.ReadLogByMonth
-import com.belltree.readtrack.domain.repository.BooksRepository
-import com.belltree.readtrack.domain.repository.ReadLogRepository
-import com.belltree.readtrack.ui.mybookdetail.ReadProgress
+import com.belltree.readtrack.domain.usecase.GetHomeStaticsUseCase
+import com.belltree.readtrack.ui.home.HomeBindingModelConverter.convertToHomeBookBindingModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,8 +24,7 @@ sealed interface HomeUiState {
  */
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val savedBooksRepository: BooksRepository,
-    private val readLogRepository: ReadLogRepository
+    private val getHomeStaticsUseCase: GetHomeStaticsUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val uiState: StateFlow<HomeUiState> = _uiState
@@ -40,28 +36,19 @@ class HomeViewModel @Inject constructor(
 
     private fun loadHomeData() {
         viewModelScope.launch {
-            val books = savedBooksRepository.getAllBooks()
-            val numOfReadBooks = books.filter { it.progress == ReadProgress.READ }.size
-            val newlyAddedBook = books.maxByOrNull { it.registeredDate }
-            val recentlyReadBook = books.maxByOrNull { it.updatedDate }
-            val recentReadLogsId = getRecentFourMonthsAsIntList()
-            val recentReadLogs = readLogRepository.getReadLogsForMonths(recentReadLogsId)
-                .groupBy { it.yearMonthId }
-                .map { (yearMonthId, logsForMonth) ->
-                    ReadLogByMonth(
-                        yearMonthId = yearMonthId,
-                        totalReadPages = logsForMonth.sumOf { it.readPages }
-                    )
-                }
-                .sortedBy { it.yearMonthId }
-            val newBindingModel =
-                HomeBindingModelConverter.convertToHomeBindingModel(
-                    numOfReadBooks = numOfReadBooks,
-                    newlyAddedBookData = newlyAddedBook,
-                    recentlyReadBookData = recentlyReadBook,
-                    readLogsForGraph = recentReadLogs
+            runCatching {
+                getHomeStaticsUseCase()
+            }.onSuccess { summary ->
+                val bindingModel = HomeBindingModel(
+                    numOfReadBooks = summary.numOfReadBooks,
+                    newlyAddedBook = convertToHomeBookBindingModel(summary.newlyAddedBookData),
+                    recentlyReadBook = convertToHomeBookBindingModel(summary.recentlyReadBookData),
+                    readLogForGraph = summary.recentReadLogs
                 )
-            _uiState.value = HomeUiState.Success(newBindingModel)
+                _uiState.value = HomeUiState.Success(bindingModel)
+            }.onFailure { error ->
+                _uiState.value = HomeUiState.Error(error.localizedMessage ?: "Unknown Error")
+            }
         }
     }
 }
