@@ -2,13 +2,10 @@ package com.belltree.readtrack.ui.library
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.belltree.readtrack.domain.model.BookData
-import com.belltree.readtrack.domain.repository.BooksRepository
+import com.belltree.readtrack.domain.usecase.GetAllBooksUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,11 +19,11 @@ sealed interface LibraryUiState {
 /**
  * 登録された本のリストの情報を保持するViewModel
  * ライブラリ画面とそこから遷移するMyBookScreenで使用する
- * @param booksRepository 本の情報を取得するためのリポジトリ
+ * @param getAllBooksUseCase すべての書籍情報を取得するユースケース
  */
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
-    private val booksRepository: BooksRepository,
+    private val getAllBooksUseCase: GetAllBooksUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<LibraryUiState>(LibraryUiState.Loading)
     val uiState: StateFlow<LibraryUiState> = _uiState
@@ -37,15 +34,11 @@ class LibraryViewModel @Inject constructor(
 
     private fun loadLibraryData() {
         viewModelScope.launch {
-            val savedBooks = booksRepository.getAllBooks()
+            val savedBooks = getAllBooksUseCase()
             val newBindingModel = LibraryBindingModelConverter.convertToLibraryBindingModel(
                 savedBooks.map { LibraryBindingModelConverter.convertToLibraryBookBindingModel(it) }
             )
             _uiState.value = LibraryUiState.Success(newBindingModel)
         }
     }
-
-    // ローカルに保存されている本の情報
-    val savedBooks: StateFlow<List<BookData>> = booksRepository.allBooks
-        .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(), emptyList())
 }
