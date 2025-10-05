@@ -2,9 +2,7 @@ package com.belltree.readtrack.ui.registermanually
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.belltree.readtrack.core.getCurrentFormattedTime
-import com.belltree.readtrack.domain.model.BookData
-import com.belltree.readtrack.domain.repository.BooksRepository
+import com.belltree.readtrack.domain.usecase.SaveManualBookUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +11,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.UUID
 import javax.inject.Inject
 
 /**
@@ -36,7 +33,7 @@ data class ManualBookFormState(
  */
 @HiltViewModel
 class ManualBookEntryViewModel @Inject constructor(
-    private val booksRepository: BooksRepository
+    private val saveManualBookUseCase: SaveManualBookUseCase
 ) : ViewModel() {
 
     private val _formState = MutableStateFlow(ManualBookFormState())
@@ -89,24 +86,17 @@ class ManualBookEntryViewModel @Inject constructor(
         if (!state.isSaveEnabled) return
 
         viewModelScope.launch {
-            val id = UUID.randomUUID().toString()
-
-            val book = BookData(
-                id = id,
-                title = state.title.trim(),
-                author = state.author.trim(),
-                publisher = state.publisher.takeIf { it.isNotBlank() },
-                publishedDate = state.publishedDate.takeIf { it.isNotBlank() },
-                description = null,
-                thumbnail = state.thumbnail,
-                pageCount = state.pageCount.toIntOrNull() ?: 0,
-                registeredDate = getCurrentFormattedTime(),
-                updatedDate = getCurrentFormattedTime()
+            saveManualBookUseCase(
+                title = state.title,
+                author = state.author,
+                publisher = state.publisher,
+                publishedDate = state.publishedDate,
+                pageCount = state.pageCount,
+                thumbnail = state.thumbnail
             )
-
-            booksRepository.insert(book)
             _eventFlow.emit(ManualBookUiEvent.BookSaved)
             onSaved()
         }
     }
+
 }
