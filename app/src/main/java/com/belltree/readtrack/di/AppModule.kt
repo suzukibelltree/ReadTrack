@@ -9,6 +9,10 @@ import com.belltree.readtrack.data.repository.DatabaseBooksRepository
 import com.belltree.readtrack.data.repository.DatabaseReadLogRepository
 import com.belltree.readtrack.domain.repository.BooksRepository
 import com.belltree.readtrack.domain.repository.ReadLogRepository
+import com.belltree.readtrack.domain.usecase.DeleteBookUseCase
+import com.belltree.readtrack.domain.usecase.GetAllBooksUseCase
+import com.belltree.readtrack.domain.usecase.InsertReadLogUseCase
+import com.belltree.readtrack.domain.usecase.UpdateBookUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -50,5 +54,37 @@ object AppModule {
     @Provides
     fun provideReadLogDao(database: BookDatabase): ReadLogDao {
         return database.readLogDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideUpdateBookUseCase(
+        booksRepository: BooksRepository
+    ): UpdateBookUseCase {
+        return UpdateBookUseCase(booksRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideInsertReadLogUseCase(
+        readLogRepository: ReadLogRepository
+    ): InsertReadLogUseCase {
+        return InsertReadLogUseCase(readLogRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeleteBookUseCase(
+        booksRepository: BooksRepository,
+    ): DeleteBookUseCase {
+        return DeleteBookUseCase(booksRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetAllBooksUseCase(
+        booksRepository: BooksRepository
+    ): GetAllBooksUseCase {
+        return GetAllBooksUseCase(booksRepository)
     }
 }

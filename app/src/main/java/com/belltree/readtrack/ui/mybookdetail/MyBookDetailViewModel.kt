@@ -6,6 +6,9 @@ import com.belltree.readtrack.domain.model.BookData
 import com.belltree.readtrack.domain.model.ReadLog
 import com.belltree.readtrack.domain.repository.BooksRepository
 import com.belltree.readtrack.domain.repository.ReadLogRepository
+import com.belltree.readtrack.domain.usecase.DeleteBookUseCase
+import com.belltree.readtrack.domain.usecase.InsertReadLogUseCase
+import com.belltree.readtrack.domain.usecase.UpdateBookUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -20,27 +23,22 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-/**
- * MyBookDetailViewModelのUI状態を表すsealed interface
- * Loading, Success, Errorの3つの状態を持つ
- */
 sealed interface MyBookDetailUiState {
     data object Loading : MyBookDetailUiState
     data class Success(val bindingModel: MyBookDetailBindingModel) : MyBookDetailUiState
     data class Error(val message: String) : MyBookDetailUiState
 }
 
-/**
- * 特定の本の詳細情報とその読書ログを管理するViewModel
- * @param booksRepository 本の情報を取得するためのリポジトリ
- * @param readLogRepository 読書ログの情報を取得するためのリポジトリ
- */
 @HiltViewModel
 class MyBookDetailViewModel @Inject constructor(
     private val booksRepository: BooksRepository,
-    private val readLogRepository: ReadLogRepository
+    private val readLogRepository: ReadLogRepository,
+    private val updateBookUseCase: UpdateBookUseCase,
+    private val insertReadLogUseCase: InsertReadLogUseCase,
+    private val deleteBookUseCase: DeleteBookUseCase
 ) : ViewModel() {
-    // --- 一時UI状態（ダイアログ表示用） ---
+
+    // --- UI状態制御（ダイアログなど） ---
     private val _showCompleteDialog = MutableStateFlow(false)
     val showCompleteDialog: StateFlow<Boolean> = _showCompleteDialog
 
@@ -57,7 +55,7 @@ class MyBookDetailViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     private val selectedBookFlow: Flow<BookData?> =
         _bookId.filterNotNull().flatMapLatest { bookId ->
-            booksRepository.getBookByIdFlow(bookId) // ここがFlow
+            booksRepository.getBookByIdFlow(bookId)
         }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -71,8 +69,8 @@ class MyBookDetailViewModel @Inject constructor(
         selectedBookFlow,
         selectedBookLogsFlow
     ) { book, logs ->
-        when {
-            book == null -> MyBookDetailUiState.Loading
+        when (book) {
+            null -> MyBookDetailUiState.Loading
             else -> MyBookDetailUiState.Success(
                 MyBookDetailBindingModelConverter.convertToMyBookDetailBindingModel(
                     MyBookDetailBindingModelConverter.convertToMyBookDetailBookBindingModel(
@@ -93,7 +91,7 @@ class MyBookDetailViewModel @Inject constructor(
         }
     }.stateIn(
         viewModelScope,
-        SharingStarted.Companion.WhileSubscribed(5000),
+        SharingStarted.WhileSubscribed(5000),
         MyBookDetailUiState.Loading
     )
 
@@ -101,42 +99,24 @@ class MyBookDetailViewModel @Inject constructor(
         _bookId.value = bookId
     }
 
-    fun updateBook(
-        progress: Int,
-        readPages: Int,
-        comment: String?,
-        updatedDate: String
-    ) {
+    fun updateBook(progress: Int, readPages: Int, comment: String?, updatedDate: String) {
         viewModelScope.launch {
             _bookId.value?.let { bookId ->
-                val currentBook = booksRepository.getBookById(bookId) // Flow ではなく suspend で取得
-                if (currentBook != null) {
-                    val updatedBook = currentBook.copy(
-                        progress = progress,
-                        readpage = readPages,
-                        comment = comment,
-                        updatedDate = updatedDate
-                    )
-                    booksRepository.updateBook(updatedBook)
-                }
+                updateBookUseCase(bookId, progress, readPages, comment, updatedDate)
             }
         }
     }
 
-
     fun insertLog(readLog: ReadLog) {
         viewModelScope.launch {
-            readLogRepository.insertLog(readLog)
+            insertReadLogUseCase(readLog)
         }
     }
 
     fun deleteBook() {
         viewModelScope.launch {
             _bookId.value?.let { bookId ->
-                val book = booksRepository.getBookById(bookId)
-                if (book != null) {
-                    booksRepository.deleteBook(book)
-                }
+                deleteBookUseCase(bookId)
             }
         }
     }

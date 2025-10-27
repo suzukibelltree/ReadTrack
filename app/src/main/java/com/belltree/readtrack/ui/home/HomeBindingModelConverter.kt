@@ -18,7 +18,7 @@ object HomeBindingModelConverter {
         )
     }
 
-    private fun convertToHomeBookBindingModel(bookData: BookData?): HomeBookBindingModel? {
+    fun convertToHomeBookBindingModel(bookData: BookData?): HomeBookBindingModel? {
         return bookData?.let {
             HomeBookBindingModel(
                 id = it.id,
