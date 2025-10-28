@@ -139,7 +139,7 @@ fun ReadTrackApp() {
                 )
             },
             floatingActionButton = {
-                if (currentRoute != Route.Login.toString()) {
+                if (currentRoute == Route.Home.toString() || currentRoute == Route.Library.toString()) {
                     FloatingActionButton(
                         onClick = { navController.navigate(Route.RegisterProcess) },
                         containerColor = LightBlue,
