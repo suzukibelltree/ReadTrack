@@ -1,7 +1,9 @@
 package com.belltree.readtrack.data.remote
 
+import com.belltree.readtrack.domain.model.BookItem
 import com.belltree.readtrack.domain.model.BookLists
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 /**
@@ -15,4 +17,11 @@ interface GoogleBooksApiService {
         @Query("startIndex") startIndex: Int = 0,
         @Query("maxResults") maxResults: Int = 10
     ): BookLists
+
+    @GET("volumes/{id}")
+    suspend fun getBookById(
+        @Path("id") bookId: String,
+        @Query("key") apiKey: String
+    ): BookItem
+
 }

@@ -30,7 +30,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.belltree.readtrack.R
 import com.belltree.readtrack.ui.navigation.Route
-import com.belltree.readtrack.ui.search.SearchedBookDetailViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -46,7 +45,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun BarcodeScannerScreen(
     isbnSearchViewModel: ISBNSearchViewModel = hiltViewModel(),
-    searchedBookDetailViewModel: SearchedBookDetailViewModel,
     navController: NavController
 ) {
     val scope = rememberCoroutineScope()
@@ -98,10 +96,6 @@ fun BarcodeScannerScreen(
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else {
-                                searchedBookDetailViewModel.loadBookById(
-                                    bookId = book.id,
-                                    sourceBookItem = book
-                                )
                                 navController.navigate("${Route.BookDetail}/${book.id}") {
                                     popUpTo(Route.BarcodeScanner) {
                                         inclusive = true
