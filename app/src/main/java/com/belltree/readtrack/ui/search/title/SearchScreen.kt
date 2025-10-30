@@ -34,7 +34,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.belltree.readtrack.R
@@ -44,7 +43,6 @@ import com.belltree.readtrack.ui.navigation.Route
 /**
  * 本を検索する画面
  * @param titleSearchViewModel 本のリストのViewModel
- * @param searchedBookDetailViewModel 検索結果の詳細を表示するViewModel
  * @param navController ナビゲーションコントローラー
  */
 @Composable
@@ -56,96 +54,97 @@ fun SearchScreen(
     var hasSearched by remember { mutableStateOf(false) }
     val books = titleSearchViewModel.bookPagingData.collectAsLazyPagingItems()
     val loadState = books.loadState
+
+    // 画面を開いた時に前回の検索結果をクリア
     LaunchedEffect(Unit) {
         titleSearchViewModel.clearSearchResults()
     }
-    Column(
-        modifier = Modifier.Companion
+
+    LazyColumn(
+        modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        horizontalAlignment = Alignment.Companion.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        OutlinedTextField(
-            value = query,
-            onValueChange = { query = it },
-            label = { Text(text = stringResource(R.string.search_title)) },
-            singleLine = true,
-            modifier = Modifier.Companion.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.Companion.height(8.dp))
-        Button(onClick = {
-            titleSearchViewModel.updateQuery(query)
-            hasSearched = true
-        }) {
-            Text(text = stringResource(R.string.search_button))
-        }
-        Spacer(modifier = Modifier.Companion.height(16.dp))
-
-        when {
-            loadState.refresh is LoadState.Loading && hasSearched -> CircularProgressIndicator()
-            loadState.refresh is LoadState.Error -> Text(text = stringResource(R.string.search_failed))
-            else -> BooksCardList(
-                books = books,
-                hasSearched = hasSearched,
-                onBookClick = { book ->
-                    titleSearchViewModel.selectBookItem(book)
-                    navController.navigate("${Route.BookDetail}/${book.id}")
-                }
+        // 検索欄部分
+        item {
+            OutlinedTextField(
+                value = query,
+                onValueChange = { query = it },
+                label = { Text(text = stringResource(R.string.search_title)) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
             )
-        }
-    }
-}
-
-/**
- * 検索された本のリストを表示する
- * @param books 本のリスト
- * @param hasSearched 一度検索されたかどうか
- * @param onBookClick 本がクリックされたときの処理
- */
-@Composable
-fun BooksCardList(
-    books: LazyPagingItems<BookItem>,
-    hasSearched: Boolean,
-    onBookClick: (BookItem) -> Unit = {}
-) {
-    // 検索結果がない場合はメッセージを表示
-    if (books.itemCount == 0 && hasSearched) {
-        Text(
-            text = stringResource(R.string.search_no_result)
-        )
-    } else {
-        LazyColumn {
-            items(books.itemCount) { index ->
-                books[index]?.let { book ->
-                    BookCard(book = book, onClick = { onBookClick(book) })
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(
+                onClick = {
+                    titleSearchViewModel.updateQuery(query)
+                    hasSearched = true
                 }
+            ) {
+                Text(text = stringResource(R.string.search_button))
             }
-            // 次のページを読み込み中のインジケーターを表示
-            item {
-                when (books.loadState.append) {
-                    is LoadState.Loading -> {
-                        Column(
-                            modifier = Modifier.Companion
-                                .fillMaxWidth(),
-                            horizontalAlignment = Alignment.Companion.CenterHorizontally
-                        ) {
-                            CircularProgressIndicator()
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        // 状態に応じて表示を切り替え
+        when {
+            loadState.refresh is LoadState.Loading && hasSearched -> {
+                item { CircularProgressIndicator() }
+            }
+
+            loadState.refresh is LoadState.Error -> {
+                item { Text(text = stringResource(R.string.search_failed)) }
+            }
+
+            else -> {
+                // 検索結果なし
+                if (books.itemCount == 0 && hasSearched) {
+                    item {
+                        Text(text = stringResource(R.string.search_no_result))
+                    }
+                } else {
+                    // 検索結果リスト
+                    items(books.itemCount) { index ->
+                        books[index]?.let { book ->
+                            BookCard(
+                                book = book,
+                                onClick = {
+                                    titleSearchViewModel.selectBookItem(book)
+                                    navController.navigate("${Route.BookDetail}/${book.id}")
+                                }
+                            )
                         }
                     }
 
-                    is LoadState.Error -> {
-                        Text(
-                            text = stringResource(R.string.search_failed_next_page),
-                            modifier = Modifier.Companion.padding(16.dp)
-                        )
-                    }
+                    // ページング中インジケータ
+                    item {
+                        when (books.loadState.append) {
+                            is LoadState.Loading -> {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    CircularProgressIndicator()
+                                }
+                            }
 
-                    else -> {}
+                            is LoadState.Error -> {
+                                Text(
+                                    text = stringResource(R.string.search_failed_next_page),
+                                    modifier = Modifier.padding(16.dp)
+                                )
+                            }
+
+                            else -> {}
+                        }
+                    }
                 }
             }
         }
     }
 }
+
 
 /**
  * 検索された本一冊の情報を表示するカード
