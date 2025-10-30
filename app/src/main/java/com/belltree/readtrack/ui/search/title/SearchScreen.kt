@@ -39,7 +39,6 @@ import coil.compose.AsyncImage
 import com.belltree.readtrack.R
 import com.belltree.readtrack.domain.model.BookItem
 import com.belltree.readtrack.ui.navigation.Route
-import com.belltree.readtrack.ui.search.SearchedBookDetailViewModel
 
 /**
  * 本を検索する画面
@@ -50,7 +49,6 @@ import com.belltree.readtrack.ui.search.SearchedBookDetailViewModel
 @Composable
 fun SearchScreen(
     titleSearchViewModel: TitleSearchViewModel = hiltViewModel(),
-    searchedBookDetailViewModel: SearchedBookDetailViewModel,
     navController: NavController
 ) {
     var query by remember { mutableStateOf("") }
@@ -90,10 +88,6 @@ fun SearchScreen(
                 hasSearched = hasSearched,
                 onBookClick = { book ->
                     titleSearchViewModel.selectBookItem(book)
-                    searchedBookDetailViewModel.loadBookById(
-                        bookId = book.id,
-                        sourceBookItem = book
-                    )
                     navController.navigate("${Route.BookDetail}/${book.id}")
                 }
             )
