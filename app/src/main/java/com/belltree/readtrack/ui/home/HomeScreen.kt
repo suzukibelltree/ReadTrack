@@ -156,7 +156,9 @@ fun MiniBookCard(
             .padding(16.dp),
         onClick = { onClick(book.id) }
     ) {
-        Row {
+        Row(
+            modifier = Modifier.padding(8.dp)
+        ) {
             if (book.thumbnail != null) {
                 AsyncImage(
                     model = book.thumbnail,

@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,8 +27,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.LoadState
@@ -117,7 +118,6 @@ fun BooksCardList(
             items(books.itemCount) { index ->
                 books[index]?.let { book ->
                     BookCard(book = book, onClick = { onBookClick(book) })
-                    HorizontalDivider()
                 }
             }
             // 次のページを読み込み中のインジケーターを表示
@@ -165,7 +165,10 @@ fun BookCard(
                 onClick()
             }
     ) {
-        Row {
+        Row(
+            modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             if (book.volumeInfo.imageLinks?.thumbnail != null) {
                 AsyncImage(
                     model = book.volumeInfo.imageLinks.thumbnail,
@@ -186,14 +189,22 @@ fun BookCard(
                 Column {
                     Text(
                         text = book.volumeInfo.title,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
                         maxLines = 2,
                         overflow = TextOverflow.Companion.Ellipsis
                     )
                     Text(
-                        text = book.volumeInfo.authors?.joinToString(", ") ?: "Unknown",
+                        text = "著者：${book.volumeInfo.authors?.joinToString(", ") ?: "Unknown"}",
+                        fontSize = 12.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Companion.Ellipsis
                     )
                     Text(
-                        text = book.volumeInfo.publisher ?: "Unknown",
+                        text = "出版社：${book.volumeInfo.publisher ?: "Unknown"}",
+                        fontSize = 12.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Companion.Ellipsis
                     )
                 }
             }
