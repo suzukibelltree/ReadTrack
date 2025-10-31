@@ -1,16 +1,12 @@
 package com.belltree.readtrack.app
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,26 +14,17 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.DrawerState
-import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -45,18 +32,15 @@ import androidx.compose.ui.unit.dp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.belltree.readtrack.R
 import com.belltree.readtrack.data.local.datastore.getValue
-import com.belltree.readtrack.themecolor.AppColors
 import com.belltree.readtrack.themecolor.getPrimaryColor
 import com.belltree.readtrack.ui.TopTextList
+import com.belltree.readtrack.ui.navigation.BottomBar
 import com.belltree.readtrack.ui.navigation.ReadTrackNavHost
 import com.belltree.readtrack.ui.navigation.Route
-import com.belltree.readtrack.ui.theme.LightBlue
-import kotlinx.coroutines.launch
 
 val Context.datastore: DataStore<Preferences> by preferencesDataStore(name = "character_size")
 
@@ -67,137 +51,76 @@ val Context.datastore: DataStore<Preferences> by preferencesDataStore(name = "ch
 @Composable
 fun ReadTrackApp() {
     val navController = rememberNavController()
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route?.substringAfter("Route.")
     val topBarTitle = getTopBarTitle(currentRoute)
     val context = LocalContext.current
     val themeColor by getValue(context, "theme_color").collectAsState(initial = "")
     val primaryColor = getPrimaryColor(isSystemInDarkTheme(), themeColor)
-    Log.d("primaryColor", primaryColor.toString())
-    val scrimColor = AppColors.scrimColor
     val topLevelRoutes = setOf(
         Route.Home.toString(),
         Route.Library.toString(),
         Route.Setting.toString()
     )
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            DrawerContent(
-                drawerState = drawerState,
-                navController = navController,
-            )
-        },
-        scrimColor = scrimColor
-    ) {
-        Scaffold(
-            modifier = Modifier.Companion
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = topBarTitle,
-                            modifier = Modifier.Companion.padding(16.dp)
-                        )
-                    },
-                    navigationIcon = {
-                        // ルートによって表示するアイコンを切り替える
-                        if (currentRoute in topLevelRoutes) {
-                            Icon(
-                                imageVector = Icons.Default.Menu,
-                                contentDescription = "メニュー",
-                                modifier = Modifier.Companion
-                                    .padding(16.dp)
-                                    .size(32.dp)
-                                    .clickable {
-                                        scope.launch {
-                                            drawerState.open()
-                                        }
-                                    }
-                            )
-                        } else {
-                            Icon(
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "戻る",
-                                modifier = Modifier.Companion
-                                    .padding(16.dp)
-                                    .size(32.dp)
-                                    .clickable {
-                                        navController.popBackStack()
-                                    }
-                            )
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = getPrimaryColor(isSystemInDarkTheme(), themeColor),
-                    ),
-                    windowInsets = WindowInsets.Companion.statusBars
-                )
-            },
-            floatingActionButton = {
-                if (currentRoute == Route.Home.toString() || currentRoute == Route.Library.toString()) {
-                    FloatingActionButton(
-                        onClick = { navController.navigate(Route.RegisterProcess) },
-                        containerColor = LightBlue,
-                        modifier = Modifier.Companion.padding(16.dp)
-                    ) {
-                        Image(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "Add"
-                        )
-                    }
-                }
-            },
-            contentWindowInsets = WindowInsets.Companion.navigationBars
-        ) { innerPadding ->
-            ReadTrackNavHost(
-                navController = navController,
-                modifier = Modifier.Companion.padding(innerPadding),
-            )
-        }
-    }
-}
-
-@Composable
-fun DrawerContent(
-    drawerState: DrawerState,
-    navController: NavController,
-) {
-    val scope = rememberCoroutineScope()
-    val menuItems = listOf(
-        stringResource(R.string.drawer_home) to Route.Home,
-        stringResource(R.string.drawer_library) to Route.Library,
-        stringResource(R.string.drawer_setting) to Route.Setting,
-    )
-    Column(
+    Scaffold(
         modifier = Modifier.Companion
             .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Spacer(modifier = Modifier.Companion.height(32.dp))
-        menuItems.forEach { (title, route) ->
-            ListItem(
-                modifier = Modifier.Companion
-                    .clickable {
-                        scope.launch { drawerState.close() }
-                        navController.navigate(route)
-                    }
-                    .padding(8.dp),
-                colors = ListItemDefaults.colors(
-                    containerColor = AppColors.containerColor
-                ),
-                headlineContent = {
+            .background(MaterialTheme.colorScheme.background),
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
                     Text(
-                        text = title,
+                        text = topBarTitle,
+                        modifier = Modifier.Companion.padding(16.dp)
                     )
                 },
+                navigationIcon = {
+                    // ルートによって表示するアイコンを切り替える
+                    if (currentRoute !in topLevelRoutes) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "戻る",
+                            modifier = Modifier.Companion
+                                .padding(16.dp)
+                                .size(32.dp)
+                                .clickable {
+                                    navController.popBackStack()
+                                }
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = primaryColor,
+                ),
+                windowInsets = WindowInsets.Companion.statusBars
             )
-            HorizontalDivider()
-        }
+        },
+        bottomBar = {
+            if (currentRoute != Route.Search.toString() && currentRoute != Route.BarcodeScanner.toString()) {
+                BottomBar(navController, primaryColor)
+            }
+
+        },
+        floatingActionButton = {
+            if (currentRoute == Route.Home.toString() || currentRoute == Route.Library.toString()) {
+                FloatingActionButton(
+                    onClick = { navController.navigate(Route.RegisterProcess) },
+                    containerColor = primaryColor,
+                    modifier = Modifier.Companion.padding(8.dp)
+                ) {
+                    Image(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add"
+                    )
+                }
+            }
+        },
+        contentWindowInsets = WindowInsets.Companion.navigationBars
+    ) { innerPadding ->
+        ReadTrackNavHost(
+            navController = navController,
+            modifier = Modifier.Companion.padding(innerPadding),
+        )
     }
 }
 
