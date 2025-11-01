@@ -76,9 +76,7 @@ fun HomeScreen(
                     ),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Companion.Bold,
-                    modifier = Modifier.Companion
-                        .fillMaxWidth()
-                        .padding(8.dp)
+                    modifier = Modifier.padding(top = 8.dp)
                 )
                 Text(
                     text = stringResource(R.string.home_last_updatedBook),
@@ -157,7 +155,7 @@ fun MiniBookCard(
     Card(
         modifier = Modifier.Companion
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp),
         onClick = { onClick(book.id) }
     ) {
         Row(
