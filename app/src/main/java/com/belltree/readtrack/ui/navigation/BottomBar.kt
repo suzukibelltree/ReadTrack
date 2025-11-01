@@ -33,14 +33,12 @@ fun BottomBar(
     ) {
 
         items.forEach { item ->
-            val itemRouteString = Json.encodeToString(item.route)
+            val itemRouteString = item.route::class.qualifiedName
             NavigationBarItem(
                 selected = currentRouteString == itemRouteString,
                 onClick = {
                     if (currentRouteString != itemRouteString) {
                         navController.navigate(item.route) {
-                            // バックスタックを整理
-                            popUpTo(0) { saveState = true }
                             launchSingleTop = true
                             restoreState = true
                         }
