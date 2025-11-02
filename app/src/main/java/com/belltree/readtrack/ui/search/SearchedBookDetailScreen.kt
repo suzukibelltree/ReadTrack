@@ -35,6 +35,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.HtmlCompat
@@ -106,15 +107,19 @@ fun SearchedBookDetailScreen(
                         fontWeight = FontWeight.Companion.Bold,
                     )
                     Text(
-                        text = bookItem.volumeInfo.authors.toString(),
+                        text = "著者:${bookItem.volumeInfo.authors?.joinToString(", ") ?: "Unknown"}",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                     Text(
-                        text = bookItem.volumeInfo.publishedDate.toString(),
+                        text = "出版日:${bookItem.volumeInfo.publishedDate.toString()}",
                     )
                 }
             }
             Card(
-                modifier = Modifier.Companion.fillMaxWidth()
+                modifier = Modifier.Companion
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
             ) {
                 val descriptionHtml = bookItem.volumeInfo.description
                 val description = HtmlCompat.fromHtml(
@@ -122,10 +127,16 @@ fun SearchedBookDetailScreen(
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 ).toString()
                 if (description == "") {
-                    Text(text = stringResource(R.string.bookDetail_null_description))
+                    Text(
+                        text = stringResource(R.string.bookDetail_null_description),
+                        modifier = Modifier.padding(8.dp)
+                    )
                 } else {
                     if (description.length <= 100) {
-                        Text(text = description)
+                        Text(
+                            text = description,
+                            modifier = Modifier.padding(8.dp)
+                        )
                     } else {
                         var isExpanded by remember { mutableStateOf(false) }
                         Column(
@@ -137,6 +148,7 @@ fun SearchedBookDetailScreen(
                                 text = if (isExpanded) description
                                 else description
                                     .substring(0, 100) + "...",
+                                modifier = Modifier.padding(8.dp)
                             )
                             Row(
                                 modifier = Modifier.Companion.fillMaxWidth(),
@@ -188,12 +200,12 @@ fun SearchedBookDetailScreen(
                     )
                     if (bookItem.volumeInfo.publisher == null) {
                         Text(text = "Unknown")
-                    } else if (bookItem.volumeInfo.publisher.toString().length > 5) {
+                    } else if (bookItem.volumeInfo.publisher.length > 5) {
                         Text(
-                            text = bookItem.volumeInfo.publisher.toString().substring(0, 5) + "..."
+                            text = bookItem.volumeInfo.publisher.substring(0, 5) + "..."
                         )
                     } else {
-                        Text(text = bookItem.volumeInfo.publisher.toString())
+                        Text(text = bookItem.volumeInfo.publisher)
                     }
                 }
                 Spacer(modifier = Modifier.Companion.weight(1f))

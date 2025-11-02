@@ -56,6 +56,7 @@ fun ReadStateCard(
             contentDescription = contentDescription,
             modifier = Modifier.Companion
                 .size(48.dp)
+                .padding(top = 8.dp)
                 .align(Alignment.Companion.CenterHorizontally)
         )
         Text(
