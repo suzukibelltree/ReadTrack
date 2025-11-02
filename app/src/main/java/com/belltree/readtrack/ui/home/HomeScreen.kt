@@ -2,8 +2,10 @@ package com.belltree.readtrack.ui.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -54,7 +56,9 @@ fun HomeScreen(
     when (val state = uiState.value) {
         is HomeUiState.Loading -> {
             Column(
+                modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.Companion.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
                 CircularProgressIndicator()
             }
@@ -72,9 +76,7 @@ fun HomeScreen(
                     ),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Companion.Bold,
-                    modifier = Modifier.Companion
-                        .fillMaxWidth()
-                        .padding(8.dp)
+                    modifier = Modifier.padding(top = 8.dp)
                 )
                 Text(
                     text = stringResource(R.string.home_last_updatedBook),
@@ -153,10 +155,12 @@ fun MiniBookCard(
     Card(
         modifier = Modifier.Companion
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp),
         onClick = { onClick(book.id) }
     ) {
-        Row {
+        Row(
+            modifier = Modifier.padding(8.dp)
+        ) {
             if (book.thumbnail != null) {
                 AsyncImage(
                     model = book.thumbnail,
