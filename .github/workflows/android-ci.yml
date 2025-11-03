@@ -50,8 +50,8 @@ jobs:
             ${{ runner.os }}-gradle-
 
       # デバッグビルド実行
-      - name: Build Debug APK
-        run: ./gradlew assembleDebug
+      - name: Build Debug APK(show all warnings)
+        run: ./gradlew assembleDebug --warning-mode all --stacktrace
 
       # Lintチェック
       - name: Run Lint
