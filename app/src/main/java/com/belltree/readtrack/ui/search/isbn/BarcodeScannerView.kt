@@ -16,6 +16,7 @@ import com.google.mlkit.vision.common.InputImage
  * バーコードスキャナーのビュー
  * @param onBarcodeScanned バーコードがスキャンされたときのコールバック
  */
+@androidx.camera.core.ExperimentalGetImage
 @Composable
 fun BarcodeScannerView(onBarcodeScanned: (String) -> Unit) {
     val lifecycleOwner = LocalLifecycleOwner.current
