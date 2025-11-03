@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
-    id("com.google.gms.google-services")
 }
 
 android {
@@ -103,9 +102,6 @@ dependencies {
 
     // Jetpack Compose Hilt Extensions
     implementation(libs.androidx.hilt.navigation.compose)
-
-    // Firebase
-    implementation(libs.firebase.bom)
 
     // datastore
     implementation(libs.androidx.datastore.preferences)
