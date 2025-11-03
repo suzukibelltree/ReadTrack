@@ -16,6 +16,9 @@ jobs:
     name: Build Debug APK
     runs-on: ubuntu-latest
 
+    env:
+      API_KEY: ${{ secrets.API_KEY }}
+
     steps:
       # ソースコードを取得
       - name: Checkout repository
@@ -27,6 +30,12 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 17
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Create local.properties
+        run: echo "sdk.dir=$ANDROID_HOME" > local.properties
 
       # Gradle実行権限を付与
       - name: Grant execute permission for Gradle
@@ -44,8 +53,8 @@ jobs:
             ${{ runner.os }}-gradle-
 
       # デバッグビルド実行
-      - name: Build Debug APK
-        run: ./gradlew assembleDebug
+      - name: Build Debug APK(show all warnings)
+        run: ./gradlew assembleDebug --warning-mode all --stacktrace
 
       # Lintチェック
       - name: Run Lint

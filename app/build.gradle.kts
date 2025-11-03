@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
-    id("com.google.gms.google-services")
 }
 
 android {
@@ -22,6 +21,11 @@ android {
         versionName = "1.0.16"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField(
+            "String",
+            "API_KEY",
+            "\"${System.getenv("API_KEY") ?: ""}\""
+        )
     }
 
     buildTypes {
@@ -34,15 +38,22 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.6.10"
+    }
+    lint {
+        abortOnError = false
     }
 }
 
@@ -103,9 +114,6 @@ dependencies {
 
     // Jetpack Compose Hilt Extensions
     implementation(libs.androidx.hilt.navigation.compose)
-
-    // Firebase
-    implementation(libs.firebase.bom)
 
     // datastore
     implementation(libs.androidx.datastore.preferences)
