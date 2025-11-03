@@ -43,6 +43,7 @@ import com.belltree.readtrack.ui.navigation.ReadTrackNavHost
 import com.belltree.readtrack.ui.navigation.Route
 
 val Context.datastore: DataStore<Preferences> by preferencesDataStore(name = "character_size")
+val Context.LoginDataStore: DataStore<Preferences> by preferencesDataStore(name = "login_prefs")
 
 /**
  * アプリのメイン画面
