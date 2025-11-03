@@ -16,6 +16,9 @@ jobs:
     name: Build Debug APK
     runs-on: ubuntu-latest
 
+    env:
+      API_KEY: ${{ secrets.API_KEY }}
+
     steps:
       # ソースコードを取得
       - name: Checkout repository
