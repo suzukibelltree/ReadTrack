@@ -32,7 +32,7 @@ suspend fun updateLoginInfoAndGenerateMessage(context: Context): LoginMessageRes
         }
         messageResult = when {
             daysDiff == 1L -> LoginMessageResult(
-                message = "連続${newStreak}日目のログインです！頑張りましょう！",
+                message = "${newStreak}日連続のログインです！頑張りましょう！",
                 animationType = when (newStreak) {
                     in 1..6 -> AnimationType.STREAK_SMALL
                     in 7..14 -> AnimationType.STREAK_MEDIUM
