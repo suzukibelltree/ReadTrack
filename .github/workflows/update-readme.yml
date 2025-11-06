@@ -64,8 +64,8 @@ jobs:
         run: |
           # 安全のためバックアップをとる（任意）
           cp README.md README.md.bak
-          sed -i "s/Version: .*/Version: ${{ steps.current_version.outputs.current_version }}/" README.md
-          sed -i "s/Last Updated: .*/Last Updated: ${{ steps.date.outputs.current_date }}/" README.md
+          sed -i "s/Version: .*/Version: ${{ steps.current_version.outputs.currentversion }}/" README.md
+          sed -i "s/Last updated: .*/Last updated: $(date '+%Y-%m-%d')/" README.md
           git --no-pager diff -- README.md || true
 
       - name: Commit and push changes
