@@ -1,0 +1,78 @@
+name: Update README on version change
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  update-readme:
+    # bot が起こした push の再トリガーを防ぐ
+    if: ${{ github.actor != 'github-actions[bot]' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository (with history)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2   # HEAD~1 を安全に参照するため
+
+      - name: Get current version from build.gradle.kts
+        id: current_version
+        run: |
+          current=$(grep -m1 "versionName" app/build.gradle.kts | sed -E 's/.*versionName\s*=\s*"([^"]+)".*/\1/' || echo "")
+          echo "current_version=$current" >> $GITHUB_OUTPUT
+
+      - name: Get previous version from previous commit
+        id: previous_version
+        run: |
+          # HEAD~1 がない場合に備えて fail-safe を入れる
+          if git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
+            previous=$(git show HEAD~1:app/build.gradle.kts 2>/dev/null | grep -m1 "versionName" | sed -E 's/.*versionName\s*=\s*"([^"]+)".*/\1/' || echo "")
+          else
+            previous=""
+          fi
+          echo "previous_version=$previous" >> $GITHUB_OUTPUT
+
+      - name: Check if version changed
+        id: version_changed
+        run: |
+          echo "current=${{ steps.current_version.outputs.current_version }}"
+          echo "previous=${{ steps.previous_version.outputs.previous_version }}"
+          if [ "${{ steps.current_version.outputs.current_version }}" != "${{ steps.previous_version.outputs.previous_version }}" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Stop if version not changed
+        if: ${{ steps.version_changed.outputs.changed == 'false' }}
+        run: |
+          echo "Version not changed. Skipping update."
+          exit 0
+
+      - name: Get current date (Japan time)
+        id: date
+        run: |
+          current_date=$(TZ=Asia/Tokyo date +"%Y-%m-%d")
+          echo "current_date=$current_date" >> $GITHUB_OUTPUT
+
+      - name: Update README.md
+        run: |
+          # 安全のためバックアップをとる（任意）
+          cp README.md README.md.bak
+          sed -i "s/Version: .*/Version: ${{ steps.current_version.outputs.current_version }}/" README.md
+          sed -i "s/Last Updated: .*/Last Updated: ${{ steps.date.outputs.current_date }}/" README.md
+          git --no-pager diff -- README.md || true
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          # skip if nothing to commit
+          git diff --staged --quiet || (git commit -m "chore: update README for version ${{ steps.current_version.outputs.current_version }} (updated ${{ steps.date.outputs.current_date }})" && git push)
+
