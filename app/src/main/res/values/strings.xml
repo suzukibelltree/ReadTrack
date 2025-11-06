@@ -32,7 +32,7 @@
     <string name="home_number_of_FinishedBooks">これまでに読了した本：%s 冊</string>
     <string name="home_greeting">%s さん、こんにちは！</string>
     <string name="home_last_updatedBook">最後に更新した本</string>
-    <string name="home_last_updatedDate">最終アクセス: %s </string>
+    <string name="home_last_updatedDate">最終更新: %s </string>
     <string name="home_new_addedBook">新しく登録された本</string>
     <string name="home_new_addedDate">追加日時: %s</string>
     <string name="home_readLog">読書ログ</string>

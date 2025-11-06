@@ -1,6 +1,5 @@
 package com.belltree.readtrack.ui.mybookdetail
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -69,7 +68,6 @@ fun MyBookScreen(
     }
     val uiState = myBookDetailViewModel.uiState.collectAsStateWithLifecycle()
     val showCompleteDialog = myBookDetailViewModel.showCompleteDialog.collectAsStateWithLifecycle()
-    Log.d("hoge", showCompleteDialog.value.toString())
     when (val state = uiState.value) {
         is MyBookDetailUiState.Loading -> {
             Column(
@@ -168,11 +166,6 @@ fun MyBookScreen(
                                 .fillMaxWidth(),
                             horizontalAlignment = Alignment.Companion.CenterHorizontally
                         ) {
-                            Text(
-                                text = stringResource(R.string.myBook_readState),
-                                fontSize = 16.sp,
-                                modifier = Modifier.Companion.align(Alignment.Companion.Start)
-                            )
                             //状態の変更を行うアイコン3つ
                             Row(
                                 modifier = Modifier.Companion
@@ -310,7 +303,8 @@ fun MyBookScreen(
                     item {
                         Column(
                             modifier = Modifier.Companion
-                                .fillMaxWidth(),
+                                .fillMaxWidth()
+                                .padding(top = 8.dp),
                             horizontalAlignment = Alignment.Companion.CenterHorizontally
                         ) {
                             Text(

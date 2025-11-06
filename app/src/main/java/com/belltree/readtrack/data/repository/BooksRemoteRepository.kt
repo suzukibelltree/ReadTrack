@@ -26,4 +26,9 @@ class BooksRemoteRepository @Inject constructor(
         val result = apiService.searchBooks(query, apiKey, startIndex, maxResults)
         return result
     }
+
+    suspend fun getBookById(
+        volumeId: String,
+        apiKey: String = BuildConfig.API_KEY
+    ) = apiService.getBookById(volumeId, apiKey)
 }
