@@ -1,0 +1,54 @@
+name: Deploy to Google Play
+
+on:
+  push:
+    branches:
+      - main  # mainブランチにマージされたとき実行
+
+jobs:
+  deploy:
+    name: Build & Deploy to Play Console
+    runs-on: ubuntu-latest
+
+    steps:
+      # --- リポジトリを取得 ---
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # --- JDKセットアップ ---
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # --- Gradleキャッシュを有効化 ---
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+
+      # --- keystore.jks を復元 ---
+      - name: Decode Keystore
+        run: |
+          echo "$SIGNING_KEYSTORE_BASE64" | base64 --decode > app/keystore.jks
+
+      # --- Google Play service account key を復元 ---
+      - name: Decode Play Service Account Key
+        run: |
+          echo "$SERVICE_ACCOUNT_JSON" | base64 --decode > app/play-service-account.json
+
+      # --- ビルド & デプロイ ---
+      - name: Build and deploy release
+        env:
+          SIGNING_STORE_FILE: app/keystore.jks
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          API_KEY: ${{ secrets.API_KEY }}
+        run: |
+          ./gradlew clean bundleRelease publishReleaseBundle
+
+      # --- セキュリティのため削除 ---
+      - name: Cleanup secrets
+        run: |
+          rm app/keystore.jks
+          rm app/play-service-account.json
