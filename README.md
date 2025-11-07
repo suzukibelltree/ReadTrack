@@ -1,5 +1,5 @@
 # ReadTrack
-Version: 1.0.18
+Version: 1.0.19
 
 Last updated: 2025-11-07
 
