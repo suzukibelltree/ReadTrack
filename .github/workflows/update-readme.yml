@@ -10,7 +10,6 @@ permissions:
 
 jobs:
   update-readme:
-    # bot が起こした push の再トリガーを防ぐ
     if: ${{ github.actor != 'github-actions[bot]' }}
     runs-on: ubuntu-latest
 
@@ -18,7 +17,7 @@ jobs:
       - name: Checkout repository (with history)
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2   # HEAD~1 を安全に参照するため
+          fetch-depth: 2
 
       - name: Get current version from build.gradle.kts
         id: current_version
@@ -29,7 +28,6 @@ jobs:
       - name: Get previous version from previous commit
         id: previous_version
         run: |
-          # HEAD~1 がない場合に備えて fail-safe を入れる
           if git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
             previous=$(git show HEAD~1:app/build.gradle.kts 2>/dev/null | grep -m1 "versionName" | sed -E 's/.*versionName\s*=\s*"([^"]+)".*/\1/' || echo "")
           else
@@ -62,10 +60,13 @@ jobs:
 
       - name: Update README.md
         run: |
-          # 安全のためバックアップをとる（任意）
           cp README.md README.md.bak
-          sed -i "s/Version: .*/Version: ${{ steps.current_version.outputs.currentversion }}/" README.md
-          sed -i "s/Last updated: .*/Last updated: $(date '+%Y-%m-%d')/" README.md
+          VERSION="${{ steps.current_version.outputs.current_version }}"
+          DATE="${{ steps.date.outputs.current_date }}"
+          echo "Updating README with version=$VERSION and date=$DATE"
+          sed -i "s/Version: .*/Version: ${VERSION}/" README.md
+          sed -i "s/Last updated: .*/Last updated: ${DATE}/" README.md
+          echo "--- Diff ---"
           git --no-pager diff -- README.md || true
 
       - name: Commit and push changes
@@ -73,6 +74,6 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add README.md
-          # skip if nothing to commit
           git diff --staged --quiet || (git commit -m "chore: update README for version ${{ steps.current_version.outputs.current_version }} (updated ${{ steps.date.outputs.current_date }})" && git push)
+
 
