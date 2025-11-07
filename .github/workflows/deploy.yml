@@ -35,7 +35,9 @@ jobs:
       # --- keystore.jks を復元 ---
       - name: Decode Keystore
         run: |
-          echo "$SIGNING_KEYSTORE_BASE64" | base64 --decode > app/keystore.jks
+          echo "$SIGNING_KEYSTORE_FILE" | base64 --decode > keystore.jks
+        env:
+          SIGNING_KEYSTORE_FILE: ${{ secrets.SIGNING_KEYSTORE_FILE }}
 
       # --- Google Play service account key を復元 ---
       - name: Decode Play Service Account Key
