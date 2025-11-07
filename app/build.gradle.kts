@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    id("com.github.triplet.play") version "3.9.1"
 }
 
 android {
@@ -28,9 +29,19 @@ android {
         )
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("../keystore.jks")
+            storePassword = System.getenv("SIGNING_STORE_PASSWORD")
+            keyAlias = System.getenv("SIGNING_KEY_ALIAS")
+            keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+        }
+    }
+
     buildTypes {
-        release {
+        getByName("release") {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -55,6 +66,11 @@ android {
     lint {
         abortOnError = false
     }
+}
+
+play {
+    serviceAccountCredentials.set(file("play-service-account.json"))
+    track.set("production")
 }
 
 dependencies {
