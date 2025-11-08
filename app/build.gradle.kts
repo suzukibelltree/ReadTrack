@@ -69,7 +69,6 @@ android {
 }
 
 play {
-    serviceAccountCredentials.set(file("play-service-account.json"))
     track.set("production")
 }
 
