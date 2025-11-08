@@ -63,6 +63,7 @@ fun SearchedBookDetailScreen(
     val isRegistered = viewmodel.isRegistered.value
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+    var showImagePreview by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         viewmodel.loadBookById(bookId)
     }
@@ -89,6 +90,7 @@ fun SearchedBookDetailScreen(
                         contentDescription = null,
                         modifier = Modifier.Companion
                             .fillMaxWidth(0.4f)
+                            .clickable { showImagePreview = true }
                             .padding(16.dp)
                     )
                 } else {
@@ -243,6 +245,12 @@ fun SearchedBookDetailScreen(
                     Text(text = stringResource(R.string.bookDetail_addButton))
                 }
             }
+        }
+        if (showImagePreview) {
+            ImagePreviewOverlay(
+                imageUrl = bookItem.volumeInfo.imageLinks?.thumbnail,
+                onDismiss = { showImagePreview = false }
+            )
         }
     }
 
