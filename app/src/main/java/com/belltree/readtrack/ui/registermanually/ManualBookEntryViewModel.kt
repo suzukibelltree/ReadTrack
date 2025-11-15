@@ -29,7 +29,7 @@ data class ManualBookFormState(
 
 /**
  * 手動で書籍情報を登録するためのViewModel
- * @param booksRepository 書籍情報を保存するRepository
+ * @param saveManualBookUseCase 手動で書籍情報を保存するためのユースケース
  */
 @HiltViewModel
 class ManualBookEntryViewModel @Inject constructor(

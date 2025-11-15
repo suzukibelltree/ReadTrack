@@ -1,7 +1,6 @@
 package com.belltree.readtrack.core.notification
 
 import android.content.Context
-import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.belltree.readtrack.core.parseDateToMillis
@@ -21,7 +20,6 @@ class BookUpdateCheckWorker(context: Context, workerParams: WorkerParameters) :
         val lastUpdatedFlow = getValue(applicationContext, "lastUpdatedDate")
 
         val lastUpdatedString = runBlocking { lastUpdatedFlow.first() }
-        Log.d("huga", "Last updated string: $lastUpdatedString")
         val lastUpdatedMillis = parseDateToMillis(lastUpdatedString)
 
         // lastUpdated を適切に取得できた場合のみ比較
@@ -33,7 +31,6 @@ class BookUpdateCheckWorker(context: Context, workerParams: WorkerParameters) :
     }
 
     private fun sendNotification() {
-        Log.d("huga", "sendNotification")
         showNotification(applicationContext) // 通知を送る
     }
 }
