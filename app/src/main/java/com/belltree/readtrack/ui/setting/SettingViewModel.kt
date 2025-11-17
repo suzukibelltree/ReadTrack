@@ -2,30 +2,39 @@ package com.belltree.readtrack.ui.setting
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.belltree.readtrack.data.repository.SettingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SettingViewModel @Inject constructor() : ViewModel() {
+class SettingViewModel @Inject constructor(
+    private val settingRepository: SettingRepository
+) : ViewModel() {
 
-    private val _enableNotification = MutableStateFlow(false)
-    val enableNotification: StateFlow<Boolean> = _enableNotification
+    val enableNotification = settingRepository.notificationEnabled.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(),
+        false
+    )
 
     private val _scheduleEvent = MutableSharedFlow<Boolean>()
     val scheduleEvent: SharedFlow<Boolean> = _scheduleEvent
 
-    fun setNotificationEnabled(enabled: Boolean) {
-        _enableNotification.value = enabled
+    fun setNotificationEnabled(enable: Boolean) {
+        viewModelScope.launch {
+            settingRepository.setNotificationEnabled(enable)
+            _scheduleEvent.emit(enable)
+        }
     }
 
     fun applySettings() {
         viewModelScope.launch {
-            _scheduleEvent.emit(_enableNotification.value)
+            _scheduleEvent.emit(enableNotification.value)
         }
     }
 }
