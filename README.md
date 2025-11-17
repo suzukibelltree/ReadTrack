@@ -32,6 +32,11 @@ ReadTrackは読書の記録を管理するためのアプリです。
 | ![書籍情報編集画面](https://github.com/user-attachments/assets/620f2dc2-7260-4aae-b7d4-e89686ba8d37)     | ライブラリに登録した書籍をクリックすると遷移します。読書状態の変更、読了ページ数の変更、メモの記入などを行うことができます。また、それぞれの書籍について、過去の読了ページ数の更新履歴を確認できます。「変更を保存」ボタンを押すと変更した情報でローカルのデータベースが更新され、「ライブラリから削除する」ボタンをクリックするとライブラリからその書籍の情報が削除されます。                                                                                                                         |
 | ![設定画面](https://github.com/user-attachments/assets/1b1a16db-7aa5-4a5c-bd45-86d64084c25c)             | 設定画面では、アプリのテーマカラーの設定とアプリの使い方の参照を行うことができます。ユーザー情報はDataStoreによってローカルに保存され、アプリを再び開いたときにも反映されます。                                                                                                                                                                                                                                                                                                                        |
 
+
+## アーキテクチャ図
+<img width="1441" height="651" alt="readtrack_architecture" src="https://github.com/user-attachments/assets/3e34be5d-bad7-4ef6-aa40-4e63fba22d76" />
+
+
 ## 技術スタック
 
 - 言語: Kotlin
@@ -45,6 +50,7 @@ ReadTrackは読書の記録を管理するためのアプリです。
 - バーコード読み込み：ML Kit, CameraX
 - グラフ表示: Vico
 - 通知： WorkManager
+- CI/CD: GitHub Actions
 - その他: Google Books API
 
 ## ポイント

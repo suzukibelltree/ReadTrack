@@ -15,9 +15,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,8 +32,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.work.WorkManager
 import com.belltree.readtrack.R
+import com.belltree.readtrack.core.notification.scheduleBookUpdateCheck
 import com.belltree.readtrack.data.local.datastore.getValue
 import com.belltree.readtrack.data.local.datastore.saveValue
 import kotlinx.coroutines.flow.first
@@ -39,21 +44,31 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SettingScreen(
-    navController: NavController
+    navController: NavController,
+    viewmodel: SettingViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
     var showExplainDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val enableNotifications by viewmodel.enableNotification.collectAsState()
+    var selectedThemeColor by remember { mutableStateOf("") }
+    LaunchedEffect(Unit) {
+        scope.launch {
+            selectedThemeColor = getValue(context, "theme_color").first()
+        }
+        viewmodel.scheduleEvent.collect { shouldEnable ->
+            if (shouldEnable) {
+                scheduleBookUpdateCheck(context)
+            } else {
+                WorkManager.getInstance(context)
+                    .cancelUniqueWork("book_update_check")
+            }
+        }
+    }
     Column(
         modifier = Modifier.Companion.fillMaxSize(),
         horizontalAlignment = Alignment.Companion.CenterHorizontally,
     ) {
-        var selectedThemeColor by remember { mutableStateOf("") }
-        LaunchedEffect(Unit) {
-            scope.launch {
-                selectedThemeColor = getValue(context, "theme_color").first()
-            }
-        }
         Column {
             var themeMenuExpand by remember { mutableStateOf(false) }
             Text(
@@ -123,6 +138,38 @@ fun SettingScreen(
                 }
         )
         HorizontalDivider()
+        Column {
+            var notificationMenuExpand by remember { mutableStateOf(false) }
+            Text(
+                text = "通知機能の設定",
+                fontSize = 20.sp,
+                modifier = Modifier.Companion
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .clickable {
+                        notificationMenuExpand = !notificationMenuExpand
+                    }
+            )
+            AnimatedVisibility(notificationMenuExpand) {
+                Row {
+                    Text(
+                        text = "通知を有効にする",
+                        fontSize = 16.sp,
+                        modifier = Modifier.Companion
+                            .weight(1f)
+                            .padding(16.dp)
+                    )
+                    Switch(
+                        checked = enableNotifications,
+                        onCheckedChange = {
+                            viewmodel.setNotificationEnabled(it)
+                        },
+                        modifier = Modifier.Companion.padding(end = 16.dp)
+                    )
+                }
+            }
+        }
+        HorizontalDivider()
         Spacer(modifier = Modifier.Companion.weight(1f))
         Button(
             onClick = {
@@ -132,6 +179,7 @@ fun SettingScreen(
                         key = "theme_color",
                         value = selectedThemeColor
                     )
+                    viewmodel.applySettings()
                 }
                 Toast.makeText(context, R.string.setting_save_complete, Toast.LENGTH_SHORT).show()
             }
