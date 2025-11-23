@@ -223,6 +223,7 @@ fun MyBookScreen(
                                             readPagesCount = ""
                                         } else if (newValue.all { it.isDigit() }) { //無効な数字が入力された場合は処理しない
                                             readPagesCount = newValue
+                                            selectedOption = R.string.read_state_reading
                                             // 読了ページ数が増加したら差分を計算
                                             pagesReadDiff = newValue.toInt() - book.readPages!!
                                             // 読了ページ数がページ数を超える場合はページ数に合わせる
@@ -238,7 +239,7 @@ fun MyBookScreen(
                                         .weight(1f),
                                     singleLine = true,
                                     // 状態が読書中の場合のみ読了ページ数を変更できるようにする
-                                    readOnly = (selectedOption != R.string.read_state_reading),
+                                    readOnly = (selectedOption == R.string.read_state_read),
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Companion.Number)
                                 )
                                 Text(
