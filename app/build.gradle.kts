@@ -18,8 +18,8 @@ android {
         applicationId = "com.belltree.readtrack"
         minSdk = 26
         targetSdk = 35
-        versionCode = 21
-        versionName = "1.0.20"
+        versionCode = 22
+        versionName = "1.0.21"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField(
@@ -153,6 +153,10 @@ dependencies {
     // Lottie
     implementation(libs.lottie.compose)
 
+    // For AppWidgets support
+    implementation("androidx.glance:glance-appwidget:1.1.0")
+    // For interop APIs with Material 3
+    implementation("androidx.glance:glance-material3:1.1.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
