@@ -1,7 +1,7 @@
 # ReadTrack
 Version: 1.0.21
 
-Last updated: 2025-12-23
+Last updated: 2025-12-25
 
 ## 概要
 
