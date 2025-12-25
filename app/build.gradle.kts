@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     alias(libs.plugins.googleDevToolsKsp)
     alias(libs.plugins.kotlin.serialization)
     id("kotlin-kapt")
@@ -30,18 +29,25 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-            storeFile = file("../keystore.jks")
-            storePassword = System.getenv("SIGNING_STORE_PASSWORD")
-            keyAlias = System.getenv("SIGNING_KEY_ALIAS")
-            keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+        if (
+            System.getenv("SIGNING_STORE_PASSWORD") != null &&
+            System.getenv("SIGNING_KEY_ALIAS") != null &&
+            System.getenv("SIGNING_KEY_PASSWORD") != null
+        ) {
+            create("release") {
+                storeFile = file("../keystore.jks")
+                storePassword = System.getenv("SIGNING_STORE_PASSWORD")
+                keyAlias = System.getenv("SIGNING_KEY_ALIAS")
+                keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+            }
         }
     }
 
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig =
+                signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -159,6 +165,9 @@ dependencies {
     implementation("androidx.glance:glance-material3:1.1.0")
 
     testImplementation(libs.junit)
+    testImplementation("io.mockk:mockk:1.13.10")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+    testImplementation("app.cash.turbine:turbine:1.0.0")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

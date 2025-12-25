@@ -11,18 +11,18 @@ class SaveManualBookUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         title: String,
-        author: String,
-        publisher: String?,
-        publishedDate: String?,
-        pageCount: String,
-        thumbnail: String?
+        author: String = "",
+        publisher: String = "",
+        publishedDate: String = "",
+        pageCount: String = "0",
+        thumbnail: String? = ""
     ) {
         val book = BookData(
             id = UUID.randomUUID().toString(),
             title = title.trim(),
             author = author.trim(),
-            publisher = publisher.takeIf { !it.isNullOrBlank() },
-            publishedDate = publishedDate.takeIf { !it.isNullOrBlank() },
+            publisher = publisher.takeIf { it.isNotBlank() },
+            publishedDate = publishedDate.takeIf { it.isNotBlank() },
             description = null,
             thumbnail = thumbnail,
             pageCount = pageCount.toIntOrNull() ?: 0,
