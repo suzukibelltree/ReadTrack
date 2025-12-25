@@ -30,18 +30,25 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-            storeFile = file("../keystore.jks")
-            storePassword = System.getenv("SIGNING_STORE_PASSWORD")
-            keyAlias = System.getenv("SIGNING_KEY_ALIAS")
-            keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+        if (
+            System.getenv("SIGNING_STORE_PASSWORD") != null &&
+            System.getenv("SIGNING_KEY_ALIAS") != null &&
+            System.getenv("SIGNING_KEY_PASSWORD") != null
+        ) {
+            create("release") {
+                storeFile = file("../keystore.jks")
+                storePassword = System.getenv("SIGNING_STORE_PASSWORD")
+                keyAlias = System.getenv("SIGNING_KEY_ALIAS")
+                keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+            }
         }
     }
 
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig =
+                signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
