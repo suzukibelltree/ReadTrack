@@ -39,11 +39,6 @@ jobs:
         env:
           SIGNING_STORE_FILE: ${{ secrets.SIGNING_STORE_FILE }}
 
-      - name: Upload keystore artifact (TEMP)
-        uses: actions/upload-artifact@v4
-        with:
-          name: recovered-keystore
-          path: keystore.jks
 
       # --- Google Play service account key を復元 ---
       - name: Decode Play Service Account Key
