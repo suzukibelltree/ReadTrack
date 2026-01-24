@@ -53,6 +53,25 @@ ReadTrackは読書の記録を管理するためのアプリです。
 - CI/CD: GitHub Actions
 - その他: Google Books API
 
+## 設計方針
+- UIとロジックの責務を分離するためMVVMを採用
+- State管理を明確にするためUiStateを定義
+- RepositoryパターンでLocal/Remoteを抽象化
+- Flowを用いてDB変更をリアクティブにUIへ反映
+- テスト容易性を意識してHiltで依存関係を注入
+
+## CI/CD
+GitHub Actionsを利用して以下を自動化しています。
+
+- PR作成時
+  - Unit Test実行
+  - Buildチェック
+  - Linterによるコード品質チェック
+
+- mainブランチpush時
+  - APKビルド
+  - Google Play Consoleへのリリース更新申請
+
 ## ポイント
 
 - 書影の表示に利用するライブラリとしてはシンプルかつキャッシュ保存の可能なCoilを選択した。
