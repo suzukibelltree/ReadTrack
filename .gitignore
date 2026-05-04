@@ -18,3 +18,4 @@ local.properties
 .kotlin
 app/google-services.json
 keystore.jks
+.claude/statusline-command.sh
