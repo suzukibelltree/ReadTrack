@@ -11,6 +11,7 @@ import com.belltree.readtrack.domain.repository.BooksRepository
 import com.belltree.readtrack.domain.repository.ReadLogRepository
 import com.belltree.readtrack.domain.usecase.DeleteBookUseCase
 import com.belltree.readtrack.domain.usecase.GetAllBooksUseCase
+import com.belltree.readtrack.domain.usecase.GetHomeStaticsUseCase
 import com.belltree.readtrack.domain.usecase.InsertReadLogUseCase
 import com.belltree.readtrack.domain.usecase.UpdateBookUseCase
 import dagger.Module
@@ -86,5 +87,14 @@ object AppModule {
         booksRepository: BooksRepository
     ): GetAllBooksUseCase {
         return GetAllBooksUseCase(booksRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetHomeStaticsUseCase(
+        booksRepository: BooksRepository,
+        readLogRepository: ReadLogRepository
+    ): GetHomeStaticsUseCase {
+        return GetHomeStaticsUseCase(booksRepository, readLogRepository)
     }
 }

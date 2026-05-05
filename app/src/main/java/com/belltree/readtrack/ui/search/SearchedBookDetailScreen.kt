@@ -221,7 +221,7 @@ fun SearchedBookDetailScreen(
                 )
                 Button(
                     onClick = {
-                        navController.navigate("${Route.MyBook}/${bookItem.id}") {
+                        navController.navigate(Route.MyBook(bookItem.id)) {
                             popUpTo(Route.Library) {
                                 inclusive = true
                             }
