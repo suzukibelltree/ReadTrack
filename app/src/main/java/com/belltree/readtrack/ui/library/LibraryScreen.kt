@@ -138,7 +138,7 @@ fun LibraryScreen(
                                                 .height(120.dp)
                                                 .padding(16.dp)
                                                 .clickable {
-                                                    navController.navigate("${Route.MyBook}/${book.id}")
+                                                    navController.navigate(Route.MyBook(book.id))
                                                 }
                                         )
                                     } else {
@@ -150,7 +150,7 @@ fun LibraryScreen(
                                                 .height(120.dp)
                                                 .padding(16.dp)
                                                 .clickable {
-                                                    navController.navigate("${Route.MyBook}/${book.id}")
+                                                    navController.navigate(Route.MyBook(book.id))
                                                 }
                                         )
                                     }

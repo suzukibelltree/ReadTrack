@@ -1,8 +1,5 @@
 package com.belltree.readtrack.ui.search.title
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -33,16 +30,14 @@ class TitleSearchViewModel @Inject constructor(
     ViewModel() {
 
     private val _selectedBookItem = MutableStateFlow<BookItem?>(null)
-    val selectedBookItem: StateFlow<BookItem?> = _selectedBookItem
 
     private val _books = mutableListOf<BookItem>()
-    val books: List<BookItem> = _books
 
     private val _query = MutableStateFlow("")
     val query: StateFlow<String> = _query
 
-    private var isLoading by mutableStateOf(false)
-    private var errorMessage by mutableStateOf<String?>(null)
+    private val _isLoading = MutableStateFlow(false)
+    private val _errorMessage = MutableStateFlow<String?>(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val bookPagingData: Flow<PagingData<BookItem>> = query
@@ -59,8 +54,8 @@ class TitleSearchViewModel @Inject constructor(
     // 本の検索結果を破棄する
     fun clearSearchResults() {
         _books.clear()
-        isLoading = false
-        errorMessage = null
+        _isLoading.value = false
+        _errorMessage.value = null
     }
 
     fun updateQuery(newQuery: String) {

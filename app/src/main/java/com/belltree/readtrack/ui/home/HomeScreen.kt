@@ -89,7 +89,7 @@ fun HomeScreen(
                 if (bindingModel.recentlyReadBook != null) {
                     MiniBookCard(
                         book = bindingModel.recentlyReadBook,
-                        onClick = { bookId -> navController.navigate("${Route.MyBook}/$bookId") },
+                        onClick = { bookId -> navController.navigate(Route.MyBook(bookId)) },
                         message = stringResource(
                             R.string.home_last_updatedDate,
                             bindingModel.recentlyReadBook.updatedDate
@@ -109,7 +109,7 @@ fun HomeScreen(
                 if (bindingModel.newlyAddedBook != null) {
                     MiniBookCard(
                         book = bindingModel.newlyAddedBook,
-                        onClick = { bookId -> navController.navigate("${Route.MyBook}/$bookId") },
+                        onClick = { bookId -> navController.navigate(Route.MyBook(bookId)) },
                         message = stringResource(
                             R.string.home_new_addedDate,
                             bindingModel.newlyAddedBook.registeredDate

@@ -96,7 +96,7 @@ fun BarcodeScannerScreen(
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else {
-                                navController.navigate("${Route.BookDetail}/${book.id}") {
+                                navController.navigate(Route.BookDetail(book.id)) {
                                     popUpTo(Route.BarcodeScanner) {
                                         inclusive = true
                                     }
