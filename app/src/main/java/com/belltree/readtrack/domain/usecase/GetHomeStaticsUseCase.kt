@@ -4,6 +4,8 @@ import com.belltree.readtrack.data.repository.DatabaseBooksRepository
 import com.belltree.readtrack.data.repository.DatabaseReadLogRepository
 import com.belltree.readtrack.domain.model.BookData
 import com.belltree.readtrack.domain.model.ReadLogByMonth
+import com.belltree.readtrack.domain.repository.BooksRepository
+import com.belltree.readtrack.domain.repository.ReadLogRepository
 import com.belltree.readtrack.ui.mybookdetail.ReadProgress
 import javax.inject.Inject
 
@@ -15,8 +17,8 @@ data class HomeStatics(
 )
 
 class GetHomeStaticsUseCase @Inject constructor(
-    private val savedBooksRepository: DatabaseBooksRepository,
-    private val readLogRepository: DatabaseReadLogRepository
+    private val savedBooksRepository: BooksRepository,
+    private val readLogRepository: ReadLogRepository
 ) {
     suspend operator fun invoke(): HomeStatics {
         val books = savedBooksRepository.getAllBooks()

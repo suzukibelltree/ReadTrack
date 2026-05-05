@@ -111,7 +111,7 @@ fun SearchScreen(
                                 book = book,
                                 onClick = {
                                     titleSearchViewModel.selectBookItem(book)
-                                    navController.navigate("${Route.BookDetail}/${book.id}")
+                                    navController.navigate(Route.BookDetail(book.id))
                                 }
                             )
                         }

@@ -3,10 +3,9 @@ package com.belltree.readtrack.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
+import androidx.navigation.toRoute
 import com.belltree.readtrack.ui.home.HomeScreen
 import com.belltree.readtrack.ui.library.LibraryScreen
 import com.belltree.readtrack.ui.mybookdetail.MyBookScreen
@@ -61,24 +60,18 @@ fun ReadTrackNavHost(
                 navController = navController,
             )
         }
-        composable(
-            route = "${Route.BookDetail}/{bookId}",
-            arguments = listOf(navArgument("bookId") { type = NavType.Companion.StringType })
-        ) {
-            val bookId = it.arguments?.getString("bookId") ?: ""
+        composable<Route.BookDetail> { backStackEntry ->
+            val route = backStackEntry.toRoute<Route.BookDetail>()
             SearchedBookDetailScreen(
-                bookId = bookId,
+                bookId = route.bookId,
                 navController = navController,
             )
         }
-        composable(
-            route = "${Route.MyBook}/{savedBookId}",
-            arguments = listOf(navArgument("savedBookId") { type = NavType.Companion.StringType })
-        ) { backStackEntry ->
-            val savedBookId = backStackEntry.arguments?.getString("savedBookId") ?: ""
+        composable<Route.MyBook> { backStackEntry ->
+            val route = backStackEntry.toRoute<Route.MyBook>()
             MyBookScreen(
                 navController = navController,
-                bookId = savedBookId,
+                bookId = route.savedBookId,
             )
         }
     }
