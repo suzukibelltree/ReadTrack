@@ -1,7 +1,6 @@
 package com.belltree.readtrack.screenshot
 
 import android.app.Application
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
 import com.belltree.readtrack.domain.model.ReadLog
@@ -9,6 +8,7 @@ import com.belltree.readtrack.ui.mybookdetail.MyBookDetailBindingModel
 import com.belltree.readtrack.ui.mybookdetail.MyBookDetailBookBindingModel
 import com.belltree.readtrack.ui.mybookdetail.MyBookDetailUiState
 import com.belltree.readtrack.ui.mybookdetail.MyBookScreenContent
+import com.belltree.readtrack.ui.theme.ReadTrackTheme
 import com.github.takahirom.roborazzi.captureRoboImage
 import org.junit.Rule
 import org.junit.Test
@@ -27,7 +27,7 @@ class MyBookDetailScreenshotTest {
 
     private fun setContent(uiState: MyBookDetailUiState) {
         composeTestRule.setContent {
-            MaterialTheme {
+            ReadTrackTheme(dynamicColor = false) {
                 MyBookScreenContent(
                     bookId = "1",
                     uiState = uiState,

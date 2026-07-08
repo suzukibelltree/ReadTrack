@@ -1,7 +1,6 @@
 package com.belltree.readtrack.screenshot
 
 import android.app.Application
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
 import com.belltree.readtrack.domain.model.ReadLogByMonth
@@ -9,6 +8,7 @@ import com.belltree.readtrack.ui.home.HomeBindingModel
 import com.belltree.readtrack.ui.home.HomeBookBindingModel
 import com.belltree.readtrack.ui.home.HomeScreenContent
 import com.belltree.readtrack.ui.home.HomeUiState
+import com.belltree.readtrack.ui.theme.ReadTrackTheme
 import com.github.takahirom.roborazzi.captureRoboImage
 import org.junit.Rule
 import org.junit.Test
@@ -28,7 +28,7 @@ class HomeScreenshotTest {
     @Test
     fun homeScreen_loading() {
         composeTestRule.setContent {
-            MaterialTheme {
+            ReadTrackTheme(dynamicColor = false) {
                 HomeScreenContent(
                     uiState = HomeUiState.Loading,
                     onBookClick = {}
@@ -65,7 +65,7 @@ class HomeScreenshotTest {
             )
         )
         composeTestRule.setContent {
-            MaterialTheme {
+            ReadTrackTheme(dynamicColor = false) {
                 HomeScreenContent(
                     uiState = HomeUiState.Success(bindingModel),
                     onBookClick = {}
@@ -86,7 +86,7 @@ class HomeScreenshotTest {
             readLogForGraph = emptyList()
         )
         composeTestRule.setContent {
-            MaterialTheme {
+            ReadTrackTheme(dynamicColor = false) {
                 HomeScreenContent(
                     uiState = HomeUiState.Success(bindingModel),
                     onBookClick = {}
@@ -101,7 +101,7 @@ class HomeScreenshotTest {
     @Test
     fun homeScreen_error() {
         composeTestRule.setContent {
-            MaterialTheme {
+            ReadTrackTheme(dynamicColor = false) {
                 HomeScreenContent(
                     uiState = HomeUiState.Error("エラーが発生しました"),
                     onBookClick = {}

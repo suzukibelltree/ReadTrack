@@ -1,13 +1,13 @@
 package com.belltree.readtrack.screenshot
 
 import android.app.Application
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
 import com.belltree.readtrack.ui.library.LibraryBindingModel
 import com.belltree.readtrack.ui.library.LibraryBookBindingModel
 import com.belltree.readtrack.ui.library.LibraryScreenContent
 import com.belltree.readtrack.ui.library.LibraryUiState
+import com.belltree.readtrack.ui.theme.ReadTrackTheme
 import com.github.takahirom.roborazzi.captureRoboImage
 import org.junit.Rule
 import org.junit.Test
@@ -27,7 +27,7 @@ class LibraryScreenshotTest {
     @Test
     fun libraryScreen_loading() {
         composeTestRule.setContent {
-            MaterialTheme {
+            ReadTrackTheme(dynamicColor = false) {
                 LibraryScreenContent(
                     uiState = LibraryUiState.Loading,
                     onBookClick = {}
@@ -81,7 +81,7 @@ class LibraryScreenshotTest {
             ),
         )
         composeTestRule.setContent {
-            MaterialTheme {
+            ReadTrackTheme(dynamicColor = false) {
                 LibraryScreenContent(
                     uiState = LibraryUiState.Success(LibraryBindingModel(books)),
                     onBookClick = {}
@@ -96,7 +96,7 @@ class LibraryScreenshotTest {
     @Test
     fun libraryScreen_success_empty() {
         composeTestRule.setContent {
-            MaterialTheme {
+            ReadTrackTheme(dynamicColor = false) {
                 LibraryScreenContent(
                     uiState = LibraryUiState.Success(LibraryBindingModel(emptyList())),
                     onBookClick = {}
@@ -111,7 +111,7 @@ class LibraryScreenshotTest {
     @Test
     fun libraryScreen_error() {
         composeTestRule.setContent {
-            MaterialTheme {
+            ReadTrackTheme(dynamicColor = false) {
                 LibraryScreenContent(
                     uiState = LibraryUiState.Error("エラーが発生しました"),
                     onBookClick = {}
