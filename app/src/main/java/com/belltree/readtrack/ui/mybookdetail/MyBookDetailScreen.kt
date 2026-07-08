@@ -68,7 +68,32 @@ fun MyBookScreen(
     }
     val uiState = myBookDetailViewModel.uiState.collectAsStateWithLifecycle()
     val showCompleteDialog = myBookDetailViewModel.showCompleteDialog.collectAsStateWithLifecycle()
-    when (val state = uiState.value) {
+    MyBookScreenContent(
+        bookId = bookId,
+        uiState = uiState.value,
+        showCompleteDialog = showCompleteDialog.value,
+        onUpdateBook = myBookDetailViewModel::updateBook,
+        onInsertLog = myBookDetailViewModel::insertLog,
+        onDeleteBook = myBookDetailViewModel::deleteBook,
+        onOpenCompleteDialog = myBookDetailViewModel::openCompleteDialog,
+        onCloseCompleteDialog = myBookDetailViewModel::closeCompleteDialog,
+        onNavigateToLibrary = { navController.navigate(Route.Library) },
+    )
+}
+
+@Composable
+internal fun MyBookScreenContent(
+    bookId: String,
+    uiState: MyBookDetailUiState,
+    showCompleteDialog: Boolean,
+    onUpdateBook: (progress: Int, readPages: Int, comment: String?, updatedDate: String) -> Unit,
+    onInsertLog: (ReadLog) -> Unit,
+    onDeleteBook: () -> Unit,
+    onOpenCompleteDialog: () -> Unit,
+    onCloseCompleteDialog: () -> Unit,
+    onNavigateToLibrary: () -> Unit,
+) {
+    when (val state = uiState) {
         is MyBookDetailUiState.Loading -> {
             Column(
                 modifier = Modifier.Companion
@@ -342,19 +367,18 @@ fun MyBookScreen(
                                         )
                                             .show()
                                         //ここで変更された本の情報を保存
-                                        myBookDetailViewModel.updateBook(
-                                            progress = when (selectedOption) {
+                                        onUpdateBook(
+                                            when (selectedOption) {
                                                 R.string.read_state_unread -> ReadProgress.UNREAD
                                                 R.string.read_state_reading -> ReadProgress.READING
                                                 else -> ReadProgress.READ
                                             },
-                                            readPages = readPagesCount.toInt(),
-                                            comment = comment,
-                                            updatedDate = formattedDate
-
+                                            readPagesCount.toInt(),
+                                            comment,
+                                            formattedDate
                                         )
                                         // 読了ページ数の差分がある場合は読書記録を更新
-                                        myBookDetailViewModel.insertLog(
+                                        onInsertLog(
                                             ReadLog(
                                                 yearMonthId = currentYearMonthId,
                                                 bookId = bookId,
@@ -370,9 +394,9 @@ fun MyBookScreen(
                                             )
                                         }
                                         if (selectedOption == R.string.read_state_read) {
-                                            myBookDetailViewModel.openCompleteDialog()
+                                            onOpenCompleteDialog()
                                         } else {
-                                            navController.navigate(Route.Library)
+                                            onNavigateToLibrary()
                                         }
                                     }
                                 },
@@ -404,16 +428,16 @@ fun MyBookScreen(
                         onDismiss = {
                             showDeleteDialog = false
                         },
-                        onDelete = { myBookDetailViewModel.deleteBook() },
-                        onBack = { navController.navigate(Route.Library) }
+                        onDelete = { onDeleteBook() },
+                        onBack = { onNavigateToLibrary() }
                     )
                 }
-                if (showCompleteDialog.value) {
+                if (showCompleteDialog) {
                     CompleteBookDialog(
                         bookThumbnailUrl = book.thumbnail ?: "",
                         onDismissRequest = {
-                            myBookDetailViewModel.closeCompleteDialog()
-                            navController.navigate(Route.Library)
+                            onCloseCompleteDialog()
+                            onNavigateToLibrary()
                         },
                         onPostToX = {
                             postToX(book.title, context)

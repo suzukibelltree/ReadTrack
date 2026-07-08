@@ -53,7 +53,18 @@ fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState = homeViewModel.uiState.collectAsStateWithLifecycle()
-    when (val state = uiState.value) {
+    HomeScreenContent(
+        uiState = uiState.value,
+        onBookClick = { bookId -> navController.navigate(Route.MyBook(bookId)) }
+    )
+}
+
+@Composable
+internal fun HomeScreenContent(
+    uiState: HomeUiState,
+    onBookClick: (String) -> Unit,
+) {
+    when (val state = uiState) {
         is HomeUiState.Loading -> {
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -89,7 +100,7 @@ fun HomeScreen(
                 if (bindingModel.recentlyReadBook != null) {
                     MiniBookCard(
                         book = bindingModel.recentlyReadBook,
-                        onClick = { bookId -> navController.navigate(Route.MyBook(bookId)) },
+                        onClick = { bookId -> onBookClick(bookId) },
                         message = stringResource(
                             R.string.home_last_updatedDate,
                             bindingModel.recentlyReadBook.updatedDate
@@ -109,7 +120,7 @@ fun HomeScreen(
                 if (bindingModel.newlyAddedBook != null) {
                     MiniBookCard(
                         book = bindingModel.newlyAddedBook,
-                        onClick = { bookId -> navController.navigate(Route.MyBook(bookId)) },
+                        onClick = { bookId -> onBookClick(bookId) },
                         message = stringResource(
                             R.string.home_new_addedDate,
                             bindingModel.newlyAddedBook.registeredDate

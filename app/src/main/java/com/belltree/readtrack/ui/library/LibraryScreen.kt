@@ -48,9 +48,20 @@ fun LibraryScreen(
     navController: NavController,
     libraryViewModel: LibraryViewModel = hiltViewModel(),
 ) {
+    val uiState = libraryViewModel.uiState.collectAsState()
+    LibraryScreenContent(
+        uiState = uiState.value,
+        onBookClick = { bookId -> navController.navigate(Route.MyBook(bookId)) }
+    )
+}
+
+@Composable
+internal fun LibraryScreenContent(
+    uiState: LibraryUiState,
+    onBookClick: (String) -> Unit,
+) {
     val configuration = LocalConfiguration.current
     val screenWidthDp = configuration.screenWidthDp.dp
-    val uiState = libraryViewModel.uiState.collectAsState()
     val pagerState = rememberPagerState(initialPage = 0) { 3 }
     val scope = rememberCoroutineScope()
     val textColor = AppColors.textColor
@@ -103,7 +114,7 @@ fun LibraryScreen(
                 }
             )
         }
-        when (val state = uiState.value) {
+        when (val state = uiState) {
             is LibraryUiState.Loading -> {
                 Column(
                     modifier = Modifier.Companion
@@ -138,7 +149,7 @@ fun LibraryScreen(
                                                 .height(120.dp)
                                                 .padding(16.dp)
                                                 .clickable {
-                                                    navController.navigate(Route.MyBook(book.id))
+                                                    onBookClick(book.id)
                                                 }
                                         )
                                     } else {
@@ -150,7 +161,7 @@ fun LibraryScreen(
                                                 .height(120.dp)
                                                 .padding(16.dp)
                                                 .clickable {
-                                                    navController.navigate(Route.MyBook(book.id))
+                                                    onBookClick(book.id)
                                                 }
                                         )
                                     }
