@@ -52,7 +52,17 @@ app/src/main/java/com/belltree/readtrack/
 - ViewModels expose `StateFlow<UiState>` where `UiState` is a sealed class with `Loading`, `Success`, `Error` variants.
 - All data access flows through UseCases; ViewModels never touch repositories directly.
 - DI is Hilt throughout; `@HiltViewModel` on every ViewModel.
-- Navigation uses string-based routes defined in the `navigation/` package.
+- Navigation uses type-safe routes: `@Serializable sealed interface Route` in `ui/navigation/ReadTrackScreen.kt`.
+- Screens never receive domain models directly; each screen defines a `BindingModel` + `Converter` (see `.claude/skills/architecture/SKILL.md`).
+
+## Development Guidelines (Skills)
+
+Project-specific implementation rules live in `.claude/skills/`:
+- `general` — 前提・出力形式(レビュー時/実装時)・Git運用
+- `architecture` — レイヤー規約、BindingModel/Converter、UseCase規約
+- `state-management` — UiState設計、イベント処理、文言のリソースID規約
+- `compose-ui` — Screen/Content分離、components配置、Preview方針
+- `testing` — テスト作成基準・配置規約・Roborazzi運用
 
 ## Testing Patterns
 
