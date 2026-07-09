@@ -24,7 +24,7 @@ data class Error(@StringRes val messageResId: Int) : XxxUiState
 
 ### 一時イベント(Snackbar 表示・ナビゲーション指示など)
 
-- SharedFlow / Channel は使わず、**UiState に含める方針**で統一する
+- SharedFlow / Channel は(新規実装では)使わず、**UiState に含める方針**を推奨する（既存は `SettingViewModel.scheduleEvent` 等で SharedFlow を使用しているため段階的に移行）
 - UI 側で消費したら、ViewModel のメソッド(例: `consumeEvent()`)を呼んでクリアする
 
 ## レビュー観点
