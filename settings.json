@@ -1,11 +1,10 @@
 {
   "skills": [
-    "claude/skills/00_general.md",
-    "claude/skills/01_output.md",
-    "claude/skills/architecture.md",
-    "claude/skills/compose.md",
-    "claude/skills/state.md",
-    "claude/skills/test.md"
+    ".claude/skills/general/SKILL.md",
+    ".claude/skills/architecture/SKILL.md",
+    ".claude/skills/compose-ui/SKILL.md",
+    ".claude/skills/state-management/SKILL.md",
+    ".claude/skills/testing/SKILL.md"
   ],
   "permissions": {
     "allow": [
