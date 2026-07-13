@@ -77,6 +77,13 @@
     <string name="search_failed">検索に失敗しました</string>
     <string name="search_unknown">不明</string>
     <string name="search_no_result">そのキーワードが含まれる書籍は見つかりませんでした。</string>
+    <string name="search_no_result_title">見つかりませんでした</string>
+    <string name="search_register_manually_button">手動で登録する</string>
+    <string name="search_hint_title">読みたい本を探しましょう</string>
+    <string name="search_hint_message">書名やキーワードで検索できます</string>
+    <string name="search_author">著者：%s</string>
+    <string name="search_publisher">出版社：%s</string>
+    <string name="search_clear">入力をクリア</string>
     <string name="search_failed_next_page">次ページの読み込みに失敗しました。</string>
     <string name="barcode_scan_result">スキャン結果: %s</string>
     <string name="barcode_scanner_direction">書籍背面のバーコードをスキャンしてください</string>

@@ -78,6 +78,13 @@
     <string name="search_failed">Search failed.</string>
     <string name="search_unknown">Unknown</string>
     <string name="search_no_result">No books found with that keyword.</string>
+    <string name="search_no_result_title">No results found</string>
+    <string name="search_register_manually_button">Register manually</string>
+    <string name="search_hint_title">Find your next book</string>
+    <string name="search_hint_message">Search by title or keyword</string>
+    <string name="search_author">Author: %s</string>
+    <string name="search_publisher">Publisher: %s</string>
+    <string name="search_clear">Clear input</string>
     <string name="search_failed_next_page">Failed to load next page.</string>
     <string name="barcode_scan_result">Scanned value: %s</string>
     <string name="barcode_scanner_direction">Look at the back of the book\'\s barcode to scan.</string>
