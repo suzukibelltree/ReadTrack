@@ -3,6 +3,7 @@ package com.belltree.readtrack.screenshot
 import android.app.Application
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
+import com.belltree.readtrack.R
 import com.belltree.readtrack.domain.model.ReadLogByMonth
 import com.belltree.readtrack.ui.home.HomeBindingModel
 import com.belltree.readtrack.ui.home.HomeBookBindingModel
@@ -31,7 +32,9 @@ class HomeScreenshotTest {
             ReadTrackTheme(dynamicColor = false) {
                 HomeScreenContent(
                     uiState = HomeUiState.Loading,
-                    onBookClick = {}
+                    onBookClick = {},
+                    onRegisterClick = {},
+                    onRetry = {}
                 )
             }
         }
@@ -68,7 +71,9 @@ class HomeScreenshotTest {
             ReadTrackTheme(dynamicColor = false) {
                 HomeScreenContent(
                     uiState = HomeUiState.Success(bindingModel),
-                    onBookClick = {}
+                    onBookClick = {},
+                    onRegisterClick = {},
+                    onRetry = {}
                 )
             }
         }
@@ -89,7 +94,9 @@ class HomeScreenshotTest {
             ReadTrackTheme(dynamicColor = false) {
                 HomeScreenContent(
                     uiState = HomeUiState.Success(bindingModel),
-                    onBookClick = {}
+                    onBookClick = {},
+                    onRegisterClick = {},
+                    onRetry = {}
                 )
             }
         }
@@ -103,8 +110,10 @@ class HomeScreenshotTest {
         composeTestRule.setContent {
             ReadTrackTheme(dynamicColor = false) {
                 HomeScreenContent(
-                    uiState = HomeUiState.Error("エラーが発生しました"),
-                    onBookClick = {}
+                    uiState = HomeUiState.Error(R.string.home_error_load),
+                    onBookClick = {},
+                    onRegisterClick = {},
+                    onRetry = {}
                 )
             }
         }

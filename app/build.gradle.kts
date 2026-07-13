@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -10,6 +12,14 @@ plugins {
     alias(libs.plugins.roborazzi)
 }
 
+// ローカルビルド用: local.properties の API_KEY を読む(CI では環境変数を使用)
+val localProperties = Properties().apply {
+    val file = rootProject.file("local.properties")
+    if (file.exists()) {
+        file.inputStream().use { load(it) }
+    }
+}
+
 android {
     namespace = "com.belltree.readtrack"
     compileSdk = 35
@@ -18,14 +28,14 @@ android {
         applicationId = "com.belltree.readtrack"
         minSdk = 26
         targetSdk = 35
-        versionCode = 23
-        versionName = "1.0.22"
+        versionCode = 24
+        versionName = "1.0.23"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField(
             "String",
             "API_KEY",
-            "\"${System.getenv("API_KEY") ?: ""}\""
+            "\"${localProperties.getProperty("API_KEY") ?: System.getenv("API_KEY") ?: ""}\""
         )
     }
 

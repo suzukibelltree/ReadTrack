@@ -455,7 +455,7 @@ internal fun MyBookScreenContent(
                 horizontalAlignment = Alignment.Companion.CenterHorizontally,
             ) {
                 Text(
-                    text = "エラーが発生しました",
+                    text = stringResource(state.messageResId),
                 )
             }
         }

@@ -3,6 +3,7 @@ package com.belltree.readtrack.screenshot
 import android.app.Application
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
+import com.belltree.readtrack.R
 import com.belltree.readtrack.ui.library.LibraryBindingModel
 import com.belltree.readtrack.ui.library.LibraryBookBindingModel
 import com.belltree.readtrack.ui.library.LibraryScreenContent
@@ -30,7 +31,8 @@ class LibraryScreenshotTest {
             ReadTrackTheme(dynamicColor = false) {
                 LibraryScreenContent(
                     uiState = LibraryUiState.Loading,
-                    onBookClick = {}
+                    onBookClick = {},
+                    onRegisterClick = {}
                 )
             }
         }
@@ -45,6 +47,7 @@ class LibraryScreenshotTest {
         val books = listOf(
             LibraryBookBindingModel(
                 id = "1",
+                title = "Kotlin実践入門",
                 progress = 0,
                 thumbnail = null,
                 pageCount = 300,
@@ -54,6 +57,7 @@ class LibraryScreenshotTest {
             ),
             LibraryBookBindingModel(
                 id = "2",
+                title = "Jetpack Composeによるモダンアプリ開発",
                 progress = 0,
                 thumbnail = null,
                 pageCount = null,
@@ -63,6 +67,7 @@ class LibraryScreenshotTest {
             ),
             LibraryBookBindingModel(
                 id = "3",
+                title = "Clean Architecture",
                 progress = 0,
                 thumbnail = null,
                 pageCount = 250,
@@ -72,6 +77,7 @@ class LibraryScreenshotTest {
             ),
             LibraryBookBindingModel(
                 id = "4",
+                title = "リーダブルコード",
                 progress = 1,
                 thumbnail = null,
                 pageCount = 200,
@@ -84,7 +90,8 @@ class LibraryScreenshotTest {
             ReadTrackTheme(dynamicColor = false) {
                 LibraryScreenContent(
                     uiState = LibraryUiState.Success(LibraryBindingModel(books)),
-                    onBookClick = {}
+                    onBookClick = {},
+                    onRegisterClick = {}
                 )
             }
         }
@@ -99,7 +106,8 @@ class LibraryScreenshotTest {
             ReadTrackTheme(dynamicColor = false) {
                 LibraryScreenContent(
                     uiState = LibraryUiState.Success(LibraryBindingModel(emptyList())),
-                    onBookClick = {}
+                    onBookClick = {},
+                    onRegisterClick = {}
                 )
             }
         }
@@ -113,8 +121,9 @@ class LibraryScreenshotTest {
         composeTestRule.setContent {
             ReadTrackTheme(dynamicColor = false) {
                 LibraryScreenContent(
-                    uiState = LibraryUiState.Error("エラーが発生しました"),
-                    onBookClick = {}
+                    uiState = LibraryUiState.Error(R.string.library_error_load),
+                    onBookClick = {},
+                    onRegisterClick = {}
                 )
             }
         }
