@@ -1,5 +1,6 @@
 package com.belltree.readtrack.ui.mybookdetail
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.belltree.readtrack.domain.model.BookData
@@ -26,7 +27,7 @@ import javax.inject.Inject
 sealed interface MyBookDetailUiState {
     data object Loading : MyBookDetailUiState
     data class Success(val bindingModel: MyBookDetailBindingModel) : MyBookDetailUiState
-    data class Error(val message: String) : MyBookDetailUiState
+    data class Error(@StringRes val messageResId: Int) : MyBookDetailUiState
 }
 
 @HiltViewModel

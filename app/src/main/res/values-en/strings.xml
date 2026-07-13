@@ -40,6 +40,12 @@
     <string name="home_pageCount">Page count</string>
     <string name="home_yearMonth">Year/Month</string>
     <string name="home_initialBookCard">Book not registered yet</string>
+    <string name="home_welcome_title">Welcome to ReadTrack!</string>
+    <string name="home_welcome_message">Register your first book to start tracking your reading</string>
+    <string name="home_register_button">Register a book</string>
+    <string name="home_graph_placeholder">Log your reading to see a monthly graph here</string>
+    <string name="home_error_load">Failed to load home data</string>
+    <string name="common_retry">Retry</string>
     <string name="myBook_publishedDate">Publication date: %s</string>
     <string name="myBook_addedDate">Date added to library \n %s</string>
     <string name="myBook_updatedDate">Last Updated Date \n %s</string>
@@ -55,6 +61,7 @@
     <string name="myBook_readLogPages">Page count: %2s</string>
     <string name="myBook_page_isnull">Please enter the page count</string>
     <string name="myBook_page_cannot_decrease">The number of pages read cannot be decreased</string>
+    <string name="myBook_error_load">Failed to load book details</string>
     <string name="library_empty_unread_title">No unread books</string>
     <string name="library_empty_unread_message">Register your first book to start tracking your reading</string>
     <string name="library_empty_register_button">Register a book</string>

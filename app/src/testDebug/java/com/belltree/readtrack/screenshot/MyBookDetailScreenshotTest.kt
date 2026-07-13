@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
 import com.belltree.readtrack.domain.model.ReadLog
+import com.belltree.readtrack.R
 import com.belltree.readtrack.ui.mybookdetail.MyBookDetailBindingModel
 import com.belltree.readtrack.ui.mybookdetail.MyBookDetailBookBindingModel
 import com.belltree.readtrack.ui.mybookdetail.MyBookDetailUiState
@@ -115,7 +116,7 @@ class MyBookDetailScreenshotTest {
 
     @Test
     fun myBookDetailScreen_error() {
-        setContent(MyBookDetailUiState.Error("エラーが発生しました"))
+        setContent(MyBookDetailUiState.Error(R.string.myBook_error_load))
         composeTestRule.onRoot().captureRoboImage(
             "src/test/snapshots/images/MyBookDetailScreen_error.png"
         )

@@ -132,26 +132,32 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `emits Error with exception message when use case throws`() = runTest {
+    fun `emits Error with message resource id when use case throws`() = runTest {
         coEvery { getHomeStaticsUseCase() } throws RuntimeException("network error")
         val viewModel = HomeViewModel(getHomeStaticsUseCase)
 
         viewModel.uiState.test {
             awaitItem() // Loading
             val state = awaitItem() as HomeUiState.Error
-            assertEquals("network error", state.message)
+            assertEquals(R.string.home_error_load, state.messageResId)
         }
     }
 
     @Test
-    fun `emits Error with fallback message when exception has no message`() = runTest {
-        coEvery { getHomeStaticsUseCase() } throws RuntimeException()
+    fun `retry emits Loading then Success after error when use case recovers`() = runTest {
+        coEvery { getHomeStaticsUseCase() } throws RuntimeException("network error")
         val viewModel = HomeViewModel(getHomeStaticsUseCase)
 
         viewModel.uiState.test {
             awaitItem() // Loading
-            val state = awaitItem() as HomeUiState.Error
-            assertEquals("Unknown Error", state.message)
+            assertTrue(awaitItem() is HomeUiState.Error)
+
+            coEvery { getHomeStaticsUseCase() } returns buildHomeStatics(numOfReadBooks = 2)
+            viewModel.retry()
+
+            assertTrue(awaitItem() is HomeUiState.Loading)
+            val state = awaitItem() as HomeUiState.Success
+            assertEquals(2, state.bindingModel.numOfReadBooks)
         }
     }
 }

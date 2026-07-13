@@ -39,6 +39,12 @@
     <string name="home_pageCount">ページ数</string>
     <string name="home_yearMonth">年/月</string>
     <string name="home_initialBookCard">書籍がまだ登録されていません</string>
+    <string name="home_welcome_title">ReadTrackへようこそ！</string>
+    <string name="home_welcome_message">最初の1冊を登録して、読書の記録を始めましょう</string>
+    <string name="home_register_button">本を登録する</string>
+    <string name="home_graph_placeholder">読書を記録すると、月ごとの読書量がグラフで表示されます</string>
+    <string name="home_error_load">ホームの情報を読み込めませんでした</string>
+    <string name="common_retry">再試行</string>
     <string name="myBook_publishedDate">出版日： %s </string>
     <string name="myBook_addedDate">ライブラリに追加した日時 \n　%s </string>
     <string name="myBook_updatedDate">最終更新日時 \n %s</string>
@@ -54,6 +60,7 @@
     <string name="myBook_readLogPages">ページ数： %2s</string>
     <string name="myBook_page_isnull">ページ数を入力してください</string>
     <string name="myBook_page_cannot_decrease">読了ページ数は減らせません</string>
+    <string name="myBook_error_load">本の情報を読み込めませんでした</string>
     <string name="library_empty_unread_title">未読の本はありません</string>
     <string name="library_empty_unread_message">最初の1冊を登録して、読書の記録を始めましょう</string>
     <string name="library_empty_register_button">本を登録する</string>
