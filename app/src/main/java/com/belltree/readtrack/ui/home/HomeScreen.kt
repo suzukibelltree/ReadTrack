@@ -1,28 +1,56 @@
 package com.belltree.readtrack.ui.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.outlined.AutoStories
+import androidx.compose.material.icons.outlined.BarChart
+import androidx.compose.material.icons.outlined.ErrorOutline
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -52,10 +80,12 @@ fun HomeScreen(
     navController: NavController,
     homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
-    val uiState = homeViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
     HomeScreenContent(
-        uiState = uiState.value,
-        onBookClick = { bookId -> navController.navigate(Route.MyBook(bookId)) }
+        uiState = uiState,
+        onBookClick = { bookId -> navController.navigate(Route.MyBook(bookId)) },
+        onRegisterClick = { navController.navigate(Route.RegisterProcess) },
+        onRetry = homeViewModel::retry,
     )
 }
 
@@ -63,40 +93,107 @@ fun HomeScreen(
 internal fun HomeScreenContent(
     uiState: HomeUiState,
     onBookClick: (String) -> Unit,
+    onRegisterClick: () -> Unit,
+    onRetry: () -> Unit,
 ) {
-    when (val state = uiState) {
-        is HomeUiState.Loading -> {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.Companion.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                CircularProgressIndicator()
+    Crossfade(
+        targetState = uiState,
+        label = "HomeContent"
+    ) { state ->
+        when (state) {
+            is HomeUiState.Loading -> {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+
+            is HomeUiState.Success -> {
+                val bindingModel = state.bindingModel
+                if (bindingModel.isLibraryEmpty) {
+                    HomeWelcomeContent(onRegisterClick = onRegisterClick)
+                } else {
+                    HomeSuccessContent(
+                        bindingModel = bindingModel,
+                        onBookClick = onBookClick,
+                    )
+                }
+            }
+
+            is HomeUiState.Error -> {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(32.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.ErrorOutline,
+                        contentDescription = null,
+                        modifier = Modifier.size(48.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = stringResource(state.messageResId),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Button(onClick = onRetry) {
+                        Text(text = stringResource(R.string.common_retry))
+                    }
+                }
             }
         }
+    }
+}
 
-        is HomeUiState.Success -> {
-            val bindingModel = state.bindingModel
-            Column(
-                horizontalAlignment = Alignment.Companion.CenterHorizontally
-            ) {
-                Text(
-                    text = stringResource(
-                        R.string.home_number_of_FinishedBooks,
-                        bindingModel.numOfReadBooks
-                    ),
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Companion.Bold,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
-                Text(
-                    text = stringResource(R.string.home_last_updatedBook),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Companion.Bold,
-                    modifier = Modifier.Companion
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                )
+/**
+ * 本が1冊以上登録されているときのホーム画面本体
+ * 各セクションを下からのスライドイン + フェードインで段階的に表示する
+ * @param bindingModel ホーム画面のバインディングモデル
+ * @param onBookClick 本がクリックされたときの処理
+ */
+@Composable
+private fun HomeSuccessContent(
+    bindingModel: HomeBindingModel,
+    onBookClick: (String) -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        SectionEntrance(order = 0) {
+            // 読了冊数を0から現在値までカウントアップして表示する
+            var countUpStarted by remember { mutableStateOf(false) }
+            LaunchedEffect(Unit) {
+                countUpStarted = true
+            }
+            val animatedNumOfReadBooks by animateIntAsState(
+                targetValue = if (countUpStarted) bindingModel.numOfReadBooks else 0,
+                animationSpec = tween(durationMillis = 800),
+                label = "NumOfReadBooks"
+            )
+            Text(
+                text = stringResource(
+                    R.string.home_number_of_FinishedBooks,
+                    animatedNumOfReadBooks
+                ),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
+        SectionEntrance(order = 1) {
+            Column {
+                HomeSectionTitle(titleResId = R.string.home_last_updatedBook)
                 if (bindingModel.recentlyReadBook != null) {
                     MiniBookCard(
                         book = bindingModel.recentlyReadBook,
@@ -109,14 +206,11 @@ internal fun HomeScreenContent(
                 } else {
                     InitialMiniBookCard()
                 }
-                Text(
-                    text = stringResource(R.string.home_new_addedBook),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Companion.Bold,
-                    modifier = Modifier.Companion
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                )
+            }
+        }
+        SectionEntrance(order = 2) {
+            Column {
+                HomeSectionTitle(titleResId = R.string.home_new_addedBook)
                 if (bindingModel.newlyAddedBook != null) {
                     MiniBookCard(
                         book = bindingModel.newlyAddedBook,
@@ -129,25 +223,100 @@ internal fun HomeScreenContent(
                 } else {
                     InitialMiniBookCard()
                 }
-                ReadLogGraph(readLogs = bindingModel.readLogForGraph)
             }
         }
-
-        is HomeUiState.Error -> {
-            Column(
-                horizontalAlignment = Alignment.Companion.CenterHorizontally,
-            ) {
-                Text(
-                    text = "エラーが発生しました",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Companion.Bold,
-                    modifier = Modifier.Companion
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                )
+        SectionEntrance(order = 3) {
+            if (bindingModel.readLogForGraph.isNotEmpty()) {
+                ReadLogGraph(readLogs = bindingModel.readLogForGraph)
+            } else {
+                ReadLogGraphPlaceholder()
             }
         }
     }
+}
+
+/**
+ * 本が1冊も登録されていないときに表示するウェルカム画面
+ * 最初の1冊の登録へ誘導する
+ * @param onRegisterClick 登録ボタンがクリックされたときの処理
+ */
+@Composable
+private fun HomeWelcomeContent(
+    onRegisterClick: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.AutoStories,
+            contentDescription = null,
+            modifier = Modifier.size(72.dp),
+            tint = MaterialTheme.colorScheme.primary,
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        Text(
+            text = stringResource(R.string.home_welcome_title),
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = stringResource(R.string.home_welcome_message),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        Button(onClick = onRegisterClick) {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp),
+            )
+            Spacer(modifier = Modifier.size(8.dp))
+            Text(text = stringResource(R.string.home_register_button))
+        }
+    }
+}
+
+/**
+ * ホーム画面のセクションを下からのスライドイン + フェードインで表示する
+ * @param order セクションの表示順(0始まり)。順に遅延をかけて段差をつける
+ */
+@Composable
+private fun SectionEntrance(
+    order: Int,
+    content: @Composable () -> Unit,
+) {
+    val visibleState = remember {
+        MutableTransitionState(false).apply { targetState = true }
+    }
+    val delayMillis = order * 80
+    AnimatedVisibility(
+        visibleState = visibleState,
+        enter = fadeIn(tween(durationMillis = 300, delayMillis = delayMillis)) +
+                slideInVertically(
+                    tween(durationMillis = 300, delayMillis = delayMillis)
+                ) { fullHeight -> fullHeight / 4 },
+    ) {
+        content()
+    }
+}
+
+@Composable
+private fun HomeSectionTitle(titleResId: Int) {
+    Text(
+        text = stringResource(titleResId),
+        style = MaterialTheme.typography.titleSmall,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    )
 }
 
 /**
@@ -164,33 +333,48 @@ fun MiniBookCard(
     message: String
 ) {
     Card(
-        modifier = Modifier.Companion
+        onClick = { onClick(book.id) },
+        modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        onClick = { onClick(book.id) }
+            .padding(horizontal = 16.dp, vertical = 4.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
         Row(
-            modifier = Modifier.padding(8.dp)
+            modifier = Modifier.padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             if (book.thumbnail != null) {
                 AsyncImage(
                     model = book.thumbnail,
                     contentDescription = null,
-                    modifier = Modifier.Companion.size(100.dp)
+                    modifier = Modifier
+                        .size(88.dp)
+                        .clip(RoundedCornerShape(8.dp))
                 )
             } else {
                 Image(
                     painter = painterResource(R.drawable.unknown),
                     contentDescription = "thumbnail not found",
-                    modifier = Modifier.Companion.size(100.dp)
+                    modifier = Modifier
+                        .size(88.dp)
+                        .clip(RoundedCornerShape(8.dp))
                 )
             }
+            Spacer(modifier = Modifier.width(12.dp))
             Column {
                 Text(
                     text = book.title,
-                    fontWeight = FontWeight.Companion.Bold
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
                 )
-                Text(text = message)
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = message,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
     }
@@ -202,17 +386,67 @@ fun MiniBookCard(
 @Composable
 fun InitialMiniBookCard() {
     Card(
-        modifier = Modifier.Companion
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 4.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.AutoStories,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                text = stringResource(R.string.home_initialBookCard),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+/**
+ * 読書ログがまだないときにグラフの代わりに表示するプレースホルダ
+ */
+@Composable
+private fun ReadLogGraphPlaceholder() {
+    Column(
+        modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
         Text(
-            text = stringResource(R.string.home_initialBookCard),
-            fontWeight = FontWeight.Companion.Bold,
-            modifier = Modifier.Companion
-                .fillMaxWidth()
-                .padding(16.dp),
+            text = stringResource(R.string.home_readLog),
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold,
         )
+        Spacer(modifier = Modifier.height(8.dp))
+        Card {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.BarChart,
+                    contentDescription = null,
+                    modifier = Modifier.size(40.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = stringResource(R.string.home_graph_placeholder),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
     }
 }
 
@@ -227,13 +461,14 @@ fun ReadLogGraph(
     val context = LocalContext.current
     val themeColor by getValue(context, "theme_color").collectAsState(initial = "")
     Column(
-        modifier = Modifier.Companion
+        modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
         Text(
             text = stringResource(R.string.home_readLog),
-            fontWeight = FontWeight.Companion.Bold,
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold,
         )
         val chartEntryModel = entryModelOf(
             *readLogs.mapIndexed { index, log ->

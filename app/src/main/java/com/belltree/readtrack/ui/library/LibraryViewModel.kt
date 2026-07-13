@@ -1,7 +1,9 @@
 package com.belltree.readtrack.ui.library
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.belltree.readtrack.R
 import com.belltree.readtrack.domain.usecase.GetAllBooksUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +14,7 @@ import javax.inject.Inject
 sealed interface LibraryUiState {
     data object Loading : LibraryUiState
     data class Success(val bindingModel: LibraryBindingModel) : LibraryUiState
-    data class Error(val message: String) : LibraryUiState
+    data class Error(@StringRes val messageResId: Int) : LibraryUiState
 }
 
 
@@ -34,11 +36,17 @@ class LibraryViewModel @Inject constructor(
 
     private fun loadLibraryData() {
         viewModelScope.launch {
-            val savedBooks = getAllBooksUseCase()
-            val newBindingModel = LibraryBindingModelConverter.convertToLibraryBindingModel(
-                savedBooks.map { LibraryBindingModelConverter.convertToLibraryBookBindingModel(it) }
-            )
-            _uiState.value = LibraryUiState.Success(newBindingModel)
+            _uiState.value = try {
+                val savedBooks = getAllBooksUseCase()
+                val newBindingModel = LibraryBindingModelConverter.convertToLibraryBindingModel(
+                    savedBooks.map {
+                        LibraryBindingModelConverter.convertToLibraryBookBindingModel(it)
+                    }
+                )
+                LibraryUiState.Success(newBindingModel)
+            } catch (e: Exception) {
+                LibraryUiState.Error(R.string.library_error_load)
+            }
         }
     }
 }

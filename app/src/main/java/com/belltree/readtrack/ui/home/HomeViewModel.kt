@@ -1,7 +1,9 @@
 package com.belltree.readtrack.ui.home
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.belltree.readtrack.R
 import com.belltree.readtrack.domain.usecase.GetHomeStaticsUseCase
 import com.belltree.readtrack.ui.home.HomeBindingModelConverter.convertToHomeBookBindingModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +18,7 @@ sealed interface HomeUiState {
         val bindingModel: HomeBindingModel
     ) : HomeUiState
 
-    data class Error(val message: String) : HomeUiState
+    data class Error(@StringRes val messageResId: Int) : HomeUiState
 }
 
 /**
@@ -34,6 +36,14 @@ class HomeViewModel @Inject constructor(
         loadHomeData()
     }
 
+    /**
+     * エラー表示からの再読み込み
+     */
+    fun retry() {
+        _uiState.value = HomeUiState.Loading
+        loadHomeData()
+    }
+
     private fun loadHomeData() {
         viewModelScope.launch {
             runCatching {
@@ -46,8 +56,8 @@ class HomeViewModel @Inject constructor(
                     readLogForGraph = summary.recentReadLogs
                 )
                 _uiState.value = HomeUiState.Success(bindingModel)
-            }.onFailure { error ->
-                _uiState.value = HomeUiState.Error(error.localizedMessage ?: "Unknown Error")
+            }.onFailure {
+                _uiState.value = HomeUiState.Error(R.string.home_error_load)
             }
         }
     }
