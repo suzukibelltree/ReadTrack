@@ -9,6 +9,7 @@ data class LibraryBindingModel(
 
 data class LibraryBookBindingModel(
     val id: String,
+    val title: String,
     val progress: Int,
     val thumbnail: String?,
     val pageCount: Int?,

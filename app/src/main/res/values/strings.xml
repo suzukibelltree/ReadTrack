@@ -54,6 +54,14 @@
     <string name="myBook_readLogPages">ページ数： %2s</string>
     <string name="myBook_page_isnull">ページ数を入力してください</string>
     <string name="myBook_page_cannot_decrease">読了ページ数は減らせません</string>
+    <string name="library_empty_unread_title">未読の本はありません</string>
+    <string name="library_empty_unread_message">最初の1冊を登録して、読書の記録を始めましょう</string>
+    <string name="library_empty_register_button">本を登録する</string>
+    <string name="library_empty_reading_title">読書中の本はありません</string>
+    <string name="library_empty_reading_message">本を読み始めたら、状態を「読書中」に変更しましょう</string>
+    <string name="library_empty_read_title">読了した本はありません</string>
+    <string name="library_empty_read_message">読み終えた本がここに並びます</string>
+    <string name="library_error_load">本の読み込みに失敗しました</string>
     <string name="register_process">登録方法を選択してください</string>
     <string name="register_title">タイトルを検索して登録</string>
     <string name="register_barcode">バーコードをスキャンして登録</string>

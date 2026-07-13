@@ -55,6 +55,14 @@
     <string name="myBook_readLogPages">Page count: %2s</string>
     <string name="myBook_page_isnull">Please enter the page count</string>
     <string name="myBook_page_cannot_decrease">The number of pages read cannot be decreased</string>
+    <string name="library_empty_unread_title">No unread books</string>
+    <string name="library_empty_unread_message">Register your first book to start tracking your reading</string>
+    <string name="library_empty_register_button">Register a book</string>
+    <string name="library_empty_reading_title">No books in progress</string>
+    <string name="library_empty_reading_message">Once you start reading a book, set its status to "Reading"</string>
+    <string name="library_empty_read_title">No finished books</string>
+    <string name="library_empty_read_message">Books you finish will appear here</string>
+    <string name="library_error_load">Failed to load your books</string>
     <string name="register_process">Please select a registration method</string>
     <string name="register_title">Search by title to register</string>
     <string name="register_barcode">Register by scanning a barcode</string>

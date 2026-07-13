@@ -16,6 +16,7 @@ object LibraryBindingModelConverter {
     ): LibraryBookBindingModel {
         return LibraryBookBindingModel(
             id = bookData.id,
+            title = bookData.title,
             progress = bookData.progress,
             thumbnail = bookData.thumbnail,
             pageCount = bookData.pageCount,
