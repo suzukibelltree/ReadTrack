@@ -21,4 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "ReadTrack"
 include(":app")
+include(":macrobenchmark")
  
