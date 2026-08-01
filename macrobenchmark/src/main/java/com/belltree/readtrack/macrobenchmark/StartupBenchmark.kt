@@ -38,7 +38,7 @@ class StartupBenchmark {
         benchmarkRule.measureRepeated(
             packageName = TARGET_PACKAGE,
             metrics = listOf(StartupTimingMetric()),
-            iterations = 3,
+            iterations = 5,
             startupMode = startupMode,
             compilationMode = compilationMode,
         ) {

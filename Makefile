@@ -11,4 +11,12 @@ ADB := $(shell command -v adb 2>/dev/null || echo "$(HOME)/Library/Android/sdk/p
 benchmark:
 	@"$(ADB)" devices | grep -q "device$$" || { echo "エラー: 接続中の端末がありません。実機またはエミュレータを接続してください"; exit 1; }
 	$(GRADLEW) :macrobenchmark:connectedBenchmarkAndroidTest
-	@echo "計測結果: macrobenchmark/build/outputs/androidTest-results/connected/"
+	@echo ""
+	@echo "===== 起動時間計測結果 (timeToInitialDisplayMs, ms) ====="
+	@for f in macrobenchmark/build/outputs/connected_android_test_additional_output/benchmark/connected/*/additionaltestoutput.benchmark.message_*.txt; do \
+		name=$$(basename "$$f" .txt | sed 's/^additionaltestoutput\.benchmark\.message_//' | awk -F. '{print $$(NF-1)"."$$NF}'); \
+		stats=$$(grep -oE '(min|median|max) [0-9.]+' "$$f" | paste -sd, - | sed 's/,/, /g'); \
+		printf '%-40s %s\n' "$$name" "$$stats"; \
+	done
+	@echo ""
+	@echo "詳細: macrobenchmark/build/outputs/androidTest-results/connected/"
