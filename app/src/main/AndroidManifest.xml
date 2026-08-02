@@ -52,6 +52,18 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+        <!-- WorkManagerの自動初期化を無効化し、on-demand initialization に切り替える -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
+
         <receiver
             android:name=".ui.widget.MyAppWidgetReceiver"
             android:exported="true">
