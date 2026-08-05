@@ -1,7 +1,27 @@
 # ReadTrack
+
+[![Android CI](https://github.com/suzukibelltree/ReadTrack/actions/workflows/android-ci.yml/badge.svg)](https://github.com/suzukibelltree/ReadTrack/actions/workflows/android-ci.yml)
+[![Android Test](https://github.com/suzukibelltree/ReadTrack/actions/workflows/android-test.yml/badge.svg)](https://github.com/suzukibelltree/ReadTrack/actions/workflows/android-test.yml)
+![Kotlin](https://img.shields.io/badge/Kotlin-2.0.0-7F52FF?logo=kotlin&logoColor=white)
+![minSdk](https://img.shields.io/badge/minSdk-26-brightgreen)
+
 Version: 1.0.23
 
 Last updated: 2026-08-03
+
+## 目次
+
+- [概要](#概要)
+- [デモ](#デモ)
+- [機能、画面の説明](#機能画面の説明)
+- [アーキテクチャ図](#アーキテクチャ図)
+- [技術スタック](#技術スタック)
+- [設計方針](#設計方針)
+- [CI/CD](#cicd)
+- [ポイント](#ポイント)
+- [パフォーマンス改善](#パフォーマンス改善)
+- [今後の改良点](#今後の改良点)
+- [リンク](#リンク)
 
 ## 概要
 
@@ -81,6 +101,14 @@ GitHub Actionsを利用して以下を自動化しています。
 - ライブラリ画面では詳細な情報を表示するよりも直感的な見やすさが重要であると考え、書影と読書の進捗状況を表すバーをLazyVerticalGridで表示するような設計とした。また、それぞれの書籍についてどれだけ放置しているかをすぐに把握できるように書影の下に最終更新日を表示するようにした。
 - アプリを最後に起動してから1週間が経過したら通知を送るようにすることでユーザーの読書週間定着を促すようにした。
 - ユーザーが初めてアプリを起動したかどうかをDatastoreを用いて判断し、初回起動であった場合は設定画面で見られるアプリの使い方に関するダイアログを起動時に表示することで初めてアプリを使う人でもアプリの仕組みが理解しやすいようにした。
+
+## パフォーマンス改善
+
+アプリ起動時間の短縮に取り組みました。詳細は [Qiita記事](https://qiita.com/suzukibelltree/items/53880453c0900fbee200) にまとめています。
+
+- MacroBenchmarkで計測したところ、`Application.onCreate()` 実行前にWorkManagerのContentProvider自動初期化(Roomデータベース構築)が約50ms消費していることをProfilerで特定
+- AndroidManifest.xmlから `WorkManagerInitializer` を削除し、`Configuration.Provider` を実装してWorkManagerを初回利用時にバックグラウンドスレッドで遅延初期化するよう変更
+- 結果、冷起動が722.6ms→603.9ms(約16.4%高速化)、通常起動が657.9ms→555.5ms(約15.6%高速化)を達成
 
 ## 今後の改良点
 
