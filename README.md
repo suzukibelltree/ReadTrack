@@ -5,7 +5,7 @@
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.0.0-7F52FF?logo=kotlin&logoColor=white)
 ![minSdk](https://img.shields.io/badge/minSdk-26-brightgreen)
 
-Version: 1.0.24
+Version: 1.0.25
 
 Last updated: 2026-08-09
 
