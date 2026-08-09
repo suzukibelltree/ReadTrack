@@ -22,7 +22,7 @@ val localProperties = Properties().apply {
 
 android {
     namespace = "com.belltree.readtrack"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.belltree.readtrack"
