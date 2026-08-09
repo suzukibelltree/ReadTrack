@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.belltree.readtrack.macrobenchmark"
-    compileSdk = 35
+    compileSdk = 36
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -17,7 +17,7 @@ android {
 
     defaultConfig {
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         // エミュレータでも計測を実行できるようにする(絶対値は実機で確認すること)

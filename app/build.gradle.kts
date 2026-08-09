@@ -22,12 +22,12 @@ val localProperties = Properties().apply {
 
 android {
     namespace = "com.belltree.readtrack"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.belltree.readtrack"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 25
         versionName = "1.0.24"
 
