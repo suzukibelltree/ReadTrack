@@ -27,7 +27,7 @@ android {
     defaultConfig {
         applicationId = "com.belltree.readtrack"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 25
         versionName = "1.0.24"
 
