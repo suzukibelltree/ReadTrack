@@ -7,7 +7,7 @@
 
 Version: 1.0.25
 
-Last updated: 2026-08-09
+Last updated: 2026-08-16
 
 ## 目次
 
