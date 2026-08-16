@@ -95,9 +95,7 @@ GitHub Actionsを利用して以下を自動化しています。
 
 ## テスト
 
-- ユニットテスト: ViewModel・UseCaseを中心に、MockK(`coEvery`/`coVerify`)でRepository層をモックし、Turbineで`StateFlow`の状態遷移を検証。`kotlinx-coroutines-test`と`MainDispatcherRule`でメインディスパッチャを差し替えて実行。
-- ビジュアルリグレッションテスト: Roborazzi + Robolectricを用いて、ホーム・ライブラリ・書籍検索・書籍情報詳細の4画面でスクリーンショットテストを実施。JVM上でデバイス不要のため、CIでも安定して実行できる。
-- CIでは`./gradlew test`によりユニットテストとVRTの両方をPR作成時に自動実行し、デグレを検知しています。
+- CIではPR作成時に`./gradlew test`でユニットテストを自動実行しています。VRT（Roborazzi）は`./gradlew :app:verifyRoborazziDebug --tests "com.belltree.readtrack.screenshot.*"`で検証できます。
 
 ## ポイント
 
