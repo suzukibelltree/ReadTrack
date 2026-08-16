@@ -18,6 +18,7 @@ Last updated: 2026-08-03
 - [技術スタック](#技術スタック)
 - [設計方針](#設計方針)
 - [CI/CD](#cicd)
+- [テスト](#テスト)
 - [ポイント](#ポイント)
 - [パフォーマンス改善](#パフォーマンス改善)
 - [今後の改良点](#今後の改良点)
@@ -91,6 +92,12 @@ GitHub Actionsを利用して以下を自動化しています。
 - mainブランチpush時
   - APKビルド
   - Google Play Consoleへのリリース更新申請
+
+## テスト
+
+- ユニットテスト: ViewModel・UseCaseを中心に、MockK(`coEvery`/`coVerify`)でRepository層をモックし、Turbineで`StateFlow`の状態遷移を検証。`kotlinx-coroutines-test`と`MainDispatcherRule`でメインディスパッチャを差し替えて実行。
+- ビジュアルリグレッションテスト: Roborazzi + Robolectricを用いて、ホーム・ライブラリ・書籍検索・書籍情報詳細の4画面でスクリーンショットテストを実施。JVM上でデバイス不要のため、CIでも安定して実行できる。
+- CIでは`./gradlew test`によりユニットテストとVRTの両方をPR作成時に自動実行し、デグレを検知しています。
 
 ## ポイント
 
