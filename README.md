@@ -18,6 +18,7 @@ Last updated: 2026-08-09
 - [技術スタック](#技術スタック)
 - [設計方針](#設計方針)
 - [CI/CD](#cicd)
+- [テスト](#テスト)
 - [ポイント](#ポイント)
 - [パフォーマンス改善](#パフォーマンス改善)
 - [今後の改良点](#今後の改良点)
@@ -91,6 +92,10 @@ GitHub Actionsを利用して以下を自動化しています。
 - mainブランチpush時
   - APKビルド
   - Google Play Consoleへのリリース更新申請
+
+## テスト
+
+- CIではPR作成時に`./gradlew test`でユニットテストを自動実行しています。VRT（Roborazzi）は`./gradlew :app:verifyRoborazziDebug --tests "com.belltree.readtrack.screenshot.*"`で検証できます。
 
 ## ポイント
 
