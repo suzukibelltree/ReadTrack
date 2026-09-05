@@ -54,7 +54,7 @@ fun RegisterProcessScreen(
             onClick = { navController.navigate(Route.RegisterManually) },
             modifier = Modifier.Companion.padding(16.dp)
         ) {
-            Text(text = "書籍情報を手動で入力")
+            Text(text = stringResource(R.string.register_manually))
         }
     }
 }

@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -32,6 +33,7 @@ import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.belltree.readtrack.R
 import com.belltree.readtrack.ui.navigation.Route
 import java.io.File
 import java.text.SimpleDateFormat
@@ -55,12 +57,19 @@ fun ManualBookEntryScreen(
         eventFlow.collect { event ->
             when (event) {
                 is ManualBookUiEvent.CameraPermissionDenied -> {
-                    Toast.makeText(context, "カメラの使用が許可されていません", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(
+                        context,
+                        R.string.registerManually_cameraPermissionDenied,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 is ManualBookUiEvent.ThumbnailSelectionCanceled -> {
-                    Toast.makeText(context, "撮影がキャンセルされました", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        R.string.registerManually_captureCanceled,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 is ManualBookUiEvent.BookSaved -> {
@@ -106,45 +115,48 @@ fun ManualBookEntryScreen(
             .verticalScroll(scrollState)
     ) {
         Text(
-            text = "書籍情報を入力してください",
+            text = stringResource(R.string.registerManually_enterBookInfo),
             modifier = Modifier.Companion.padding(vertical = 16.dp)
         )
 
         LabeledTextField(
             value = formState.title,
             onValueChange = viewModel::updateTitle,
-            label = "タイトル(入力必須)",
+            label = stringResource(R.string.registerManually_title_label),
             isError = formState.title.isBlank()
         )
 
         LabeledTextField(
             value = formState.author,
             onValueChange = viewModel::updateAuthor,
-            label = "著者名"
+            label = stringResource(R.string.registerManually_author_label)
         )
 
         LabeledTextField(
             value = formState.publisher,
             onValueChange = viewModel::updatePublisher,
-            label = "出版社"
+            label = stringResource(R.string.registerManually_publisher_label)
         )
 
         LabeledTextField(
             value = formState.publishedDate,
             onValueChange = viewModel::updatePublishedDate,
-            label = "出版日",
-            placeholder = "例: 2024-10-01"
+            label = stringResource(R.string.registerManually_publishedDate_label),
+            placeholder = stringResource(R.string.registerManually_publishedDate_placeholder)
         )
 
         LabeledTextField(
             value = formState.pageCount,
             onValueChange = viewModel::updatePageCount,
-            label = "ページ数(入力推奨)",
-            placeholder = "例: 300",
+            label = stringResource(R.string.registerManually_pageCount_label),
+            placeholder = stringResource(R.string.registerManually_pageCount_placeholder),
             isNumber = true
         )
 
-        Text("書影画像の撮影", modifier = Modifier.Companion.padding(vertical = 8.dp))
+        Text(
+            stringResource(R.string.registerManually_captureThumbnail_title),
+            modifier = Modifier.Companion.padding(vertical = 8.dp)
+        )
 
         Button(
             onClick = {
@@ -161,13 +173,13 @@ fun ManualBookEntryScreen(
             },
             modifier = Modifier.Companion.fillMaxWidth()
         ) {
-            Text("書影画像を撮影する")
+            Text(stringResource(R.string.registerManually_captureButton))
         }
 
         formState.thumbnail?.let { uri ->
             AsyncImage(
                 model = uri,
-                contentDescription = "撮影された書影画像",
+                contentDescription = stringResource(R.string.registerManually_capturedThumbnail_description),
                 modifier = Modifier.Companion
                     .fillMaxWidth()
                     .padding(16.dp)
@@ -190,7 +202,7 @@ fun ManualBookEntryScreen(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Text("保存")
+            Text(stringResource(R.string.registerManually_saveButton))
         }
     }
 }
