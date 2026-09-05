@@ -355,7 +355,7 @@ fun BookCard(
             if (book.volumeInfo.imageLinks?.thumbnail != null) {
                 AsyncImage(
                     model = book.volumeInfo.imageLinks.thumbnail,
-                    contentDescription = "book thumbnail",
+                    contentDescription = stringResource(R.string.common_book_thumbnail),
                     modifier = Modifier
                         .size(60.dp)
                         .clip(RoundedCornerShape(8.dp))
@@ -363,7 +363,7 @@ fun BookCard(
             } else {
                 Image(
                     painter = painterResource(R.drawable.unknown),
-                    contentDescription = "thumbnail not found",
+                    contentDescription = stringResource(R.string.common_thumbnail_not_found),
                     modifier = Modifier
                         .size(60.dp)
                         .clip(RoundedCornerShape(8.dp))

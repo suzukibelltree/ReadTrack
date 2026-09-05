@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,7 +59,7 @@ fun CompleteBookDialog(
             horizontalAlignment = Alignment.Companion.CenterHorizontally
         ) {
             Text(
-                text = "読了おめでとう！",
+                text = stringResource(R.string.completeBookDialog_congratulations),
                 fontSize = 20.sp,
                 modifier = Modifier.Companion.padding(top = 16.dp)
             )
@@ -83,7 +84,7 @@ fun CompleteBookDialog(
 
 
             Text(
-                text = "読了をXにシェアできます！",
+                text = stringResource(R.string.completeBookDialog_shareMessage),
                 fontSize = 16.sp,
             )
 
@@ -98,7 +99,7 @@ fun CompleteBookDialog(
                     .fillMaxWidth()
                     .padding(8.dp)
             ) {
-                Text("Xに投稿")
+                Text(stringResource(R.string.completeBookDialog_postToX))
             }
 
 
@@ -109,7 +110,7 @@ fun CompleteBookDialog(
                     .padding(8.dp),
 
                 ) {
-                Text("閉じる")
+                Text(stringResource(R.string.completeBookDialog_close))
             }
         }
     }
