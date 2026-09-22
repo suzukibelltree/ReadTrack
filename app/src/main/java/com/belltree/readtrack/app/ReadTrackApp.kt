@@ -91,7 +91,7 @@ fun ReadTrackApp(
                     if (currentRoute !in topLevelRoutes) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "戻る",
+                            contentDescription = stringResource(R.string.app_back_description),
                             modifier = Modifier.Companion
                                 .padding(16.dp)
                                 .size(32.dp)
@@ -122,7 +122,7 @@ fun ReadTrackApp(
                 ) {
                     Image(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Add"
+                        contentDescription = stringResource(R.string.app_add_description)
                     )
                 }
             }

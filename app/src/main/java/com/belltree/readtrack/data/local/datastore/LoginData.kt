@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.belltree.readtrack.R
 import com.belltree.readtrack.app.LoginDataStore
 import com.belltree.readtrack.domain.model.AnimationType
 import com.belltree.readtrack.domain.model.LoginMessageResult
@@ -32,7 +33,7 @@ suspend fun updateLoginInfoAndGenerateMessage(context: Context): LoginMessageRes
         }
         messageResult = when {
             daysDiff == 1L -> LoginMessageResult(
-                message = "${newStreak}日連続のログインです！頑張りましょう！",
+                message = context.getString(R.string.login_streak_message, newStreak),
                 animationType = when (newStreak) {
                     in 1..6 -> AnimationType.STREAK_SMALL
                     in 7..14 -> AnimationType.STREAK_MEDIUM
@@ -41,7 +42,7 @@ suspend fun updateLoginInfoAndGenerateMessage(context: Context): LoginMessageRes
             )
 
             daysDiff > 1L -> LoginMessageResult(
-                message = "${daysDiff}日ぶりのログインです！また頑張りましょう！",
+                message = context.getString(R.string.login_return_message, daysDiff),
                 animationType = AnimationType.RETURN
             )
 

@@ -96,7 +96,7 @@ fun SearchedBookDetailScreen(
                 } else {
                     Image(
                         painter = painterResource(R.drawable.unknown),
-                        contentDescription = "image not found",
+                        contentDescription = stringResource(R.string.bookDetail_image_not_found_description),
                         modifier = Modifier.Companion
                             .fillMaxWidth(0.4f)
                             .padding(16.dp)
@@ -109,12 +109,16 @@ fun SearchedBookDetailScreen(
                         fontWeight = FontWeight.Companion.Bold,
                     )
                     Text(
-                        text = "著者:${bookItem.volumeInfo.authors?.joinToString(", ") ?: "Unknown"}",
+                        text = stringResource(
+                            R.string.bookDetail_author,
+                            bookItem.volumeInfo.authors?.joinToString(", ")
+                                ?: stringResource(R.string.search_unknown)
+                        ),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                     Text(
-                        text = "出版日:${bookItem.volumeInfo.publishedDate.toString()}",
+                        text = stringResource(R.string.bookDetail_publishedDate, bookItem.volumeInfo.publishedDate.toString()),
                     )
                 }
             }
@@ -185,7 +189,7 @@ fun SearchedBookDetailScreen(
                         modifier = Modifier.Companion.padding(8.dp)
                     )
                     if (bookItem.volumeInfo.pageCount == null) {
-                        Text(text = "Unknown")
+                        Text(text = stringResource(R.string.search_unknown))
                     } else {
                         Text(text = bookItem.volumeInfo.pageCount.toString() + stringResource(R.string.bookDetail_page))
                     }
@@ -201,7 +205,7 @@ fun SearchedBookDetailScreen(
                         modifier = Modifier.Companion.padding(8.dp)
                     )
                     if (bookItem.volumeInfo.publisher == null) {
-                        Text(text = "Unknown")
+                        Text(text = stringResource(R.string.search_unknown))
                     } else if (bookItem.volumeInfo.publisher.length > 5) {
                         Text(
                             text = bookItem.volumeInfo.publisher.substring(0, 5) + "..."

@@ -354,7 +354,7 @@ fun MiniBookCard(
             } else {
                 Image(
                     painter = painterResource(R.drawable.unknown),
-                    contentDescription = "thumbnail not found",
+                    contentDescription = stringResource(R.string.common_thumbnail_not_found),
                     modifier = Modifier
                         .size(88.dp)
                         .clip(RoundedCornerShape(8.dp))

@@ -67,16 +67,16 @@ class MyAppWidget @Inject constructor(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (recentBook != null && bitmap != null) {
-                    Text(text = "最近更新された本")
+                    Text(text = context.getString(R.string.widget_recentBook_title))
                     Image(
                         provider = ImageProvider(bitmap),
-                        contentDescription = "最近更新された本のサムネイル",
+                        contentDescription = context.getString(R.string.widget_recentBook_thumbnail_description),
                         modifier = GlanceModifier.width(60.dp)
                             .height(90.dp)
                     )
                     Text(text = recentBook.title, maxLines = 1)
                 } else {
-                    Text("最近更新された本はありません")
+                    Text(context.getString(R.string.widget_no_recentBook))
                 }
             }
         }
