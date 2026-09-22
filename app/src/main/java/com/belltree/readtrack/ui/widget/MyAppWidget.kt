@@ -24,6 +24,7 @@ import androidx.glance.layout.padding
 import androidx.glance.layout.width
 import androidx.glance.text.Text
 import com.belltree.readtrack.MainActivity
+import com.belltree.readtrack.R
 import com.belltree.readtrack.domain.usecase.GetRecentlyUpdatedBookUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
