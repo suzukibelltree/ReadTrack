@@ -49,10 +49,7 @@ class MyAppWidget @Inject constructor(
             }
         }
 
-        val clickAction = if (recentBook != null) {
-            actionStartActivity<MainActivity>(
-                parameters = actionParametersOf(BookIdKey to recentBook.id)
-            )
+    val clickAction = if (recentBook != null && bitmap != null) {
         } else {
             actionStartActivity<MainActivity>()
         }
