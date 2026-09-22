@@ -243,7 +243,7 @@ private fun LibraryBookCard(
                 } else {
                     Image(
                         painter = painterResource(R.drawable.unknown),
-                        contentDescription = "thumbnail not found",
+                        contentDescription = stringResource(R.string.common_thumbnail_not_found),
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Fit,
                     )

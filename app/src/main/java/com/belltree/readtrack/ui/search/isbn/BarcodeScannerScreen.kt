@@ -133,7 +133,7 @@ fun ScanResultDialog(
                 fontSize = 20.sp
             )
         },
-        text = { Text("ISBN: $isbn") },
+        text = { Text(stringResource(R.string.barcode_scan_result, isbn)) },
         confirmButton = {
             TextButton(onClick = onConfirm) {
                 Text(text = stringResource(R.string.barcode_scanner_button))

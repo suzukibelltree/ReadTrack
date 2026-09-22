@@ -9,6 +9,8 @@
     <string name="app_topBar_detail">本の詳細</string>
     <string name="app_topBar_myBook">マイbook</string>
     <string name="app_topBar_registerManually">手動登録</string>
+    <string name="app_back_description">戻る</string>
+    <string name="app_add_description">追加</string>
     <string name="read_state_unread">未読</string>
     <string name="read_state_reading">読書中</string>
     <string name="read_state_read">読了</string>
@@ -29,6 +31,9 @@
     <string name="bookDetail_addButton">ライブラリに追加</string>
     <string name="bookDetail_gotoLibrary">ライブラリで確認</string>
     <string name="bookDetail_alreadyAdded">この本はすでに登録されています</string>
+    <string name="bookDetail_image_not_found_description">画像が見つかりません</string>
+    <string name="bookDetail_author">著者:%s</string>
+    <string name="bookDetail_publishedDate">出版日:%s</string>
     <string name="home_number_of_FinishedBooks">これまでに読了した本：%s 冊</string>
     <string name="home_greeting">%s さん、こんにちは！</string>
     <string name="home_last_updatedBook">最後に更新した本</string>
@@ -45,6 +50,9 @@
     <string name="home_graph_placeholder">読書を記録すると、月ごとの読書量がグラフで表示されます</string>
     <string name="home_error_load">ホームの情報を読み込めませんでした</string>
     <string name="common_retry">再試行</string>
+    <string name="common_ok">OK</string>
+    <string name="common_thumbnail_not_found">サムネイルが見つかりません</string>
+    <string name="common_book_thumbnail">書籍のサムネイル</string>
     <string name="myBook_publishedDate">出版日： %s </string>
     <string name="myBook_addedDate">ライブラリに追加した日時 \n　%s </string>
     <string name="myBook_updatedDate">最終更新日時 \n %s</string>
@@ -61,6 +69,10 @@
     <string name="myBook_page_isnull">ページ数を入力してください</string>
     <string name="myBook_page_cannot_decrease">読了ページ数は減らせません</string>
     <string name="myBook_error_load">本の情報を読み込めませんでした</string>
+    <string name="completeBookDialog_congratulations">読了おめでとう！</string>
+    <string name="completeBookDialog_shareMessage">読了をXにシェアできます！</string>
+    <string name="completeBookDialog_postToX">Xに投稿</string>
+    <string name="completeBookDialog_close">閉じる</string>
     <string name="library_empty_unread_title">未読の本はありません</string>
     <string name="library_empty_unread_message">最初の1冊を登録して、読書の記録を始めましょう</string>
     <string name="library_empty_register_button">本を登録する</string>
@@ -72,6 +84,7 @@
     <string name="register_process">登録方法を選択してください</string>
     <string name="register_title">タイトルを検索して登録</string>
     <string name="register_barcode">バーコードをスキャンして登録</string>
+    <string name="register_manually">書籍情報を手動で入力</string>
     <string name="search_title">タイトルを入力</string>
     <string name="search_button">検索</string>
     <string name="search_failed">検索に失敗しました</string>
@@ -98,6 +111,8 @@
     <string name="setting_theme_color_green">緑</string>
     <string name="setting_how_to_use">このアプリの使い方</string>
     <string name="setting_logout">ログアウト</string>
+    <string name="setting_notification">通知機能の設定</string>
+    <string name="setting_notification_enable">通知を有効にする</string>
     <string name="setting_switch_dark_light">ダークモード/ライトモード切替</string>
     <string name="setting_explain_first_title">1.🔍本を検索してライブラリに追加</string>
     <string name="setting_explain_second_title">2.📚読書状態とページ数を記録</string>
@@ -129,4 +144,28 @@
     <string name="drawer_setting">設定</string>
     <string name="app_notification_title">積読を解消しましょう！</string>
     <string name="app_notification_content">最後の更新から1週間が経過しました！</string>
+    <string name="bottomBar_home">ホーム</string>
+    <string name="bottomBar_library">ライブラリ</string>
+    <string name="bottomBar_setting">設定</string>
+    <string name="registerManually_cameraPermissionDenied">カメラの使用が許可されていません</string>
+    <string name="registerManually_captureCanceled">撮影がキャンセルされました</string>
+    <string name="registerManually_enterBookInfo">書籍情報を入力してください</string>
+    <string name="registerManually_title_label">タイトル(入力必須)</string>
+    <string name="registerManually_author_label">著者名</string>
+    <string name="registerManually_publisher_label">出版社</string>
+    <string name="registerManually_publishedDate_label">出版日</string>
+    <string name="registerManually_publishedDate_placeholder">例: 2024-10-01</string>
+    <string name="registerManually_pageCount_label">ページ数(入力推奨)</string>
+    <string name="registerManually_pageCount_placeholder">例: 300</string>
+    <string name="registerManually_captureThumbnail_title">書影画像の撮影</string>
+    <string name="registerManually_captureButton">書影画像を撮影する</string>
+    <string name="registerManually_capturedThumbnail_description">撮影された書影画像</string>
+    <string name="registerManually_saveButton">保存</string>
+    <string name="widget_recentBook_title">最近更新された本</string>
+    <string name="widget_recentBook_thumbnail_description">最近更新された本のサムネイル</string>
+    <string name="widget_no_recentBook">最近更新された本はありません</string>
+    <string name="widget_openApp">アプリを開く</string>
+    <string name="login_streak_message">%1$d日連続のログインです！頑張りましょう！</string>
+    <string name="login_return_message">%1$d日ぶりのログインです！また頑張りましょう！</string>
+    <string name="postToX_shareMessage">%1$sを読了しました！ #readtrack \nhttps://play.google.com/store/apps/details?id=com.belltree.readtrack</string>
 </resources>

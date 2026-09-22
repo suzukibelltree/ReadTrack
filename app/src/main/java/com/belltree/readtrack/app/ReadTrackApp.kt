@@ -23,6 +23,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -50,7 +51,10 @@ val Context.LoginDataStore: DataStore<Preferences> by preferencesDataStore(name 
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReadTrackApp() {
+fun ReadTrackApp(
+    pendingDeepLinkBookId: String? = null,
+    onDeepLinkHandled: () -> Unit = {},
+) {
     val navController = rememberNavController()
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route?.substringAfter("Route.")
@@ -63,6 +67,13 @@ fun ReadTrackApp() {
         Route.Library.toString(),
         Route.Setting.toString()
     )
+
+    LaunchedEffect(pendingDeepLinkBookId) {
+        if (pendingDeepLinkBookId != null) {
+            navController.navigate(Route.MyBook(pendingDeepLinkBookId))
+            onDeepLinkHandled()
+        }
+    }
     Scaffold(
         modifier = Modifier.Companion
             .fillMaxSize()
@@ -80,7 +91,7 @@ fun ReadTrackApp() {
                     if (currentRoute !in topLevelRoutes) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "戻る",
+                            contentDescription = stringResource(R.string.app_back_description),
                             modifier = Modifier.Companion
                                 .padding(16.dp)
                                 .size(32.dp)
@@ -111,7 +122,7 @@ fun ReadTrackApp() {
                 ) {
                     Image(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Add"
+                        contentDescription = stringResource(R.string.app_add_description)
                     )
                 }
             }

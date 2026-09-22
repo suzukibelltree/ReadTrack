@@ -141,7 +141,7 @@ fun SettingScreen(
         Column {
             var notificationMenuExpand by remember { mutableStateOf(false) }
             Text(
-                text = "通知機能の設定",
+                text = stringResource(R.string.setting_notification),
                 fontSize = 20.sp,
                 modifier = Modifier.Companion
                     .fillMaxWidth()
@@ -153,7 +153,7 @@ fun SettingScreen(
             AnimatedVisibility(notificationMenuExpand) {
                 Row {
                     Text(
-                        text = "通知を有効にする",
+                        text = stringResource(R.string.setting_notification_enable),
                         fontSize = 16.sp,
                         modifier = Modifier.Companion
                             .weight(1f)

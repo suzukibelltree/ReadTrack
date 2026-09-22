@@ -11,8 +11,10 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.belltree.readtrack.R
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -22,9 +24,9 @@ fun BottomBar(
     containerColor: androidx.compose.ui.graphics.Color
 ) {
     val items = listOf(
-        BottomNavItem(Route.Home, Icons.Default.Home, "ホーム"),
-        BottomNavItem(Route.Library, Icons.Default.MenuBook, "ライブラリ"),
-        BottomNavItem(Route.Setting, Icons.Default.Settings, "設定")
+        BottomNavItem(Route.Home, Icons.Default.Home, stringResource(R.string.bottomBar_home)),
+        BottomNavItem(Route.Library, Icons.Default.MenuBook, stringResource(R.string.bottomBar_library)),
+        BottomNavItem(Route.Setting, Icons.Default.Settings, stringResource(R.string.bottomBar_setting))
     )
     val currentBackStackEntry = navController.currentBackStackEntryAsState().value
     val currentRouteString = currentBackStackEntry?.destination?.route

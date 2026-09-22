@@ -4,10 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import com.belltree.readtrack.R
 
 fun postToX(bookTitle: String, context: Context) {
-    val message =
-        "${bookTitle}を読了しました！ #readtrack \nhttps://play.google.com/store/apps/details?id=com.belltree.readtrack"
+    val message = context.getString(R.string.postToX_shareMessage, bookTitle)
 
     val tweetIntent = Intent(Intent.ACTION_SEND).apply {
         setType("text/plain")
