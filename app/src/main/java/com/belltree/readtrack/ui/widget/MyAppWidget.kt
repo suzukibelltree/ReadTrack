@@ -5,12 +5,14 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.glance.Button
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.Image
 import androidx.glance.ImageProvider
+import androidx.glance.action.ActionParameters
+import androidx.glance.action.actionParametersOf
 import androidx.glance.action.actionStartActivity
+import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
@@ -22,19 +24,22 @@ import androidx.glance.layout.padding
 import androidx.glance.layout.width
 import androidx.glance.text.Text
 import com.belltree.readtrack.MainActivity
-import com.belltree.readtrack.data.repository.DatabaseBooksRepository
+import com.belltree.readtrack.domain.usecase.GetRecentlyUpdatedBookUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.net.URL
 import javax.inject.Inject
 
 class MyAppWidget @Inject constructor(
-    private val repository: DatabaseBooksRepository
+    private val getRecentlyUpdatedBookUseCase: GetRecentlyUpdatedBookUseCase
 ) : GlanceAppWidget() {
 
+    companion object {
+        val BookIdKey = ActionParameters.Key<String>(MainActivity.EXTRA_BOOK_ID)
+    }
+
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val books = repository.getAllBooks()
-        val recentBook = books.maxByOrNull { it.updatedDate }
+        val recentBook = getRecentlyUpdatedBookUseCase()
 
         val bitmap: Bitmap? = recentBook?.let {
             withContext(Dispatchers.IO) {
@@ -43,12 +48,21 @@ class MyAppWidget @Inject constructor(
             }
         }
 
+        val clickAction = if (recentBook != null) {
+            actionStartActivity<MainActivity>(
+                parameters = actionParametersOf(BookIdKey to recentBook.id)
+            )
+        } else {
+            actionStartActivity<MainActivity>()
+        }
+
         provideContent {
             Column(
                 modifier = GlanceModifier
                     .fillMaxSize()
                     .padding(8.dp)
-                    .background(Color.White),
+                    .background(Color.White)
+                    .clickable(clickAction),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -64,11 +78,6 @@ class MyAppWidget @Inject constructor(
                 } else {
                     Text("最近更新された本はありません")
                 }
-
-                Button(
-                    text = "アプリを開く",
-                    onClick = actionStartActivity<MainActivity>()
-                )
             }
         }
     }
