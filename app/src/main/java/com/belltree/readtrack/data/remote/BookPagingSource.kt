@@ -18,9 +18,9 @@ class BookPagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, BookItem> {
         return try {
-            val page = params.key ?: 0
+            // keyはAPIのstartIndex(取得済み件数)。初回とそれ以降でloadSizeが異なっても重複しない
+            val startIndex = params.key ?: 0
             val limit = params.loadSize
-            val startIndex = page * limit
             val response = bookApiService.searchBooks(
                 query = query,
                 apiKey = apiKey,
@@ -31,8 +31,8 @@ class BookPagingSource(
 
             LoadResult.Page(
                 data = items,
-                prevKey = if (page == 0) null else page - 1,
-                nextKey = if (items.isEmpty()) null else page + 1
+                prevKey = if (startIndex == 0) null else maxOf(0, startIndex - limit),
+                nextKey = if (items.isEmpty()) null else startIndex + items.size
             )
         } catch (e: Exception) {
             LoadResult.Error(e)
@@ -41,8 +41,7 @@ class BookPagingSource(
 
     override fun getRefreshKey(state: PagingState<Int, BookItem>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
-            state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
-                ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
+            maxOf(0, anchorPosition - state.config.initialLoadSize / 2)
         }
     }
 }

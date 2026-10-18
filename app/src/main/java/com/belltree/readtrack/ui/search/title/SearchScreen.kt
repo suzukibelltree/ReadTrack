@@ -55,7 +55,6 @@ import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
 import com.belltree.readtrack.R
 import com.belltree.readtrack.domain.model.BookItem
@@ -234,7 +233,8 @@ private fun SearchResultList(
     ) {
         items(
             count = books.itemCount,
-            key = books.itemKey { it.id },
+            // APIが別ページで同一idを返すことがあるため、indexを付けてキーの重複を防ぐ
+            key = { index -> "${books.peek(index)?.id}_$index" },
         ) { index ->
             books[index]?.let { book ->
                 BookCard(
