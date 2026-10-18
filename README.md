@@ -37,7 +37,7 @@ ReadTrackは読書の記録を管理するためのアプリです。
 
 ## デモ
 
-<video src="https://github.com/user-attachments/assets/ba53c7dc-af3d-48ee-9e7a-0d5e5a72a9cb" controls width="600" />
+<video src="https://github.com/user-attachments/assets/ba53c7dc-af3d-48ee-9e7a-0d5e5a72a9cb" controls width="600"></video>
 
 ## 機能、画面の説明
 
