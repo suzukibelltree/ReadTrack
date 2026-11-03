@@ -3,6 +3,7 @@ package com.belltree.readtrack.core.notification
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
@@ -34,6 +35,8 @@ fun showNotification(context: Context) {
     val notificationId = 1
 
     val builder = NotificationCompat.Builder(context, channelId)
+        .setContentIntent(createLaunchAppPendingIntent(context)) // タップでアプリを開く
+        .setAutoCancel(true) // タップ後に通知を消す
         .setSmallIcon(R.drawable.frame) // アイコン
         .setContentTitle(context.getString(R.string.app_notification_title)) // 通知のタイトル
         .setContentText(context.getString(R.string.app_notification_content)) // 通知の内容
@@ -48,4 +51,19 @@ fun showNotification(context: Context) {
         return
     }
     notificationManager.notify(notificationId, builder.build())
+}
+
+/**
+ * アプリを開くPendingIntentを作成する
+ * ランチャーと同じIntentを使うことで、起動中のタスクがあればそのまま前面に戻す
+ */
+private fun createLaunchAppPendingIntent(context: Context): PendingIntent? {
+    val launchIntent = context.packageManager.getLaunchIntentForPackage(context.packageName)
+        ?: return null
+    return PendingIntent.getActivity(
+        context,
+        0,
+        launchIntent,
+        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+    )
 }
