@@ -48,7 +48,8 @@ class MyBookDetailScreenshotTest {
     fun myBookDetailScreen_loading() {
         setContent(MyBookDetailUiState.Loading)
         composeTestRule.onRoot().captureRoboImage(
-            "src/test/snapshots/images/MyBookDetailScreen_loading.png"
+            "src/test/snapshots/images/MyBookDetailScreen_loading.png",
+            roborazziOptions = screenshotRoborazziOptions
         )
     }
 
@@ -86,7 +87,8 @@ class MyBookDetailScreenshotTest {
         )
         setContent(MyBookDetailUiState.Success(bindingModel))
         composeTestRule.onRoot().captureRoboImage(
-            "src/test/snapshots/images/MyBookDetailScreen_success_reading.png"
+            "src/test/snapshots/images/MyBookDetailScreen_success_reading.png",
+            roborazziOptions = screenshotRoborazziOptions
         )
     }
 
@@ -110,7 +112,8 @@ class MyBookDetailScreenshotTest {
         )
         setContent(MyBookDetailUiState.Success(bindingModel))
         composeTestRule.onRoot().captureRoboImage(
-            "src/test/snapshots/images/MyBookDetailScreen_success_noPageCount.png"
+            "src/test/snapshots/images/MyBookDetailScreen_success_noPageCount.png",
+            roborazziOptions = screenshotRoborazziOptions
         )
     }
 
@@ -118,7 +121,8 @@ class MyBookDetailScreenshotTest {
     fun myBookDetailScreen_error() {
         setContent(MyBookDetailUiState.Error(R.string.myBook_error_load))
         composeTestRule.onRoot().captureRoboImage(
-            "src/test/snapshots/images/MyBookDetailScreen_error.png"
+            "src/test/snapshots/images/MyBookDetailScreen_error.png",
+            roborazziOptions = screenshotRoborazziOptions
         )
     }
 }

@@ -37,7 +37,8 @@ class LibraryScreenshotTest {
             }
         }
         composeTestRule.onRoot().captureRoboImage(
-            "src/test/snapshots/images/LibraryScreen_loading.png"
+            "src/test/snapshots/images/LibraryScreen_loading.png",
+            roborazziOptions = screenshotRoborazziOptions
         )
     }
 
@@ -96,7 +97,8 @@ class LibraryScreenshotTest {
             }
         }
         composeTestRule.onRoot().captureRoboImage(
-            "src/test/snapshots/images/LibraryScreen_success_withBooks.png"
+            "src/test/snapshots/images/LibraryScreen_success_withBooks.png",
+            roborazziOptions = screenshotRoborazziOptions
         )
     }
 
@@ -112,7 +114,8 @@ class LibraryScreenshotTest {
             }
         }
         composeTestRule.onRoot().captureRoboImage(
-            "src/test/snapshots/images/LibraryScreen_success_empty.png"
+            "src/test/snapshots/images/LibraryScreen_success_empty.png",
+            roborazziOptions = screenshotRoborazziOptions
         )
     }
 
@@ -128,7 +131,8 @@ class LibraryScreenshotTest {
             }
         }
         composeTestRule.onRoot().captureRoboImage(
-            "src/test/snapshots/images/LibraryScreen_error.png"
+            "src/test/snapshots/images/LibraryScreen_error.png",
+            roborazziOptions = screenshotRoborazziOptions
         )
     }
 }

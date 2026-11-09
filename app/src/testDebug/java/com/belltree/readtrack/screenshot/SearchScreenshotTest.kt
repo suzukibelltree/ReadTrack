@@ -76,7 +76,8 @@ class SearchScreenshotTest {
     fun searchScreen_hint() {
         setContent(query = "", hasSearched = false, books = emptyList())
         composeTestRule.onRoot().captureRoboImage(
-            "src/test/snapshots/images/SearchScreen_hint.png"
+            "src/test/snapshots/images/SearchScreen_hint.png",
+            roborazziOptions = screenshotRoborazziOptions
         )
     }
 
@@ -84,7 +85,8 @@ class SearchScreenshotTest {
     fun searchScreen_noResult() {
         setContent(query = "存在しない本", hasSearched = true, books = emptyList())
         composeTestRule.onRoot().captureRoboImage(
-            "src/test/snapshots/images/SearchScreen_noResult.png"
+            "src/test/snapshots/images/SearchScreen_noResult.png",
+            roborazziOptions = screenshotRoborazziOptions
         )
     }
 
@@ -100,7 +102,8 @@ class SearchScreenshotTest {
             )
         )
         composeTestRule.onRoot().captureRoboImage(
-            "src/test/snapshots/images/SearchScreen_results.png"
+            "src/test/snapshots/images/SearchScreen_results.png",
+            roborazziOptions = screenshotRoborazziOptions
         )
     }
 }

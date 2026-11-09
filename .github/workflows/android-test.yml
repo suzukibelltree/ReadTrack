@@ -29,5 +29,17 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Run unit tests
-        run: ./gradlew test
+      # ユニットテストに加え、スクリーンショットテストをゴールデン画像と比較検証する
+      - name: Run unit tests with screenshot verification
+        run: ./gradlew test -Proborazzi.test.verify=true
+
+      # VRT で差分が出た場合、比較画像とレポートを確認できるようにアップロードする
+      - name: Upload screenshot diff
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: roborazzi-diff
+          path: |
+            app/build/outputs/roborazzi
+            app/build/reports/roborazzi
+          retention-days: 7
