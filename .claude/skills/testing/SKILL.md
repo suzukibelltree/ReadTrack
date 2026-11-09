@@ -45,6 +45,7 @@ description: テストの作成基準・配置規約・記法、スクリーン�
 
 - CI で差分が出るとジョブが失敗し、比較画像が Artifact `roborazzi-diff` にアップロードされる。意図した UI 変更なら record し直したゴールデン画像を commit する
 
+- `captureRoboImage` には `roborazziOptions = screenshotRoborazziOptions` を必ず渡す(macOS で撮ったゴールデン画像と CI(Linux)の画像とのアンチエイリアスの差を許容するため。`ScreenshotTestOptions.kt` 参照)
 - `@Config(application = Application::class)` が必須(`ReadTrackApplication.onCreate()` が WorkManager を起動しようとするため)
 - テスト対象は ViewModel に依存しない stateless な `XxxScreenContent` にする
 - `thumbnail = null` にして Coil のネットワーク呼び出しを回避する

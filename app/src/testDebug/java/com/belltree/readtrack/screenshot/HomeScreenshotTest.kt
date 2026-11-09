@@ -39,7 +39,8 @@ class HomeScreenshotTest {
             }
         }
         composeTestRule.onRoot().captureRoboImage(
-            "src/test/snapshots/images/HomeScreen_loading.png"
+            "src/test/snapshots/images/HomeScreen_loading.png",
+            roborazziOptions = screenshotRoborazziOptions
         )
     }
 
@@ -78,7 +79,8 @@ class HomeScreenshotTest {
             }
         }
         composeTestRule.onRoot().captureRoboImage(
-            "src/test/snapshots/images/HomeScreen_success_withBooks.png"
+            "src/test/snapshots/images/HomeScreen_success_withBooks.png",
+            roborazziOptions = screenshotRoborazziOptions
         )
     }
 
@@ -101,7 +103,8 @@ class HomeScreenshotTest {
             }
         }
         composeTestRule.onRoot().captureRoboImage(
-            "src/test/snapshots/images/HomeScreen_success_empty.png"
+            "src/test/snapshots/images/HomeScreen_success_empty.png",
+            roborazziOptions = screenshotRoborazziOptions
         )
     }
 
@@ -118,7 +121,8 @@ class HomeScreenshotTest {
             }
         }
         composeTestRule.onRoot().captureRoboImage(
-            "src/test/snapshots/images/HomeScreen_error.png"
+            "src/test/snapshots/images/HomeScreen_error.png",
+            roborazziOptions = screenshotRoborazziOptions
         )
     }
 }
