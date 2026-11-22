@@ -13,8 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.belltree.readtrack.R
 
 @Composable
 fun ImagePreviewOverlay(
@@ -27,12 +30,16 @@ fun ImagePreviewOverlay(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black.copy(alpha = 0.5f))
-            .clickable(onClick = onDismiss),
+            .clickable(
+                role = Role.Button,
+                onClickLabel = stringResource(R.string.a11y_close_image),
+                onClick = onDismiss,
+            ),
         contentAlignment = Alignment.Center
     ) {
         AsyncImage(
             model = imageUrl,
-            contentDescription = null,
+            contentDescription = stringResource(R.string.common_book_thumbnail),
             contentScale = ContentScale.Fit,
             modifier = Modifier
                 .fillMaxWidth()

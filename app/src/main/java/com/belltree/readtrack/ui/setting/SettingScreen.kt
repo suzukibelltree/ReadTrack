@@ -39,6 +39,7 @@ import com.belltree.readtrack.R
 import com.belltree.readtrack.core.notification.scheduleBookUpdateCheck
 import com.belltree.readtrack.data.local.datastore.getValue
 import com.belltree.readtrack.data.local.datastore.saveValue
+import com.belltree.readtrack.ui.components.expandToggle
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -76,8 +77,11 @@ fun SettingScreen(
                 fontSize = 20.sp,
                 modifier = Modifier.Companion
                     .fillMaxWidth()
+                    .expandToggle(
+                        expanded = themeMenuExpand,
+                        onToggle = { themeMenuExpand = !themeMenuExpand },
+                    )
                     .padding(16.dp)
-                    .clickable { themeMenuExpand = !themeMenuExpand }
             )
             AnimatedVisibility(themeMenuExpand) {
                 val colorOptions = listOf(
@@ -132,10 +136,10 @@ fun SettingScreen(
             fontSize = 20.sp,
             modifier = Modifier.Companion
                 .fillMaxWidth()
-                .padding(16.dp)
-                .clickable {
+                .clickable(role = Role.Button) {
                     showExplainDialog = true
                 }
+                .padding(16.dp)
         )
         HorizontalDivider()
         Column {
@@ -145,10 +149,11 @@ fun SettingScreen(
                 fontSize = 20.sp,
                 modifier = Modifier.Companion
                     .fillMaxWidth()
+                    .expandToggle(
+                        expanded = notificationMenuExpand,
+                        onToggle = { notificationMenuExpand = !notificationMenuExpand },
+                    )
                     .padding(16.dp)
-                    .clickable {
-                        notificationMenuExpand = !notificationMenuExpand
-                    }
             )
             AnimatedVisibility(notificationMenuExpand) {
                 Row {

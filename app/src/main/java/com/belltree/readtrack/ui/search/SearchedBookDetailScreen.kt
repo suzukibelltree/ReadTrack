@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -43,6 +44,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.belltree.readtrack.R
+import com.belltree.readtrack.ui.components.expandToggle
 import com.belltree.readtrack.ui.navigation.Route
 import kotlinx.coroutines.launch
 
@@ -87,10 +89,13 @@ fun SearchedBookDetailScreen(
                 if (bookItem.volumeInfo.imageLinks != null) {
                     AsyncImage(
                         model = bookItem.volumeInfo.imageLinks.thumbnail,
-                        contentDescription = null,
+                        contentDescription = stringResource(R.string.common_book_thumbnail),
                         modifier = Modifier.Companion
                             .fillMaxWidth(0.4f)
-                            .clickable { showImagePreview = true }
+                            .clickable(
+                                role = Role.Button,
+                                onClickLabel = stringResource(R.string.a11y_enlarge_image),
+                            ) { showImagePreview = true }
                             .padding(16.dp)
                     )
                 } else {
@@ -166,7 +171,10 @@ fun SearchedBookDetailScreen(
                                     ),
                                     fontWeight = FontWeight.Companion.ExtraBold,
                                     modifier = Modifier.Companion
-                                        .clickable { isExpanded = !isExpanded }
+                                        .expandToggle(
+                                            expanded = isExpanded,
+                                            onToggle = { isExpanded = !isExpanded },
+                                        )
                                         .padding(end = 16.dp)
                                 )
                             }
