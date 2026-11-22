@@ -49,6 +49,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -60,6 +62,7 @@ import coil.compose.AsyncImage
 import com.belltree.readtrack.R
 import com.belltree.readtrack.ui.navigation.Route
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 /**
  * ライブラリ画面
@@ -269,15 +272,20 @@ private fun LibraryBookCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 if (book.pageCount != null && book.pageCount != 0) {
+                    val progress = ((book.readPages ?: 0).toFloat() / book.pageCount.toFloat())
+                        .coerceIn(0f, 1f)
+                    // バーの長さだけでは進捗が伝わらないため、割合を読み上げ用の状態として付与する
+                    val progressDescription = stringResource(
+                        R.string.a11y_reading_progress,
+                        (progress * 100).roundToInt(),
+                    )
                     Spacer(modifier = Modifier.height(6.dp))
                     LinearProgressIndicator(
-                        progress = {
-                            ((book.readPages ?: 0).toFloat() / book.pageCount.toFloat())
-                                .coerceIn(0f, 1f)
-                        },
+                        progress = { progress },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(2.dp)),
+                            .clip(RoundedCornerShape(2.dp))
+                            .semantics { stateDescription = progressDescription },
                     )
                 }
             }

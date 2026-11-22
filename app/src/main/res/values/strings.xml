@@ -168,4 +168,9 @@
     <string name="login_streak_message">%1$d日連続のログインです！頑張りましょう！</string>
     <string name="login_return_message">%1$d日ぶりのログインです！また頑張りましょう！</string>
     <string name="postToX_shareMessage">%1$sを読了しました！ #readtrack \nhttps://play.google.com/store/apps/details?id=com.belltree.readtrack</string>
+    <!-- アクセシビリティ -->
+    <string name="a11y_reading_progress">読書進捗 %1$d%%</string>
+    <string name="a11y_readLog_graph">月別の読書ページ数のグラフ。%1$s</string>
+    <string name="a11y_readLog_graph_item">%1$s %2$dページ</string>
+    <string name="a11y_list_separator">、</string>
 </resources>

@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -152,7 +153,7 @@ internal fun MyBookScreenContent(
                             } else {
                                 Image(
                                     painter = painterResource(R.drawable.unknown),
-                                    contentDescription = "thumbnail not found",
+                                    contentDescription = stringResource(R.string.common_thumbnail_not_found),
                                     modifier = Modifier.Companion.size(100.dp)
                                 )
                             }
@@ -300,8 +301,11 @@ internal fun MyBookScreenContent(
                                         contentAlignment = Alignment.Companion.Center
                                     ) {
                                         val log = selectedBookReadLog[index]
+                                        // 日付とページ数を1つのまとまりとして読み上げさせる
                                         Row(
-                                            modifier = Modifier.Companion.padding(vertical = 4.dp)
+                                            modifier = Modifier.Companion
+                                                .padding(vertical = 4.dp)
+                                                .semantics(mergeDescendants = true) {}
                                         ) {
                                             Text(
                                                 text = stringResource(
