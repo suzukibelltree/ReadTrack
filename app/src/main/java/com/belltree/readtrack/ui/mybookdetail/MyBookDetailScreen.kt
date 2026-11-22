@@ -18,6 +18,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,7 +39,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -164,7 +164,7 @@ internal fun MyBookScreenContent(
                             ) {
                                 Text(
                                     text = book.title,
-                                    fontSize = 20.sp,
+                                    style = MaterialTheme.typography.titleLarge,
                                     fontWeight = FontWeight.Companion.Bold,
                                 )
                                 Text(
@@ -312,7 +312,7 @@ internal fun MyBookScreenContent(
                                                     R.string.myBook_readLogDate,
                                                     log.recordedAt
                                                 ),
-                                                fontSize = 16.sp,
+                                                style = MaterialTheme.typography.bodyLarge,
                                                 modifier = Modifier.Companion.padding(horizontal = 8.dp)
                                             )
                                             Text(
@@ -320,7 +320,7 @@ internal fun MyBookScreenContent(
                                                     R.string.myBook_readLogPages,
                                                     log.readPages
                                                 ),
-                                                fontSize = 16.sp,
+                                                style = MaterialTheme.typography.bodyLarge,
                                                 modifier = Modifier.Companion.padding(horizontal = 8.dp)
                                             )
                                         }
