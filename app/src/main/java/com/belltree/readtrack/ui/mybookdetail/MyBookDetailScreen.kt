@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -196,14 +197,14 @@ internal fun MyBookScreenContent(
                                 modifier = Modifier.Companion
                                     .padding(8.dp)
                                     .fillMaxWidth()
-                                    .align(Alignment.Companion.CenterHorizontally),
+                                    .align(Alignment.Companion.CenterHorizontally)
+                                    .selectableGroup(),
                                 horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
                                 ReadStateCard(
                                     progress = ReadProgress.UNREAD,
                                     icon = R.drawable.frame,
-                                    contentDescription = stringResource(R.string.read_state_unread),
-                                    selectedOption = selectedOption,
+                                    selected = selectedOption == R.string.read_state_unread,
                                     onProgressChange = {
                                         selectedOption = R.string.read_state_unread
                                         readPagesCount = "0"
@@ -211,8 +212,7 @@ internal fun MyBookScreenContent(
                                 ReadStateCard(
                                     progress = ReadProgress.READING,
                                     icon = R.drawable.reading,
-                                    contentDescription = stringResource(R.string.read_state_reading),
-                                    selectedOption = selectedOption,
+                                    selected = selectedOption == R.string.read_state_reading,
                                     onProgressChange = {
                                         selectedOption = R.string.read_state_reading
                                     }
@@ -220,8 +220,7 @@ internal fun MyBookScreenContent(
                                 ReadStateCard(
                                     progress = ReadProgress.READ,
                                     icon = R.drawable.finished,
-                                    contentDescription = stringResource(R.string.read_state_read),
-                                    selectedOption = selectedOption,
+                                    selected = selectedOption == R.string.read_state_read,
                                     onProgressChange = {
                                         selectedOption = R.string.read_state_read
                                         readPagesCount = book.pageCount.toString()
