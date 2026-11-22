@@ -22,7 +22,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.airbnb.lottie.compose.LottieAnimation
@@ -60,7 +59,7 @@ fun CompleteBookDialog(
         ) {
             Text(
                 text = stringResource(R.string.completeBookDialog_congratulations),
-                fontSize = 20.sp,
+                style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.Companion.padding(top = 16.dp)
             )
 
@@ -85,7 +84,7 @@ fun CompleteBookDialog(
 
             Text(
                 text = stringResource(R.string.completeBookDialog_shareMessage),
-                fontSize = 16.sp,
+                style = MaterialTheme.typography.bodyLarge,
             )
 
             Spacer(modifier = Modifier.Companion.height(20.dp))

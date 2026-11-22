@@ -31,7 +31,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.work.WorkManager
@@ -39,6 +38,7 @@ import com.belltree.readtrack.R
 import com.belltree.readtrack.core.notification.scheduleBookUpdateCheck
 import com.belltree.readtrack.data.local.datastore.getValue
 import com.belltree.readtrack.data.local.datastore.saveValue
+import com.belltree.readtrack.ui.components.expandToggle
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -73,11 +73,14 @@ fun SettingScreen(
             var themeMenuExpand by remember { mutableStateOf(false) }
             Text(
                 text = stringResource(R.string.setting_theme_color),
-                fontSize = 20.sp,
+                style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.Companion
                     .fillMaxWidth()
+                    .expandToggle(
+                        expanded = themeMenuExpand,
+                        onToggle = { themeMenuExpand = !themeMenuExpand },
+                    )
                     .padding(16.dp)
-                    .clickable { themeMenuExpand = !themeMenuExpand }
             )
             AnimatedVisibility(themeMenuExpand) {
                 val colorOptions = listOf(
@@ -129,32 +132,33 @@ fun SettingScreen(
         HorizontalDivider()
         Text(
             text = stringResource(id = R.string.setting_how_to_use),
-            fontSize = 20.sp,
+            style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.Companion
                 .fillMaxWidth()
-                .padding(16.dp)
-                .clickable {
+                .clickable(role = Role.Button) {
                     showExplainDialog = true
                 }
+                .padding(16.dp)
         )
         HorizontalDivider()
         Column {
             var notificationMenuExpand by remember { mutableStateOf(false) }
             Text(
                 text = stringResource(R.string.setting_notification),
-                fontSize = 20.sp,
+                style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.Companion
                     .fillMaxWidth()
+                    .expandToggle(
+                        expanded = notificationMenuExpand,
+                        onToggle = { notificationMenuExpand = !notificationMenuExpand },
+                    )
                     .padding(16.dp)
-                    .clickable {
-                        notificationMenuExpand = !notificationMenuExpand
-                    }
             )
             AnimatedVisibility(notificationMenuExpand) {
                 Row {
                     Text(
                         text = stringResource(R.string.setting_notification_enable),
-                        fontSize = 16.sp,
+                        style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.Companion
                             .weight(1f)
                             .padding(16.dp)

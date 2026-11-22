@@ -47,6 +47,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -470,6 +472,18 @@ fun ReadLogGraph(
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold,
         )
+        // Vico のグラフは Canvas 描画で TalkBack から読めないため、月別の値を文章化した代替テキストを付ける
+        val graphItemDescriptions = readLogs.map { log ->
+            stringResource(
+                R.string.a11y_readLog_graph_item,
+                convertYearMonthId(log.yearMonthId),
+                log.totalReadPages,
+            )
+        }
+        val graphDescription = stringResource(
+            R.string.a11y_readLog_graph,
+            graphItemDescriptions.joinToString(stringResource(R.string.a11y_list_separator)),
+        )
         val chartEntryModel = entryModelOf(
             *readLogs.mapIndexed { index, log ->
                 index to log.totalReadPages
@@ -485,6 +499,7 @@ fun ReadLogGraph(
                 ),
             ),
             model = chartEntryModel,
+            modifier = Modifier.clearAndSetSemantics { contentDescription = graphDescription },
             startAxis = rememberStartAxis(
                 title = stringResource(R.string.home_pageCount),
                 valueFormatter = { value, _ -> value.toInt().toString() }

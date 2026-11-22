@@ -20,6 +20,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,15 +35,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.text.HtmlCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.belltree.readtrack.R
+import com.belltree.readtrack.ui.components.expandToggle
 import com.belltree.readtrack.ui.navigation.Route
 import kotlinx.coroutines.launch
 
@@ -87,10 +89,13 @@ fun SearchedBookDetailScreen(
                 if (bookItem.volumeInfo.imageLinks != null) {
                     AsyncImage(
                         model = bookItem.volumeInfo.imageLinks.thumbnail,
-                        contentDescription = null,
+                        contentDescription = stringResource(R.string.common_book_thumbnail),
                         modifier = Modifier.Companion
                             .fillMaxWidth(0.4f)
-                            .clickable { showImagePreview = true }
+                            .clickable(
+                                role = Role.Button,
+                                onClickLabel = stringResource(R.string.a11y_enlarge_image),
+                            ) { showImagePreview = true }
                             .padding(16.dp)
                     )
                 } else {
@@ -105,7 +110,7 @@ fun SearchedBookDetailScreen(
                 Column {
                     Text(
                         text = bookItem.volumeInfo.title,
-                        fontSize = 20.sp,
+                        style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Companion.Bold,
                     )
                     Text(
@@ -166,7 +171,10 @@ fun SearchedBookDetailScreen(
                                     ),
                                     fontWeight = FontWeight.Companion.ExtraBold,
                                     modifier = Modifier.Companion
-                                        .clickable { isExpanded = !isExpanded }
+                                        .expandToggle(
+                                            expanded = isExpanded,
+                                            onToggle = { isExpanded = !isExpanded },
+                                        )
                                         .padding(end = 16.dp)
                                 )
                             }
@@ -219,7 +227,7 @@ fun SearchedBookDetailScreen(
             if (isRegistered) {
                 Text(
                     text = stringResource(R.string.bookDetail_alreadyAdded),
-                    fontSize = 20.sp,
+                    style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Companion.Bold,
                     modifier = Modifier.Companion.padding(16.dp)
                 )

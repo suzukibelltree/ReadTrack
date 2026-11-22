@@ -12,11 +12,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,10 +35,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -151,7 +153,7 @@ internal fun MyBookScreenContent(
                             } else {
                                 Image(
                                     painter = painterResource(R.drawable.unknown),
-                                    contentDescription = "thumbnail not found",
+                                    contentDescription = stringResource(R.string.common_thumbnail_not_found),
                                     modifier = Modifier.Companion.size(100.dp)
                                 )
                             }
@@ -162,7 +164,7 @@ internal fun MyBookScreenContent(
                             ) {
                                 Text(
                                     text = book.title,
-                                    fontSize = 20.sp,
+                                    style = MaterialTheme.typography.titleLarge,
                                     fontWeight = FontWeight.Companion.Bold,
                                 )
                                 Text(
@@ -196,14 +198,14 @@ internal fun MyBookScreenContent(
                                 modifier = Modifier.Companion
                                     .padding(8.dp)
                                     .fillMaxWidth()
-                                    .align(Alignment.Companion.CenterHorizontally),
+                                    .align(Alignment.Companion.CenterHorizontally)
+                                    .selectableGroup(),
                                 horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
                                 ReadStateCard(
                                     progress = ReadProgress.UNREAD,
                                     icon = R.drawable.frame,
-                                    contentDescription = stringResource(R.string.read_state_unread),
-                                    selectedOption = selectedOption,
+                                    selected = selectedOption == R.string.read_state_unread,
                                     onProgressChange = {
                                         selectedOption = R.string.read_state_unread
                                         readPagesCount = "0"
@@ -211,8 +213,7 @@ internal fun MyBookScreenContent(
                                 ReadStateCard(
                                     progress = ReadProgress.READING,
                                     icon = R.drawable.reading,
-                                    contentDescription = stringResource(R.string.read_state_reading),
-                                    selectedOption = selectedOption,
+                                    selected = selectedOption == R.string.read_state_reading,
                                     onProgressChange = {
                                         selectedOption = R.string.read_state_reading
                                     }
@@ -220,8 +221,7 @@ internal fun MyBookScreenContent(
                                 ReadStateCard(
                                     progress = ReadProgress.READ,
                                     icon = R.drawable.finished,
-                                    contentDescription = stringResource(R.string.read_state_read),
-                                    selectedOption = selectedOption,
+                                    selected = selectedOption == R.string.read_state_read,
                                     onProgressChange = {
                                         selectedOption = R.string.read_state_read
                                         readPagesCount = book.pageCount.toString()
@@ -301,15 +301,18 @@ internal fun MyBookScreenContent(
                                         contentAlignment = Alignment.Companion.Center
                                     ) {
                                         val log = selectedBookReadLog[index]
+                                        // 日付とページ数を1つのまとまりとして読み上げさせる
                                         Row(
-                                            modifier = Modifier.Companion.padding(vertical = 4.dp)
+                                            modifier = Modifier.Companion
+                                                .padding(vertical = 4.dp)
+                                                .semantics(mergeDescendants = true) {}
                                         ) {
                                             Text(
                                                 text = stringResource(
                                                     R.string.myBook_readLogDate,
                                                     log.recordedAt
                                                 ),
-                                                fontSize = 16.sp,
+                                                style = MaterialTheme.typography.bodyLarge,
                                                 modifier = Modifier.Companion.padding(horizontal = 8.dp)
                                             )
                                             Text(
@@ -317,7 +320,7 @@ internal fun MyBookScreenContent(
                                                     R.string.myBook_readLogPages,
                                                     log.readPages
                                                 ),
-                                                fontSize = 16.sp,
+                                                style = MaterialTheme.typography.bodyLarge,
                                                 modifier = Modifier.Companion.padding(horizontal = 8.dp)
                                             )
                                         }
