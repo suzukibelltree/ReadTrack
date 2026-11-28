@@ -29,6 +29,8 @@
       "Write(**/local.properties)",
       "Read(**/*.jks)",
       "Read(**/*.keystore)",
+      "Edit(**/*.jks)",
+      "Edit(**/*.keystore)",
       "Read(**/google-services.json)",
       "Edit(**/google-services.json)",
       "Write(**/google-services.json)",

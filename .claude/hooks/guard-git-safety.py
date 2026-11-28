@@ -42,7 +42,17 @@ SECRET_PATTERNS = [
 ]
 
 # 秘密ファイルの名前が引数に出ても、中身を読まないので通すコマンド
-SAFE_COMMANDS_FOR_SECRET_PATHS = {"ls", "test", "[", "git"}
+SAFE_COMMANDS_FOR_SECRET_PATHS = {"ls", "test", "["}
+# 同じく、中身を出力しない git のサブコマンド。add / commit は個別の検査で秘密ファイルを止める。
+# show / diff / grep / cat-file / log などは中身を出せるので、ここには入れない
+SAFE_GIT_SUBCOMMANDS_FOR_SECRET_PATHS = {"status", "check-ignore", "ls-files", "rm", "add", "commit"}
+
+# 先頭に付いても、後ろのコマンドをそのまま実行するだけのラッパー
+COMMAND_WRAPPERS = {"env", "command", "nohup", "time", "sudo", "exec"}
+SHELLS = {"bash", "sh", "zsh", "dash"}
+
+# 対象ファイルを引数ではなくファイルから受け取るオプション。パスの検査をすり抜けるので使わせない
+PATHSPEC_FILE_OPTS = ("--pathspec-from-file", "--pathspec-file-nul")
 
 # 値を1つ取る git commit の短いオプション(結合された -am などを解釈するため)
 COMMIT_SHORT_OPTS_WITH_VALUE = set("mFcCt")
@@ -52,11 +62,50 @@ class Block(Exception):
     pass
 
 
-def is_secret_path(path: str) -> bool:
-    base = os.path.basename(path.strip("'\""))
+def is_secret_path(token: str) -> bool:
+    # --file=path や HEAD:path の形でも、末尾のパスで判定する
+    path = token.strip("'\"").rsplit("=", 1)[-1].rsplit(":", 1)[-1]
+    base = os.path.basename(path)
     if base in SECRET_BASENAMES or base.endswith(SECRET_SUFFIXES):
         return True
     return base.endswith(".json") and "service-account" in base
+
+
+def extract_substitutions(command: str):
+    """$(...) とバッククォートの中身を取り出す。シェルはこれらを先に実行するので、中身も検査する。"""
+    found = []
+    i, n = 0, len(command)
+    quote = None
+    while i < n:
+        c = command[i]
+        if quote == "'":
+            if c == "'":
+                quote = None
+        elif c == "\\":
+            i += 1
+        elif c == "'" and quote is None:
+            quote = "'"
+        elif c == '"':
+            quote = None if quote == '"' else '"'
+        elif c == "$" and command.startswith("$(", i):
+            depth, j = 1, i + 2
+            while j < n and depth:
+                if command[j] == "(":
+                    depth += 1
+                elif command[j] == ")":
+                    depth -= 1
+                j += 1
+            found.append(command[i + 2 : j - 1 if depth == 0 else n])
+            i = j
+            continue
+        elif c == "`":
+            end = command.find("`", i + 1)
+            end = n if end == -1 else end
+            found.append(command[i + 1 : end])
+            i = end + 1
+            continue
+        i += 1
+    return found
 
 
 def tokenize(command: str):
@@ -134,6 +183,11 @@ def strip_git_globals(args):
 
 def check_add(args, cwd, pending_adds):
     for a in args:
+        if a.startswith(PATHSPEC_FILE_OPTS):
+            raise Block(
+                f"git add {a} は対象のファイルを検査できないので使えません。"
+                "commit するファイルを1つずつパスで指定してください。"
+            )
         if a in ("-A", "--all", ".", "-u", "--update", "-f", "--force", ":/", "*"):
             raise Block(
                 f"git add {a} は意図しないファイル(.idea の変更や秘密情報など)まで"
@@ -150,6 +204,11 @@ def check_commit(args, cwd, pending_adds):
     paths = []
     while i < len(args):
         a = args[i]
+        if a.startswith(PATHSPEC_FILE_OPTS):
+            raise Block(
+                f"git commit {a} は対象のファイルを検査できないので使えません。"
+                "git add でファイルを1つずつ指定してから commit してください。"
+            )
         if a in ("--no-verify", "-n"):
             raise Block(
                 "--no-verify は使えません。hook や検査が落ちた原因を直してから commit してください。"
@@ -206,7 +265,7 @@ def check_push(args, cwd):
     branch = current_branch(cwd)
     refspecs = []
     for a in args:
-        if a in ("-f", "--force", "--mirror", "-d", "--delete", "--prune") or a.startswith(
+        if a in ("-f", "--force", "--mirror", "--all", "--branches", "-d", "--delete", "--prune") or a.startswith(
             ("--force-with-lease", "--force-if-includes")
         ):
             raise Block(
@@ -242,9 +301,19 @@ def check_push(args, cwd):
 
 
 def check_gh(args, cwd):
-    if len(args) < 2 or args[0] != "pr":
+    # サブコマンドより前に置かれたオプション(-R owner/repo など)を読み飛ばす
+    positional, i = [], 0
+    while i < len(args):
+        a = args[i]
+        if a in ("-R", "--repo", "--hostname"):
+            i += 2
+            continue
+        if not a.startswith("-"):
+            positional.append(a)
+        i += 1
+    if len(positional) < 2 or positional[0] != "pr":
         return
-    sub = args[1]
+    sub = positional[1]
     if sub == "merge":
         raise Block("PR のマージは人が行います。ハーネスは draft PR の作成までにしてください。")
     if sub == "create":
@@ -256,21 +325,44 @@ def check_gh(args, cwd):
             )
 
 
-def check(command: str, cwd: str):
+def check(command: str, cwd: str, depth: int = 0):
+    if depth > 5:
+        raise Block("コマンドの入れ子が深すぎて検査できません。コマンドを分けて実行してください。")
+    for inner in extract_substitutions(command):
+        check(inner, cwd, depth + 1)
+
     pending_adds = []
     for seg in tokenize(command):
-        # 先頭の環境変数の代入(FOO=bar cmd)を読み飛ばす
-        while seg and re.match(r"^[A-Za-z_][A-Za-z0-9_]*=", seg[0]):
+        # 先頭の環境変数の代入(FOO=bar cmd)と、env / nohup などのラッパーを読み飛ばす
+        while seg and (
+            re.match(r"^[A-Za-z_][A-Za-z0-9_]*=", seg[0])
+            or os.path.basename(seg[0]) in COMMAND_WRAPPERS
+        ):
             seg = seg[1:]
         if not seg:
             continue
         cmd, args = os.path.basename(seg[0]), seg[1:]
 
+        # bash -c "..." と eval は、引数の文字列をコマンドとして検査する
+        if cmd in SHELLS and "-c" in args:
+            idx = args.index("-c")
+            if idx + 1 < len(args):
+                check(args[idx + 1], cwd, depth + 1)
+            continue
+        if cmd == "eval":
+            check(" ".join(args), cwd, depth + 1)
+            continue
+
         if cmd == "cd" and args:
             cwd = os.path.normpath(os.path.join(cwd, os.path.expanduser(args[0])))
             continue
 
-        if cmd not in SAFE_COMMANDS_FOR_SECRET_PATHS:
+        if cmd == "git":
+            _, git_sub, _ = strip_git_globals(args)
+            reads_secret = git_sub not in SAFE_GIT_SUBCOMMANDS_FOR_SECRET_PATHS
+        else:
+            reads_secret = cmd not in SAFE_COMMANDS_FOR_SECRET_PATHS
+        if reads_secret:
             hits = [a for a in args if is_secret_path(a)]
             if hits:
                 raise Block(
