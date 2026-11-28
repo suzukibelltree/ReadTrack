@@ -1,0 +1,50 @@
+name: Release Notes Check
+
+# main へのPR(=リリース)時に、Play Console 用リリースノートが更新されているか検証する
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check:
+    name: Verify release notes
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check release notes are updated and within limit
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          NOTES_DIR="app/src/main/play/release-notes"
+          status=0
+
+          for locale in ja-JP en-US; do
+            file="$NOTES_DIR/$locale/default.txt"
+
+            if [ ! -s "$file" ]; then
+              echo "::error file=$file::リリースノートが存在しないか空です"
+              status=1
+              continue
+            fi
+
+            if git diff --quiet "$BASE_SHA" "$HEAD_SHA" -- "$file"; then
+              echo "::error file=$file::リリースノートが前回リリースから更新されていません"
+              status=1
+            fi
+
+            # Google Play の上限は言語ごとに500文字
+            chars=$(LC_ALL=C.UTF-8 wc -m < "$file" | tr -d ' ')
+            if [ "$chars" -gt 500 ]; then
+              echo "::error file=$file::リリースノートが500文字を超えています(${chars}文字)"
+              status=1
+            fi
+          done
+
+          exit $status

@@ -113,5 +113,8 @@ GitHub Actions workflows in `.github/workflows/`:
 - **android-test.yml** — PR: `./gradlew test`
 - **deploy.yml** — push to main: builds release bundle → publishes to Google Play Console
 - **update-readme.yml** — updates README version info
+- **release-notes-check.yml** — PR to main: fails unless `app/src/main/play/release-notes/{ja-JP,en-US}/default.txt` were updated (≤500 chars each)
+
+Release notes shown on Google Play are read by Gradle Play Publisher from `app/src/main/play/release-notes/<locale>/default.txt`. Update them (and bump `versionCode`/`versionName`) before merging develop → main.
 
 Release signing and Play Store credentials are injected via GitHub secrets (`SIGNING_STORE_PASSWORD`, `SIGNING_KEY_ALIAS`, `SIGNING_KEY_PASSWORD`, service account JSON).
