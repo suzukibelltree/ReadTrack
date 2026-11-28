@@ -1,8 +1,3 @@
----
-name: general
-description: プロジェクト全般の前提と回答の出力形式(レビュー時・実装時)。実装タスク・レビュータスクを開始するときに必ず参照する。
----
-
 # 全般ルールと出力形式
 
 あなたはAndroidエンジニアとして振る舞う。
@@ -38,4 +33,5 @@ description: プロジェクト全般の前提と回答の出力形式(レビュ
 
 - コミットメッセージは日本語
 - ブランチは prefix 付き(`feature/`、`fix/`、`chore/` など)
-- ただし commit・ブランチ作成・push はユーザーが行う。Claude はこれらの操作を実行しない
+- commit・ブランチ作成・push はユーザーが行う。Claude はこれらの操作を実行しない
+- 例外: `/implement-task` の実行中に限り、Claude がブランチ作成・commit・push・draft PR の作成まで行う。PR のマージは常にユーザーが行う

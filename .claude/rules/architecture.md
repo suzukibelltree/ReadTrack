@@ -1,6 +1,6 @@
 ---
-name: architecture
-description: Clean Architectureのレイヤー規約、BindingModel/Converterパターン、UseCase作成規約。新規画面の実装・既存画面の改修・UseCase/Repositoryの作成時に必ず参照する。
+paths:
+  - "app/src/main/java/**/*.kt"
 ---
 
 # アーキテクチャ規約

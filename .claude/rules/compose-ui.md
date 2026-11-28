@@ -1,6 +1,7 @@
 ---
-name: compose-ui
-description: Composableの構成規約(Screen/Contentの分離、NavControllerの扱い、components配置、Preview方針)。画面UIの実装・修正時に必ず参照する。
+paths:
+  - "app/src/main/java/**/ui/**/*.kt"
+  - "app/src/testDebug/**/*.kt"
 ---
 
 # Compose UI 規約
