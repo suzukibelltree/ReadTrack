@@ -19,3 +19,7 @@ local.properties
 app/google-services.json
 keystore.jks
 .claude/statusline-command.sh
+
+# Claude Code: 個人ごとの設定と、ハーネスの実行中に作る作業ファイル・worktree
+.claude/settings.local.json
+.claude/worktrees/
