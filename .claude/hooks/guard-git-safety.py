@@ -331,7 +331,8 @@ def check_commit(args, cwd, pending_adds):
 
 def require_branch(cwd, action: str) -> str:
     branch = current_branch(cwd) if cwd else ""
-    if not branch:
+    # detached HEAD(replay モードの worktree など)では rev-parse が "HEAD" を返す
+    if not branch or branch == "HEAD":
         raise Block(
             f"作業ディレクトリかブランチを判定できないので、{action}の安全を確かめられません。"
             "cd を使わずに、リポジトリの中で `git -C <パス>` の形で実行してください。"
