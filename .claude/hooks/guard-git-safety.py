@@ -4,8 +4,25 @@
 止めるときは exit 2 で理由と代わりの手段を stderr に返す。Claude はそれを読んでその場で直して進める。
 hook は Claude のツール呼び出しにだけ効き、人がターミナルで打つコマンドには影響しない。
 
-想定外の入力でこの hook 自体が落ちたときは、作業を止めずに通す(fail-open)。
-CI(claude-review.yml)でもこの設定が読み込まれるため、hook の不具合でレビューを止めないことを優先した。
+## 防ぐ範囲(脅威モデル)
+
+この hook が防ぐのは、Claude の**手違い**(git add -A、force push、秘密ファイルの cat など、
+作業中に自然に書きうる形)。止めた理由を返して、その場で正しい書き方に直させるのが目的。
+
+シェルの構文はすべて解釈できないので、**意図的な回避**までは防がない。例:
+- 変数を経由した参照(p=local.properties; cat "$p")
+- xargs やスクリプトファイルを経由した実行
+- この hook が知らない書き方で、同じ意味になるコマンド
+
+破られてはいけないものは、GitHub 側で強制する:
+- 秘密情報の push: Secret scanning の Push protection(有効)
+- main / develop の force push とブランチの削除: リポジトリの ruleset
+
+## 判定できないとき
+
+- push / PR 作成で、対象のブランチや作業ディレクトリを判定できないときは止める(fail-closed)
+- 想定外の入力でこの hook 自体が落ちたときは、作業を止めずに通す(fail-open)。
+  CI(claude-review.yml)でもこの設定が読み込まれるため、hook の不具合でレビューを止めないことを優先した
 """
 
 import json
@@ -47,9 +64,19 @@ SAFE_COMMANDS_FOR_SECRET_PATHS = {"ls", "test", "["}
 # show / diff / grep / cat-file / log などは中身を出せるので、ここには入れない
 SAFE_GIT_SUBCOMMANDS_FOR_SECRET_PATHS = {"status", "check-ignore", "ls-files", "rm", "add", "commit"}
 
-# 先頭に付いても、後ろのコマンドをそのまま実行するだけのラッパー
-COMMAND_WRAPPERS = {"env", "command", "nohup", "time", "sudo", "exec"}
+# 先頭に付いても、後ろのコマンドをそのまま実行するだけのラッパーと、値を1つ取るそのオプション
+COMMAND_WRAPPERS = {
+    "env": {"-u", "--unset", "-C", "--chdir"},
+    "command": set(),
+    "nohup": set(),
+    "time": {"-f", "--format", "-o", "--output"},
+    "sudo": {"-u", "--user", "-g", "--group", "-h", "--host", "-p", "--prompt", "-C", "-D", "-R", "-T", "-U"},
+    "exec": {"-a"},
+}
+# 後ろのコマンドの前に来ても、実行の意味を変えないシェルの予約語
+SHELL_KEYWORDS = {"if", "then", "else", "elif", "fi", "do", "done", "while", "until", "!", "{", "}"}
 SHELLS = {"bash", "sh", "zsh", "dash"}
+SEPARATOR_CHARS = set(";&|\n()")
 
 # 対象ファイルを引数ではなくファイルから受け取るオプション。パスの検査をすり抜けるので使わせない
 PATHSPEC_FILE_OPTS = ("--pathspec-from-file", "--pathspec-file-nul")
@@ -109,8 +136,8 @@ def extract_substitutions(command: str):
 
 
 def tokenize(command: str):
-    """コマンドを ; && || | & 改行 で区切ったセグメントの列にする。"""
-    lex = shlex.shlex(command, posix=True, punctuation_chars=";&|\n")
+    """コマンドを ; && || | & 改行 ( ) で区切ったセグメントの列にする。"""
+    lex = shlex.shlex(command, posix=True, punctuation_chars=";&|\n()")
     lex.whitespace = " \t\r"
     lex.whitespace_split = True
     try:
@@ -120,7 +147,7 @@ def tokenize(command: str):
         tokens = command.replace("\n", " ; ").split()
     segments, current = [], []
     for tok in tokens:
-        if tok and set(tok) <= set(";&|\n"):
+        if tok and set(tok) <= SEPARATOR_CHARS:
             if current:
                 segments.append(current)
             current = []
@@ -151,6 +178,29 @@ def scan_secrets(text: str):
             if pattern.search(line):
                 found.append(label)
     return sorted(set(found))
+
+
+def is_broad_pathspec(path: str, cwd: str) -> bool:
+    """作業ツリー全体や、まとまったファイルを指す指定か。
+
+    glob(*.json)はシェルが展開した後の実ファイルを hook から見られず、
+    pathspec の特殊記法(:/ や :(glob)…)は git が解釈するので、どちらも明示的なパスとして扱えない。
+    """
+    if any(c in path for c in "*?[") or path.startswith(":"):
+        return True
+    # ".", "./", "../<repo>" など、作業ディレクトリそのものかその親を指すもの
+    resolved = os.path.normpath(os.path.join(cwd, os.path.expanduser(path)))
+    here = os.path.normpath(cwd)
+    return here == resolved or here.startswith(resolved.rstrip(os.sep) + os.sep)
+
+
+def check_explicit_paths(paths, cwd, action: str):
+    broad = [p for p in paths if is_broad_pathspec(p, cwd)]
+    if broad:
+        raise Block(
+            f"{', '.join(broad)} はまとまったファイルを指す指定なので、{action}の対象として使えません"
+            "(.idea の変更や秘密情報が混ざる恐れがあるため)。ファイルを1つずつパスで指定してください。"
+        )
 
 
 def check_secret_paths(paths, action: str):
@@ -195,13 +245,19 @@ def check_add(args, cwd, pending_adds):
                 "commit するファイルを1つずつパスで指定してください。"
             )
     paths = [a for a in args if not a.startswith("-")]
+    check_explicit_paths(paths, cwd, "ステージ")
     check_secret_paths(paths, "ステージ")
     pending_adds.extend((cwd, p) for p in paths)
+
+
+# 値としてファイルを読む git commit のオプション
+COMMIT_FILE_OPTS = {"-F", "--file", "-t", "--template"}
 
 
 def check_commit(args, cwd, pending_adds):
     i = 0
     paths = []
+    read_files = []
     while i < len(args):
         a = args[i]
         if a.startswith(PATHSPEC_FILE_OPTS):
@@ -219,23 +275,35 @@ def check_commit(args, cwd, pending_adds):
                 "git add でファイルを1つずつ指定してから commit してください。"
             )
         if a.startswith("--"):
-            if "=" not in a and a in ("--message", "--file", "--author", "--date", "--template", "--fixup", "--squash", "--reuse-message", "--reedit-message"):
+            name, eq, value = a.partition("=")
+            if name in ("--file", "--template"):
+                if eq:
+                    read_files.append(value)
+                elif i + 1 < len(args):
+                    read_files.append(args[i + 1])
+            if not eq and name in ("--message", "--file", "--author", "--date", "--template", "--fixup", "--squash", "--reuse-message", "--reedit-message"):
                 i += 1
         elif a.startswith("-") and len(a) > 1:
-            for ch in a[1:]:
+            for k, ch in enumerate(a[1:], start=1):
                 if ch == "a":
                     raise Block(
                         f"git commit {a} は -a(変更した全ファイルを含める)を含むので使えません。"
                         "git add でファイルを1つずつ指定してから commit してください。"
                     )
                 if ch in COMMIT_SHORT_OPTS_WITH_VALUE:
-                    if a.endswith(ch):
+                    value = a[k + 1 :]
+                    if not value:
+                        value = args[i + 1] if i + 1 < len(args) else ""
                         i += 1
+                    if "-" + ch in COMMIT_FILE_OPTS:
+                        read_files.append(value)
                     break
         else:
             paths.append(a)
         i += 1
 
+    check_secret_paths(read_files, "commit メッセージとして読み込みに")
+    check_explicit_paths(paths, cwd, "commit")
     check_secret_paths(paths, "commit")
     staged = git(cwd, "diff", "--cached", "--name-only").split()
     check_secret_paths(staged, "commit")
@@ -261,8 +329,19 @@ def check_commit(args, cwd, pending_adds):
         )
 
 
+def require_branch(cwd, action: str) -> str:
+    branch = current_branch(cwd) if cwd else ""
+    # detached HEAD(replay モードの worktree など)では rev-parse が "HEAD" を返す
+    if not branch or branch == "HEAD":
+        raise Block(
+            f"作業ディレクトリかブランチを判定できないので、{action}の安全を確かめられません。"
+            "cd を使わずに、リポジトリの中で `git -C <パス>` の形で実行してください。"
+        )
+    return branch
+
+
 def check_push(args, cwd):
-    branch = current_branch(cwd)
+    branch = require_branch(cwd, "push")
     refspecs = []
     for a in args:
         if a in ("-f", "--force", "--mirror", "--all", "--branches", "-d", "--delete", "--prune") or a.startswith(
@@ -317,7 +396,7 @@ def check_gh(args, cwd):
     if sub == "merge":
         raise Block("PR のマージは人が行います。ハーネスは draft PR の作成までにしてください。")
     if sub == "create":
-        branch = current_branch(cwd)
+        branch = require_branch(cwd, "PR の作成")
         if branch.startswith(REPLAY_PREFIX) or any(REPLAY_PREFIX in a for a in args):
             raise Block(
                 "replay/ ブランチはハーネスの評価用なので PR を作れません。"
@@ -325,7 +404,58 @@ def check_gh(args, cwd):
             )
 
 
-def check(command: str, cwd: str, depth: int = 0):
+def strip_prefixes(seg, cwd, depth):
+    """先頭の環境変数の代入(FOO=bar)、シェルの予約語、env / sudo などのラッパーとそのオプションを読み飛ばす。
+
+    代入の値そのものは追わない(変数を経由した参照は防ぐ範囲の外。冒頭の脅威モデルを参照)。
+    """
+    while seg:
+        head = seg[0]
+        name = os.path.basename(head)
+        if re.match(r"^[A-Za-z_][A-Za-z0-9_]*=", head) or head in SHELL_KEYWORDS:
+            seg = seg[1:]
+            continue
+        if name not in COMMAND_WRAPPERS:
+            break
+        value_opts = COMMAND_WRAPPERS[name]
+        seg = seg[1:]
+        while seg and seg[0].startswith("-") and seg[0] != "-":
+            opt = seg[0]
+            if opt == "--":
+                seg = seg[1:]
+                break
+            if name == "env" and opt in ("-S", "--split-string") and len(seg) > 1:
+                # env -S "git push --force" は文字列を分割して実行する
+                check(seg[1], cwd, depth + 1)
+                return []
+            seg = seg[2:] if opt in value_opts else seg[1:]
+    return seg
+
+
+def resolve_cd(args, cwd):
+    """cd の行き先を返す。判定できないときは None(以降の push などは止まる)。"""
+    if cwd is None:
+        return None
+    targets = []
+    for i, a in enumerate(args):
+        if a == "--":
+            targets = args[i + 1 :]
+            break
+        if a.startswith("-") and a != "-":
+            continue  # -P / -L / -e などは行き先を変えない
+        targets = args[i:]
+        break
+    if not targets:
+        target = "~"
+    else:
+        target = targets[0]
+    if target == "-" or "$" in target:
+        return None
+    resolved = os.path.normpath(os.path.join(cwd, os.path.expanduser(target)))
+    return resolved if os.path.isdir(resolved) else None
+
+
+def check(command: str, cwd, depth: int = 0):
     if depth > 5:
         raise Block("コマンドの入れ子が深すぎて検査できません。コマンドを分けて実行してください。")
     for inner in extract_substitutions(command):
@@ -333,12 +463,7 @@ def check(command: str, cwd: str, depth: int = 0):
 
     pending_adds = []
     for seg in tokenize(command):
-        # 先頭の環境変数の代入(FOO=bar cmd)と、env / nohup などのラッパーを読み飛ばす
-        while seg and (
-            re.match(r"^[A-Za-z_][A-Za-z0-9_]*=", seg[0])
-            or os.path.basename(seg[0]) in COMMAND_WRAPPERS
-        ):
-            seg = seg[1:]
+        seg = strip_prefixes(seg, cwd, depth)
         if not seg:
             continue
         cmd, args = os.path.basename(seg[0]), seg[1:]
@@ -353,8 +478,8 @@ def check(command: str, cwd: str, depth: int = 0):
             check(" ".join(args), cwd, depth + 1)
             continue
 
-        if cmd == "cd" and args:
-            cwd = os.path.normpath(os.path.join(cwd, os.path.expanduser(args[0])))
+        if cmd == "cd":
+            cwd = resolve_cd(args, cwd)
             continue
 
         if cmd == "git":
@@ -373,7 +498,16 @@ def check(command: str, cwd: str, depth: int = 0):
 
         if cmd == "git":
             target, sub, rest = strip_git_globals(args)
-            gcwd = os.path.normpath(os.path.join(cwd, target)) if target else cwd
+            gcwd = cwd
+            if target:
+                gcwd = os.path.normpath(os.path.join(cwd or "", os.path.expanduser(target)))
+                if cwd is None and not os.path.isabs(target):
+                    gcwd = None
+            if gcwd is None and sub in ("add", "commit"):
+                raise Block(
+                    "作業ディレクトリを判定できないので、commit の対象を確かめられません。"
+                    "cd を使わずに `git -C <パス>` の形で実行してください。"
+                )
             if sub == "add":
                 check_add(rest, gcwd, pending_adds)
             elif sub == "commit":
