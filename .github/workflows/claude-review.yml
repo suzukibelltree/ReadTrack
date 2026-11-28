@@ -1,0 +1,73 @@
+name: Claude Code Review
+
+# PR にラベルを付けたときだけ、Claude による詳細レビューを実行する。
+# レビューの重さは次の3段階で使い分ける:
+#   軽量: Copilot(effort: lite)… 全 PR で自動実行
+#   中量: `claude-review-sonnet` ラベル … Claude Sonnet でレビュー
+#   重量: `claude-review-opus` ラベル   … Claude Opus でレビュー
+on:
+  pull_request:
+    types: [labeled]
+
+# 同じ PR で連続して起動された場合は、古い実行をキャンセルする
+concurrency:
+  group: claude-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    if: github.event.label.name == 'claude-review-sonnet' || github.event.label.name == 'claude-review-opus'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Run Claude review
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            このプルリクエストを詳細にレビューしてください。
+
+            ## 手順
+            1. `gh pr view` と `gh pr diff` で PR の概要と差分を確認する
+            2. CLAUDE.md と `.claude/skills/` 配下の SKILL.md のうち、差分に関係するもの
+               (general は必須。architecture / state-management / compose-ui / testing は該当する場合)を読み、
+               プロジェクト固有の規約に沿っているかを確認する
+            3. 必要に応じて周辺コードを読み、変更の影響範囲を確認する
+
+            ## 観点
+            - バグ・クラッシュ・データ不整合などの正しさ
+            - レイヤー規約(UseCase 経由のデータアクセス、BindingModel/Converter など)への準拠
+            - UiState 設計・Compose 構成の規約への準拠
+            - テストの過不足
+            - パフォーマンス・セキュリティ上の懸念
+
+            ## 出力
+            - 日本語で書く
+            - 特定の行に紐づく指摘は `mcp__github_inline_comment__create_inline_comment` でインラインコメントにする
+            - 最後に `gh pr comment` で全体のまとめを1件投稿する。形式は general スキルの「レビュー依頼時」に従う
+              (問題点 / 原因 / 改善方針 / 改善コード)。問題がなければ「大きな問題はないが、改善するとすれば〜」と提案する
+            - 確信度の低い指摘は推測であることを明記し、些末なスタイル指摘は控える
+          claude_args: |
+            --model ${{ github.event.label.name == 'claude-review-opus' && 'opus' || 'sonnet' }}
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Read,Glob,Grep"
+
+      # 再度ラベルを付ければ再レビューできるよう、終了後にラベルを外す
+      - name: Remove trigger label
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr edit ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --remove-label "${{ github.event.label.name }}"
