@@ -1,6 +1,6 @@
 ---
-name: state-management
-description: UiState設計、一時イベント(Snackbar等)の扱い、エラーメッセージのリソースID規約。ViewModelの実装・修正、状態管理の設計時に必ず参照する。
+paths:
+  - "app/src/main/java/**/ui/**/*.kt"
 ---
 
 # 状態管理規約

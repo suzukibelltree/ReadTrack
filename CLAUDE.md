@@ -53,16 +53,18 @@ app/src/main/java/com/belltree/readtrack/
 - All data access flows through UseCases; ViewModels never touch repositories directly.
 - DI is Hilt throughout; `@HiltViewModel` on every ViewModel.
 - Navigation uses type-safe routes: `@Serializable sealed interface Route` in `ui/navigation/ReadTrackScreen.kt`.
-- Screens never receive domain models directly; each screen defines a `BindingModel` + `Converter` (see `.claude/skills/architecture/SKILL.md`).
+- Screens never receive domain models directly; each screen defines a `BindingModel` + `Converter` (see `.claude/rules/architecture.md`).
 
-## Development Guidelines (Skills)
+## Development Guidelines (Rules)
 
-Project-specific implementation rules live in `.claude/skills/`:
-- `general` — 前提・出力形式(レビュー時/実装時)・Git運用
-- `architecture` — レイヤー規約、BindingModel/Converter、UseCase規約
-- `state-management` — UiState設計、イベント処理、文言のリソースID規約
-- `compose-ui` — Screen/Content分離、components配置、Preview方針
-- `testing` — テスト作成基準・配置規約・Roborazzi運用
+Project-specific coding rules live in `.claude/rules/`. Files with `paths:` frontmatter are loaded automatically when Claude works on matching files; `general.md` has no `paths:` and is always loaded.
+- `general` — 前提・出力形式(レビュー時/実装時)・Git運用(常に読み込み)
+- `architecture` — レイヤー規約、BindingModel/Converter、UseCase規約(`app/src/main/java/**`)
+- `state-management` — UiState設計、イベント処理、文言のリソースID規約(`**/ui/**`)
+- `compose-ui` — Screen/Content分離、components配置、Preview方針(`**/ui/**`、スクショテスト)
+- `testing` — テスト作成基準・配置規約・Roborazzi運用(`app/src/test*/**`、`androidTest`)
+
+`.claude/skills/` holds task procedures (e.g. `/implement-task`), not coding rules. Git safety (no `add -A`, no secrets in commits, no direct push to `main`/`develop`) is enforced by the hook in `.claude/hooks/guard-git-safety.py`.
 
 ## Testing Patterns
 

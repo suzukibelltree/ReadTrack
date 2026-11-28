@@ -1,6 +1,8 @@
 ---
-name: testing
-description: テストの作成基準・配置規約・記法、スクリーンショットテスト(Roborazzi)の運用。ユニットテストやVRTの作成・修正時に必ず参照する。
+paths:
+  - "app/src/test/**/*.kt"
+  - "app/src/testDebug/**/*.kt"
+  - "app/src/androidTest/**/*.kt"
 ---
 
 # テスト規約

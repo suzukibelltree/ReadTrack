@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(sh ./gradlew *)",
+      "Bash(./gradlew *)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git show*)",
+      "Bash(git branch*)",
+      "Bash(git rev-parse*)",
+      "Bash(git fetch*)",
+      "Bash(git ls-files*)",
+      "Bash(gh issue view *)",
+      "Bash(gh issue list*)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr diff *)",
+      "Bash(gh pr list*)",
+      "Bash(gh pr checks *)"
+    ],
+    "deny": [
+      "Bash(*publishReleaseBundle*)",
+      "Bash(*publishBundle*)",
+      "Bash(*bundleRelease*)",
+      "Bash(*assembleRelease*)",
+      "Read(**/local.properties)",
+      "Edit(**/local.properties)",
+      "Write(**/local.properties)",
+      "Read(**/*.jks)",
+      "Read(**/*.keystore)",
+      "Edit(**/*.jks)",
+      "Edit(**/*.keystore)",
+      "Read(**/google-services.json)",
+      "Edit(**/google-services.json)",
+      "Write(**/google-services.json)",
+      "Read(**/play-service-account.json)",
+      "Edit(**/play-service-account.json)",
+      "Write(**/play-service-account.json)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard-git-safety.py\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}
